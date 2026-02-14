@@ -1,0 +1,315 @@
+/**
+ * Chat Markdown Styling
+ *
+ * Enhanced markdown styling with syntax highlighting and better typography
+ * Optimized for chat bubbles with improved readability
+ */
+
+.chat-markdown {
+  font-size: 15px;
+  line-height: 1.75;
+  color: inherit;
+}
+
+/* Headings - Smaller, more compact for chat */
+.chat-markdown h1 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-top: 0.75rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 0.25rem;
+  opacity: 0.9;
+}
+
+.chat-markdown h1:first-child {
+  margin-top: 0;
+}
+
+.chat-markdown h2 {
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin-top: 0.75rem;
+  margin-bottom: 0.5rem;
+  opacity: 0.9;
+}
+
+.chat-markdown h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 0.625rem;
+  margin-bottom: 0.375rem;
+}
+
+.chat-markdown h4,
+.chat-markdown h5,
+.chat-markdown h6 {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  margin-top: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+/* Paragraphs - Compact spacing */
+.chat-markdown p {
+  margin: 0 0 0.5rem 0 !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.chat-markdown p:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* Reduce gap between paragraph and following list */
+.chat-markdown p + ul,
+.chat-markdown p + ol {
+  margin-top: 0.25rem !important;
+}
+
+/* Strong and emphasis */
+.chat-markdown strong,
+.chat-markdown b {
+  font-weight: 700;
+}
+
+.chat-markdown em,
+.chat-markdown i {
+  font-style: italic;
+}
+
+/* Lists - Compact */
+.chat-markdown ul,
+.chat-markdown ol {
+  margin: 0.5rem 0 !important;
+  margin-bottom: 0.5rem !important;
+  padding-left: 1.5rem;
+}
+
+.chat-markdown ul {
+  list-style-type: disc;
+}
+
+.chat-markdown ol {
+  list-style-type: decimal;
+}
+
+.chat-markdown li {
+  margin: 0.125rem 0;
+}
+
+.chat-markdown li > p {
+  margin: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+/* Nested lists */
+.chat-markdown ul ul,
+.chat-markdown ol ul {
+  list-style-type: circle;
+}
+
+.chat-markdown ul ul ul {
+  list-style-type: square;
+}
+
+/* Blockquotes - Subtle for chat */
+.chat-markdown blockquote {
+  margin: 0.75rem 0;
+  padding: 0.5rem 0.75rem;
+  border-left: 3px solid currentColor;
+  opacity: 0.8;
+  font-style: italic;
+}
+
+.chat-markdown blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+/* Code - Inline */
+.chat-markdown code {
+  font-family: ui-monospace, "Courier New", monospace;
+  font-size: 0.875em;
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+  font-weight: 500;
+}
+
+/* User messages (white text) - code with dark background */
+.chat-markdown.user-message code {
+  background-color: rgba(0, 0, 0, 0.2);
+  color: inherit;
+}
+
+/* Assistant messages (dark text) - code with light background */
+.chat-markdown.assistant-message code {
+  background-color: rgba(0, 0, 0, 0.05);
+  color: #1f2937;
+}
+
+/* Code blocks */
+.chat-markdown pre {
+  margin: 0.75rem 0;
+  padding: 0.75rem;
+  border-radius: 0.375rem;
+  overflow-x: auto;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.chat-markdown.user-message pre {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.chat-markdown.assistant-message pre {
+  background-color: #f9fafb;
+  border-color: #e5e7eb;
+}
+
+.chat-markdown pre code {
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  display: block;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+}
+
+.chat-markdown.user-message pre code {
+  color: inherit;
+}
+
+.chat-markdown.assistant-message pre code {
+  color: #1f2937;
+}
+
+/* Horizontal rules */
+.chat-markdown hr {
+  margin: 3rem 0;
+  border: 0;
+  border-top: 2px solid;
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+/* Links */
+.chat-markdown a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-weight: 500;
+}
+
+.chat-markdown.user-message a {
+  color: inherit;
+  text-decoration-color: rgba(255, 255, 255, 0.5);
+}
+
+.chat-markdown.user-message a:hover {
+  text-decoration-color: rgba(255, 255, 255, 0.8);
+}
+
+.chat-markdown.assistant-message a {
+  color: #10b981;
+  text-decoration-color: rgba(16, 185, 129, 0.3);
+}
+
+.chat-markdown.assistant-message a:hover {
+  color: #059669;
+  text-decoration-color: rgba(5, 150, 105, 0.6);
+}
+
+/* Tables - Compact */
+.chat-markdown table {
+  width: 100%;
+  margin: 0.75rem 0;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.chat-markdown th {
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 1px solid currentColor;
+  opacity: 0.9;
+}
+
+.chat-markdown td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid currentColor;
+}
+
+.chat-markdown.user-message table {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.chat-markdown.assistant-message table {
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+.chat-markdown tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Task lists (GitHub flavored markdown) */
+.chat-markdown input[type="checkbox"] {
+  margin-right: 0.375rem;
+}
+
+/* Images - Responsive */
+.chat-markdown img {
+  max-width: 100%;
+  height: auto;
+  margin: 0.75rem 0;
+  border-radius: 0.375rem;
+}
+
+/* Syntax Highlighting for Code Blocks */
+.markdown-code-block {
+  background: #f9fafb;
+  color: #1f2937;
+}
+
+/* Highlight.js Overrides */
+.hljs {
+  background: #f9fafb !important;
+  color: #1f2937 !important;
+}
+
+.hljs-comment,
+.hljs-quote {
+  color: #6b7280;
+  font-style: italic;
+}
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-literal,
+.hljs-type {
+  color: #7c3aed;
+}
+
+.hljs-string,
+.hljs-title,
+.hljs-name {
+  color: #059669;
+}
+
+.hljs-number,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-meta {
+  color: #dc2626;
+}
+
+.hljs-function,
+.hljs-class,
+.hljs-attr {
+  color: #2563eb;
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: bold;
+}

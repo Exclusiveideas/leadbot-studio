@@ -1,0 +1,557 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "darwin-arm64", "windows"]
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ─── Auth & Multi-tenancy ────────────────────────────────────────────────────
+
+model User {
+  id                            String    @id @default(cuid())
+  email                         String    @unique
+  name                          String?
+  image                         String?
+  password                      String?
+  authProvider                  String    @default("local")
+  externalId                    String?   @unique
+  emailVerified                 DateTime?
+  mfaSecret                     String?
+  mfaEnabled                    Boolean   @default(false)
+  mfaBackupCodes                String[]
+  isActive                      Boolean   @default(true)
+  isVerified                    Boolean   @default(false)
+  lastLoginAt                   DateTime?
+  createdAt                     DateTime  @default(now())
+  updatedAt                     DateTime  @updatedAt
+  lastVerificationEmailSentAt   DateTime?
+  organizationId                String?
+  organizationRole              String?
+  leadCaptureEmailNotifications Boolean   @default(true)
+  mfaLastVerifiedAt             DateTime?
+  failedLoginAttempts           Int       @default(0)
+  lockoutUntil                  DateTime?
+  lastFailedLoginAt             DateTime?
+
+  sessions             Session[]
+  notifications        Notification[]
+  createdChatbots      Chatbot[]       @relation("ChatbotCreator")
+  createdOrganizations Organization[]  @relation("OrganizationCreator")
+  organization         Organization?   @relation("OrganizationMembers", fields: [organizationId], references: [id])
+
+  @@index([organizationId])
+  @@map("users")
+}
+
+model Organization {
+  id         String   @id @default(cuid())
+  name       String
+  subtitle   String?
+  type       String?
+  logoUrl    String?
+  requireMFA Boolean  @default(false)
+  createdBy  String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  chatbots Chatbot[]
+  creator  User?     @relation("OrganizationCreator", fields: [createdBy], references: [id])
+  users    User[]    @relation("OrganizationMembers")
+
+  @@map("organizations")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  ipAddress String?
+  userAgent String?
+  location  String?
+  isActive  Boolean  @default(true)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@index([isActive])
+  @@index([userId, isActive])
+  @@map("sessions")
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  type      NotificationType
+  title     String
+  message   String
+  data      Json?
+  read      Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([userId, read])
+  @@index([createdAt])
+  @@map("notifications")
+}
+
+// ─── Chatbot Core ────────────────────────────────────────────────────────────
+
+model Chatbot {
+  id             String  @id @default(cuid())
+  name           String
+  description    String  @db.Text
+  thumbnail      String?
+  organizationId String?
+  createdBy      String
+
+  // Niche (NEW for LeadBotStudio)
+  nicheType NicheType? @default(CUSTOM)
+
+  // Status
+  status      ChatbotStatus @default(DRAFT)
+  publishedAt DateTime?
+
+  // AI Configuration
+  aiModel            String  @default("claude-3-5-haiku")
+  persona            String  @db.Text
+  customInstructions String  @db.Text
+  systemPrompt       String? @db.Text
+  welcomeMessage     String? @default("Hi! How can I help you today?")
+
+  // Widget Appearance & UX
+  appearance         Json?    @default("{\"primaryColor\":\"#001F54\",\"accentColor\":\"#3B82F6\"}")
+  suggestedQuestions String[] @default([])
+  chatGreeting       String?  @default("Hey, Let's get started! What's your goal? How can I help?")
+
+  // File Attachment Settings
+  allowFileAttachments Boolean  @default(false)
+  maxFileSize          Int      @default(10485760)
+  allowedFileTypes     String[] @default(["pdf", "docx", "txt", "jpg", "png"])
+
+  // Widget Configuration
+  embedCode      String   @unique
+  allowedDomains String[]
+
+  // Booking Configuration
+  calendlyLink  String?
+  bookingConfig Json?
+
+  // Text Request Configuration
+  textConfig Json?
+
+  // Public embed analytics counters
+  totalPublicConversations Int @default(0)
+  totalPublicMessages      Int @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization   Organization?           @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  creator        User                    @relation("ChatbotCreator", fields: [createdBy], references: [id])
+  knowledgeBase  ChatbotKnowledge[]
+  conversations  ChatbotConversation[]
+  leads          ChatbotLead[]
+  leadForms      ChatbotLeadForm[]
+  dailyAnalytics ChatbotDailyAnalytics[]
+  feedbacks      ChatbotFeedback[]
+  bookings       ChatbotBooking[]
+  textRequests   ChatbotTextRequest[]
+
+  @@index([organizationId])
+  @@index([createdBy])
+  @@index([status])
+  @@index([embedCode])
+  @@map("chatbots")
+}
+
+// ─── Knowledge Base ──────────────────────────────────────────────────────────
+
+model ChatbotKnowledge {
+  id        String        @id @default(cuid())
+  chatbotId String
+  type      KnowledgeType
+  title     String
+  content   String        @db.Text
+  s3Key     String?
+  metadata  Json?
+  createdAt DateTime      @default(now())
+
+  // Processing status tracking
+  status                ProcessingStatus         @default(PENDING)
+  stage                 KnowledgeProcessingStage @default(QUEUED)
+  progress              Int                      @default(0)
+  totalChunks           Int                      @default(0)
+  processedChunks       Int                      @default(0)
+  failedChunks          Int                      @default(0)
+  processingStartedAt   DateTime?
+  processingCompletedAt DateTime?
+  processingError       String?                  @db.Text
+  retryCount            Int                      @default(0)
+  maxRetries            Int                      @default(3)
+
+  // Vector and processing fields
+  vectorNamespace String?
+  chunkCount      Int       @default(0)
+  youtubeVideoId  String?
+  extractedText   String?   @db.Text
+  processedAt     DateTime?
+
+  // Vector embeddings
+  embeddingModel      String? @default("amazon.titan-embed-text-v2:0")
+  embeddingDimensions Int?    @default(1024)
+
+  chatbot   Chatbot           @relation(fields: [chatbotId], references: [id], onDelete: Cascade)
+  citations ChatbotCitation[]
+
+  @@index([chatbotId])
+  @@index([type])
+  @@index([vectorNamespace])
+  @@index([status])
+  @@index([chatbotId, status])
+  @@map("chatbot_knowledge")
+}
+
+// ─── Conversations & Messages ────────────────────────────────────────────────
+
+model ChatbotConversation {
+  id            String   @id @default(cuid())
+  chatbotId     String
+  userId        String
+  sessionId     String   @unique
+  title         String   @default("New Chat")
+  ipAddress     String?
+  userAgent     String?
+  startedAt     DateTime @default(now())
+  lastMessageAt DateTime @updatedAt
+  leadCaptured  Boolean  @default(false)
+
+  chatbot  Chatbot          @relation(fields: [chatbotId], references: [id], onDelete: Cascade)
+  messages ChatbotMessage[]
+  lead     ChatbotLead?
+
+  @@index([chatbotId])
+  @@index([userId, chatbotId])
+  @@index([sessionId])
+  @@index([startedAt])
+  @@map("chatbot_conversations")
+}
+
+model ChatbotMessage {
+  id             String      @id @default(cuid())
+  conversationId String
+  role           MessageRole
+  content        String      @db.Text
+  localId        String?
+  status         String      @default("completed")
+  tokensUsed     Int?
+  processingTime Int?
+  createdAt      DateTime    @default(now())
+
+  conversation ChatbotConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  attachments  ChatbotAttachment[]
+  citations    ChatbotCitation[]
+
+  @@index([conversationId])
+  @@index([localId])
+  @@index([createdAt])
+  @@map("chatbot_messages")
+}
+
+model ChatbotAttachment {
+  id         String   @id @default(cuid())
+  messageId  String
+  fileName   String
+  s3Key      String
+  size       Int
+  mimeType   String
+  uploadedAt DateTime @default(now())
+
+  message ChatbotMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@index([messageId])
+  @@map("chatbot_attachments")
+}
+
+model ChatbotCitation {
+  id             String @id @default(cuid())
+  messageId      String
+  knowledgeId    String
+  chunkText      String @db.Text
+  pageNumber     Int?
+  relevanceScore Float?
+
+  message   ChatbotMessage   @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  knowledge ChatbotKnowledge @relation(fields: [knowledgeId], references: [id], onDelete: Cascade)
+
+  @@index([messageId])
+  @@index([knowledgeId])
+  @@map("chatbot_citations")
+}
+
+// ─── Leads & Forms ───────────────────────────────────────────────────────────
+
+model ChatbotLead {
+  id        String  @id @default(cuid())
+  chatbotId String
+  sessionId String?
+
+  conversationId String? @unique
+
+  // Core contact fields
+  email String
+  name  String
+  phone String?
+
+  // Legacy fields (kept for compatibility, formData is primary for dynamic fields)
+  caseType String?
+  urgency  String?
+  budget   String?
+  notes    String? @db.Text
+
+  // Dynamic form support
+  leadFormId String?
+  formData   Json?
+
+  metadata             Json?
+  conversationSnapshot Json?
+  source               LeadSource @default(LEAD_FORM)
+  capturedAt           DateTime   @default(now())
+
+  chatbot      Chatbot              @relation(fields: [chatbotId], references: [id], onDelete: Cascade)
+  conversation ChatbotConversation? @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  leadForm     ChatbotLeadForm?     @relation(fields: [leadFormId], references: [id], onDelete: SetNull)
+
+  @@index([chatbotId])
+  @@index([email])
+  @@index([capturedAt])
+  @@index([sessionId])
+  @@index([leadFormId])
+  @@index([source])
+  @@map("chatbot_leads")
+}
+
+model ChatbotLeadForm {
+  id          String  @id @default(cuid())
+  chatbotId   String
+  name        String
+  description String? @db.Text
+
+  fields     Json
+  appearance Json?
+  behavior   Json?
+
+  isDefault Boolean @default(false)
+  isActive  Boolean @default(true)
+
+  chatbot Chatbot       @relation(fields: [chatbotId], references: [id], onDelete: Cascade)
+  leads   ChatbotLead[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([chatbotId])
+  @@index([chatbotId, isDefault])
+  @@index([chatbotId, isActive])
+  @@map("chatbot_lead_forms")
+}
+
+// ─── Analytics ───────────────────────────────────────────────────────────────
+
+model ChatbotDailyAnalytics {
+  id            String   @id @default(cuid())
+  chatbotId     String
+  date          DateTime @db.Date
+  conversations Int      @default(0)
+  messages      Int      @default(0)
+  leads         Int      @default(0)
+
+  chatbot Chatbot @relation(fields: [chatbotId], references: [id], onDelete: Cascade)
+
+  @@unique([chatbotId, date])
+  @@index([chatbotId])
+  @@index([date])
+  @@map("chatbot_daily_analytics")
+}
+
+// ─── Bookings ────────────────────────────────────────────────────────────────
+
+model ChatbotBooking {
+  id        String @id @default(cuid())
+  chatbotId String
+  sessionId String
+
+  categoryId      String
+  categoryName    String
+  subCategoryId   String?
+  subCategoryName String?
+
+  caseDescription String? @db.Text
+
+  firstName String
+  lastName  String
+  email     String
+  phone     String
+
+  locationId      String
+  locationName    String
+  locationAddress String
+
+  appointmentDate DateTime @db.Date
+  appointmentTime String
+
+  status BookingStatus @default(PENDING)
+
+  ipAddress String?
+  userAgent String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  chatbot Chatbot @relation(fields: [chatbotId], references: [id], onDelete: Cascade)
+
+  @@index([chatbotId])
+  @@index([email])
+  @@index([status])
+  @@index([appointmentDate])
+  @@index([createdAt])
+  @@index([chatbotId, status])
+  @@map("chatbot_bookings")
+}
+
+// ─── Text Requests ───────────────────────────────────────────────────────────
+
+model ChatbotTextRequest {
+  id        String @id @default(cuid())
+  chatbotId String
+  sessionId String
+
+  firstName String
+  lastName  String
+  email     String?
+  phone     String
+
+  message String @db.Text
+
+  status TextRequestStatus @default(PENDING)
+
+  ipAddress String?
+  userAgent String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  chatbot Chatbot @relation(fields: [chatbotId], references: [id], onDelete: Cascade)
+
+  @@index([chatbotId])
+  @@index([phone])
+  @@index([email])
+  @@index([status])
+  @@index([createdAt])
+  @@index([chatbotId, status])
+  @@map("chatbot_text_requests")
+}
+
+// ─── Feedback ────────────────────────────────────────────────────────────────
+
+model ChatbotFeedback {
+  id        String @id @default(cuid())
+  chatbotId String
+  sessionId String
+
+  subject String
+  content String @db.Text
+
+  ipAddress String?
+  userAgent String?
+
+  submittedAt DateTime @default(now())
+
+  chatbot Chatbot @relation(fields: [chatbotId], references: [id], onDelete: Cascade)
+
+  @@index([chatbotId])
+  @@index([sessionId])
+  @@index([submittedAt])
+  @@map("chatbot_feedbacks")
+}
+
+// ─── Enums ───────────────────────────────────────────────────────────────────
+
+enum NicheType {
+  LAW_FIRM
+  BUSINESS_COACH
+  THERAPIST
+  REAL_ESTATE
+  FINANCIAL_ADVISOR
+  CUSTOM
+}
+
+enum MessageRole {
+  USER
+  ASSISTANT
+}
+
+enum ProcessingStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  QUEUED
+}
+
+enum KnowledgeType {
+  FAQ
+  DOCUMENT
+  TEXT
+  URL
+  YOUTUBE
+}
+
+enum KnowledgeProcessingStage {
+  QUEUED
+  EXTRACTING_TEXT
+  TEXT_EXTRACTED
+  CHUNKING_TEXT
+  GENERATING_EMBEDDINGS
+  STORING_VECTORS
+  COMPLETED
+}
+
+enum ChatbotStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum LeadSource {
+  LEAD_FORM
+  BOOKING_FALLBACK
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+enum TextRequestStatus {
+  PENDING
+  SEEN
+  RESPONDED
+}
+
+enum NotificationType {
+  LEAD_CAPTURED
+  BOOKING_CREATED
+  TEXT_REQUEST_CREATED
+  SYSTEM_ALERT
+}

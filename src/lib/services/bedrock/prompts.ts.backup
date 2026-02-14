@@ -1,0 +1,622 @@
+import type { BedrockModelConfig, PromptContext, PromptTemplate } from '@/types/bedrock';
+import { BEDROCK_MODELS } from '@/types/bedrock';
+
+export class PromptTemplateEngine {
+  private templates: Map<string, PromptTemplate> = new Map();
+
+  constructor() {
+    this.registerDefaultTemplates();
+  }
+
+  private registerDefaultTemplates(): void {
+    // Document Classification Template
+      name: 'Natural Language to SQL Conversion',
+      systemPrompt: `You are an expert SQL analyst specialized in legal e-discovery databases. Your task is to convert natural language questions into precise, safe SQL queries.
+
+CRITICAL RULES:
+1. ONLY generate SELECT statements - never UPDATE, DELETE, INSERT, or DDL
+2. ALWAYS include WHERE caseId = $caseId for data access control
+3. Use proper JOINs when querying multiple tables
+4. Include relevant document names and IDs for source attribution
+5. Handle date ranges, financial calculations, and text searches appropriately
+6. Return results in a format suitable for legal analysis
+
+POSTGRESQL COLUMN NAME RULES:
+- ALWAYS quote column names that contain uppercase letters using double quotes
+- Examples: "originalName", "caseId", "userId", "createdAt", "updatedAt"
+- Correct: SELECT d."originalName", d."filename" FROM documents d
+- Wrong: SELECT d.originalName, d.filename FROM documents d
+- Note: PostgreSQL converts unquoted identifiers to lowercase, so originalName becomes originalname without quotes
+
+RESPONSE FORMAT:
+You must respond with a JSON object containing:
+{
+  "sql": "The complete SQL query",
+  "explanation": "Clear explanation of what the query does",
+  "confidence": 0.9,
+  "queryType": "financial|custody|communication|legal|discovery",
+  "tableTypes": ["documents", "financial_transactions", "communications", "children_information", "assets", "behavioral_incidents", "custody_information"]
+}
+
+CRITICAL REQUIREMENT - Return ONLY valid JSON - NO comments allowed
+- Do not use // or /* */ comments anywhere in the JSON
+- If you need to explain something, put it in a "notes" or "comments" field within the JSON structure
+
+JSON STRING ESCAPING RULES:
+- When including SQL queries in JSON strings, use JSON escaping rules, NOT SQL escaping rules
+- Single quotes do NOT need to be escaped in JSON strings (only double quotes need escaping)
+- For single quotes in SQL strings: Use ' instead of '' (two single quotes)
+- Example: WRONG: "sql": "WHERE name = 'John''s car'"
+- Example: CORRECT: "sql": "WHERE name = 'John's car'"
+- Always escape double quotes as \\" in JSON strings
+- Always escape backslashes as \\\\ in JSON strings
+- Always escape newlines as \\n and tabs as \\t in JSON strings
+
+CRITICAL: Your response must be parseable by JSON.parse() without any preprocessing.`,
+      template: `Database Schema:
+{schema}
+
+Case ID: {caseId}
+
+Natural Language Question: {question}
+
+Convert this question to a SQL query that:
+1. Respects the case access control (WHERE caseId = '{caseId}')
+2. Returns relevant data with source attribution
+3. Is optimized for the specific query type
+4. Handles edge cases appropriately
+
+Generate the SQL query now:`,
+      variables: ['schema', 'caseId', 'question'],
+      modelConfig: {
+        modelId: BEDROCK_MODELS.CLAUDE_3_HAIKU,
+        maxTokens: 2048,
+        temperature: 0.1,
+        topP: 0.9,
+      }
+    });
+
+    // Document Classification Template
+    this.registerTemplate({
+      id: 'document-classification',
+      name: 'Legal Document Classification',
+      systemPrompt: `You are an expert legal document classifier specializing in family law and e-discovery. Analyze documents and classify them based on content, legal significance, and family law context.`,
+      template: `Document Content:
+{content}
+
+Document Metadata:
+- Filename: {filename}
+- File Type: {fileType}
+- Case Context: {caseContext}
+
+Classify this document and provide:
+1. Primary document type (contract, email, financial, legal, correspondence, etc.)
+2. Family law relevance (custody, support, assets, communications, etc.)
+3. Legal significance level (1-5)
+4. Key parties mentioned
+5. Important dates identified
+6. Sensitive information flags (PII, threats, financial details)
+
+Response format: JSON`,
+      variables: ['content', 'filename', 'fileType', 'caseContext'],
+      modelConfig: {
+        modelId: BEDROCK_MODELS.CLAUDE_3_HAIKU,
+        maxTokens: 1024,
+        temperature: 0.2,
+      }
+    });
+
+    // Communication Analysis Template
+    this.registerTemplate({
+      id: 'communication-analysis',
+      name: 'Communication Content Analysis',
+      systemPrompt: `You are a legal communication analyst specializing in family law cases. Analyze communications for sentiment, threats, key information, and legal relevance.`,
+      template: `Communication Content:
+{content}
+
+Participants: {participants}
+Date: {date}
+Context: Family law case - {caseContext}
+
+Analyze this communication for:
+1. Sentiment analysis (-1 to 1)
+2. Threat level (0-5, where 5 is explicit threats)
+3. Key topics discussed
+4. Legal relevance
+5. Child welfare concerns
+6. Financial discussions
+7. Custody/visitation mentions
+
+Provide analysis in JSON format with confidence scores.`,
+      variables: ['content', 'participants', 'date', 'caseContext'],
+      modelConfig: {
+        modelId: BEDROCK_MODELS.CLAUDE_3_HAIKU,
+        maxTokens: 1024,
+        temperature: 0.3,
+      }
+    });
+
+    // Financial Analysis Template
+    this.registerTemplate({
+      id: 'financial-analysis',
+      name: 'Financial Document Analysis',
+      systemPrompt: `You are a forensic financial analyst specializing in family law asset discovery. Extract and analyze financial information from documents with high accuracy.`,
+      template: `Financial Document Content:
+{content}
+
+Document Type: {documentType}
+Date Range: {dateRange}
+
+Extract and analyze:
+1. All monetary amounts and currencies
+2. Account numbers and financial institutions
+3. Transaction dates and parties
+4. Income sources and amounts
+5. Asset valuations
+6. Debt obligations
+7. Hidden asset indicators
+8. Unusual financial patterns
+
+Format response as structured JSON with confidence levels for each extracted element.`,
+      variables: ['content', 'documentType', 'dateRange'],
+      modelConfig: {
+        modelId: BEDROCK_MODELS.CLAUDE_3_HAIKU,
+        maxTokens: 2048,
+        temperature: 0.1,
+      }
+    });
+
+    // Case Summarization Template
+    this.registerTemplate({
+      id: 'case-summary',
+      name: 'Legal Case Summary Generation',
+      systemPrompt: `You are a legal case analyst specializing in family law. Create comprehensive, accurate summaries of legal cases based on document analysis.`,
+      template: `Case Documents Summary:
+{documentsContext}
+
+Case Metadata:
+- Case Number: {caseNumber}
+- Parties: {parties}
+- Case Type: {caseType}
+- Date Range: {dateRange}
+
+Create a comprehensive case summary including:
+1. Executive summary
+2. Key parties and their roles
+3. Timeline of significant events
+4. Financial overview
+5. Child custody/support status
+6. Outstanding issues
+7. Key evidence
+8. Recommended actions
+
+Format as structured report with clear sections.`,
+      variables: ['documentsContext', 'caseNumber', 'parties', 'caseType', 'dateRange'],
+      modelConfig: {
+        modelId: BEDROCK_MODELS.CLAUDE_3_HAIKU,
+        maxTokens: 4096,
+        temperature: 0.2,
+      }
+    });
+
+    // AI Search Analysis Template - Analyze search results and determine next steps
+    this.registerTemplate({
+      id: 'search-analysis',
+      name: 'AI Search Results Analysis',
+      systemPrompt: `You are an expert legal research analyst specializing in iterative document search for Massachusetts family law cases. Your role is to analyze search results from document collections and provide intelligent guidance for continuing or completing the search process.
+
+You excel at:
+1. Evaluating search result completeness and relevance
+2. Determining if enough information has been found to answer the user's question
+3. Identifying gaps in information that require additional searching
+4. Generating refined search terms for better results
+5. Assessing confidence levels in found information
+
+RESPONSE FORMAT - You must return valid JSON:
+{
+  "shouldContinue": boolean,
+  "confidence": number (0-1),
+  "completeness": number (0-1),
+  "summary": "Brief summary of key findings",
+  "gapsIdentified": ["List of information still needed"],
+  "refinedSearchTerms": ["Better search terms for next iteration"],
+  "reasoning": "Why continue/stop searching",
+  "keyFindings": ["Most important discoveries from results"]
+}`,
+      template: `Original Question: {originalQuestion}
+Current Iteration: {iterationNumber}
+Search Strategy Used: {searchStrategy}
+
+Found Documents ({documentsCount} results):
+{documentSummaries}
+
+Document Snippets with Key Content:
+{documentSnippets}
+
+Previous Search Terms Used: {previousSearchTerms}
+
+Context from Previous Iterations:
+{accumulatedContext}
+
+ANALYSIS TASK:
+Analyze these search results in the context of the original question. Consider:
+
+1. COMPLETENESS: Does the found information fully answer the original question?
+2. RELEVANCE: How relevant are the found documents to the user's query?
+3. GAPS: What important information is still missing?
+4. NEXT STEPS: Should we continue searching with different terms, or is this sufficient?
+
+Provide your analysis focusing on Massachusetts family law context and practical legal research needs.`,
+      variables: ['originalQuestion', 'iterationNumber', 'searchStrategy', 'documentsCount', 'documentSummaries', 'documentSnippets', 'previousSearchTerms', 'accumulatedContext'],
+      modelConfig: {
+        modelId: BEDROCK_MODELS.CLAUDE_3_HAIKU,
+        maxTokens: 2048,
+        temperature: 0.3,
+      }
+    });
+
+    // Search Term Refinement Template - Generate better search terms
+    this.registerTemplate({
+      id: 'search-refinement',
+      name: 'Search Term Refinement',
+      systemPrompt: `You are a legal search strategist specializing in Massachusetts family law document discovery. Generate improved search terms based on search results and gaps in information.
+
+You understand:
+1. Legal terminology and Massachusetts family law concepts
+2. How to create targeted search terms for specific information needs
+3. When to use broad vs. narrow search approaches
+4. Common document types and their typical content in family law cases
+
+RESPONSE FORMAT - Return valid JSON:
+{
+  "searchTerms": ["Array of 3-5 optimized search terms"],
+  "searchStrategy": "broad|targeted",
+  "reasoning": "Why these terms were chosen",
+  "expectedDocuments": ["Types of documents likely to contain this info"]
+}`,
+      template: `Original Question: {originalQuestion}
+Current Findings: {currentFindings}
+Information Gaps: {informationGaps}
+Previous Search Terms: {previousSearchTerms}
+Documents Already Found: {foundDocumentTypes}
+
+REFINEMENT TASK:
+Based on the gaps in information and what has already been found, generate new search terms that are:
+1. More specific to the missing information
+2. Use appropriate legal terminology
+3. Avoid terms that returned irrelevant results
+4. Target the document types most likely to contain the needed information
+
+Focus on Massachusetts family law terminology and practical document search strategies.`,
+      variables: ['originalQuestion', 'currentFindings', 'informationGaps', 'previousSearchTerms', 'foundDocumentTypes'],
+      modelConfig: {
+        modelId: BEDROCK_MODELS.CLAUDE_3_HAIKU,
+        maxTokens: 1024,
+        temperature: 0.4,
+      }
+    });
+
+    // Final Answer Generation Template - Create comprehensive answer from all iterations
+    this.registerTemplate({
+      id: 'final-answer',
+      name: 'Comprehensive Answer Generation',
+      systemPrompt: `You are a legal research analyst creating comprehensive answers for Massachusetts family law practitioners. Synthesize information from multiple search iterations into a complete, accurate response.
+
+Your responses should be:
+1. Comprehensive and well-structured
+2. Backed by specific document references
+3. Clear about confidence levels and limitations
+4. Formatted for legal professional use
+5. Include relevant quotes and citations
+
+RESPONSE FORMAT - Return valid JSON:
+{
+  "answer": "Complete answer to the original question",
+  "confidence": number (0-1),
+  "keyFindings": ["Most important discoveries"],
+  "documentSources": [{"docId": "", "title": "", "relevance": ""}],
+  "supportingQuotes": ["Relevant quotes from documents"],
+  "limitations": ["What information was not found or unclear"],
+  "recommendations": ["Suggested next steps if applicable"]
+}`,
+      template: `Original Question: {originalQuestion}
+Total Iterations Performed: {totalIterations}
+
+ACCUMULATED FINDINGS:
+Facts Found: {accumulatedFacts}
+Key Documents: {keyDocuments}
+Document Snippets: {documentSnippets}
+Search Summary: {searchSummary}
+
+SYNTHESIS TASK:
+Create a comprehensive answer that:
+1. Directly addresses the original question
+2. Integrates information from all search iterations
+3. Provides specific document citations and quotes
+4. Acknowledges any limitations or gaps in the found information
+5. Uses appropriate legal language for Massachusetts family law context
+
+Be thorough but concise, focusing on actionable insights for legal professionals.`,
+      variables: ['originalQuestion', 'totalIterations', 'accumulatedFacts', 'keyDocuments', 'documentSnippets', 'searchSummary'],
+      modelConfig: {
+        modelId: BEDROCK_MODELS.CLAUDE_3_HAIKU,
+        maxTokens: 4096,
+        temperature: 0.2,
+      }
+    });
+
+    // Iteration Decision Template - Quick decision on whether to continue searching
+    this.registerTemplate({
+      id: 'iteration-decision',
+      name: 'Search Continuation Decision',
+      systemPrompt: `You are a search efficiency expert for legal document discovery. Make quick, accurate decisions about whether to continue iterative searching based on current results and resource constraints.
+
+Consider:
+1. Information completeness vs. search cost
+2. Diminishing returns on additional iterations
+3. Time and resource constraints
+4. Quality of current findings
+
+RESPONSE FORMAT - Return valid JSON:
+{
+  "shouldContinue": boolean,
+  "confidence": number (0-1),
+  "reason": "Brief explanation of decision",
+  "suggestedAction": "continue|stop|refine_terms"
+}`,
+      template: `Question: {question}
+Iteration: {iteration} of max {maxIterations}
+Current Confidence: {currentConfidence}
+Documents Found This Round: {documentsFound}
+Key Information Found: {keyInformation}
+Time Elapsed: {timeElapsed}ms
+
+DECISION CRITERIA:
+- Stop if confidence > 0.8 and key information found
+- Stop if iteration >= max iterations
+- Continue if confidence < 0.7 and new documents found
+- Consider time constraints and resource usage
+
+Make your decision:`,
+      variables: ['question', 'iteration', 'maxIterations', 'currentConfidence', 'documentsFound', 'keyInformation', 'timeElapsed'],
+      modelConfig: {
+        modelId: BEDROCK_MODELS.CLAUDE_3_HAIKU,
+        maxTokens: 512,
+        temperature: 0.1,
+      }
+    });
+
+    // Specialized Financial Search Term Generation Template
+    this.registerTemplate({
+      id: 'financial-search-terms',
+      name: 'Financial Query Search Terms',
+      systemPrompt: `You are a forensic financial analyst specializing in Massachusetts family law asset discovery. Generate precise search terms to find financial information in legal documents.
+
+FINANCIAL SEARCH FOCUS AREAS:
+1. INCOME & EARNINGS: salary, wages, bonuses, commissions, self-employment income, business income, rental income, investment returns
+2. ASSETS & PROPERTY: real estate, vehicles, bank accounts, investments, retirement accounts, business interests, valuable personal property
+3. EXPENSES & DEBTS: mortgages, loans, credit cards, child support, alimony, business expenses, living expenses
+4. TRANSACTIONS: payments, transfers, deposits, withdrawals, purchases, sales
+5. ENTITIES & PARTIES: employers, banks, investment firms, business partners, financial advisors
+
+MASSACHUSETTS FAMILY LAW FINANCIAL TERMS:
+- "financial statement", "financial affidavit", "income and expense statement"
+- "asset disclosure", "property division", "marital assets", "separate property"
+- "spousal support", "alimony", "child support", "support guidelines"
+- "pension", "401k", "retirement benefits", "QDRO"
+- "business valuation", "professional practice", "goodwill"
+
+RESPONSE FORMAT - Return valid JSON:
+{
+  "searchTerms": ["Array of 3-5 optimized financial search terms"],
+  "searchStrategy": "broad|targeted",
+  "reasoning": "Why these financial terms were chosen",
+  "expectedDocuments": ["Types of financial documents likely to contain this info"],
+  "relatedConcepts": ["Connected financial concepts to explore"]
+}`,
+      template: `Original Question: {originalQuery}
+Current Context: {currentContext}
+Missing Financial Information: {missingInfo}
+Previous Search Terms: {previousTerms}
+Documents Already Found: {foundDocuments}
+
+Generate search terms that target the specific financial information gaps while using appropriate Massachusetts family law terminology.`,
+      variables: ['originalQuery', 'currentContext', 'missingInfo', 'previousTerms', 'foundDocuments'],
+      modelConfig: {
+        modelId: BEDROCK_MODELS.CLAUDE_3_HAIKU,
+        maxTokens: 1024,
+        temperature: 0.4,
+      }
+    });
+
+    // Specialized Custody Search Term Generation Template
+    this.registerTemplate({
+      id: 'custody-search-terms',
+      name: 'Custody Query Search Terms',
+      systemPrompt: `You are a family law specialist focused on child custody and welfare matters in Massachusetts. Generate targeted search terms to find custody-related information in legal documents.
+
+CUSTODY & CHILDREN FOCUS AREAS:
+1. CUSTODY ARRANGEMENTS: physical custody, legal custody, joint custody, sole custody, shared parenting
+2. VISITATION & PARENTING TIME: visitation schedule, parenting plan, overnight visits, holiday schedules
+3. CHILD WELFARE: best interests, child safety, medical needs, educational needs, extracurricular activities
+4. SUPPORT & EXPENSES: child support, daycare costs, medical expenses, educational costs, extracurricular expenses
+5. VIOLATIONS & COMPLIANCE: missed visits, denied access, interference with parenting time, contempt
+6. EVALUATIONS & ASSESSMENTS: custody evaluations, guardian ad litem, parenting coordinators
+
+MASSACHUSETTS FAMILY LAW CUSTODY TERMS:
+- "parenting plan", "parenting schedule", "custody arrangement", "physical custody", "legal custody"
+- "best interests of child", "child welfare", "parenting time", "visitation rights"
+- "joint custody", "shared custody", "sole custody", "primary residence"
+- "guardian ad litem", "custody evaluation", "parenting coordinator"
+- "child support guidelines", "support order", "modification of support"
+- "supervised visitation", "unsupervised visits", "overnight visitation"
+
+RESPONSE FORMAT - Return valid JSON:
+{
+  "searchTerms": ["Array of 3-5 optimized custody search terms"],
+  "searchStrategy": "broad|targeted",
+  "reasoning": "Why these custody terms were chosen",
+  "expectedDocuments": ["Types of custody documents likely to contain this info"],
+  "childWelfareAspects": ["Specific child welfare issues to investigate"]
+}`,
+      template: `Original Question: {originalQuery}
+Current Context: {currentContext}
+Missing Custody Information: {missingInfo}
+Previous Search Terms: {previousTerms}
+Documents Already Found: {foundDocuments}
+
+Generate search terms that focus on child welfare and custody matters using Massachusetts family law terminology.`,
+      variables: ['originalQuery', 'currentContext', 'missingInfo', 'previousTerms', 'foundDocuments'],
+      modelConfig: {
+        modelId: BEDROCK_MODELS.CLAUDE_3_HAIKU,
+        maxTokens: 1024,
+        temperature: 0.4,
+      }
+    });
+
+    // Specialized Communication Search Term Generation Template
+    this.registerTemplate({
+      id: 'communication-search-terms',
+      name: 'Communication Query Search Terms',
+      systemPrompt: `You are a legal communication analyst specializing in family law dispute resolution in Massachusetts. Generate targeted search terms to find relevant communications and their patterns in legal documents.
+
+COMMUNICATION ANALYSIS FOCUS AREAS:
+1. MESSAGE TYPES: emails, text messages, voice messages, letters, social media posts
+2. COMMUNICATION PARTIES: between parents, with children, with attorneys, with third parties
+3. CONTENT ANALYSIS: threats, harassment, coordination issues, agreements, disputes
+4. PATTERNS: frequency, timing, response rates, escalation patterns
+5. LEGAL RELEVANCE: contempt evidence, best interests factors, credibility issues
+
+COMMUNICATION SEARCH CATEGORIES:
+1. HOSTILE/THREATENING: threats, intimidation, harassment, abusive language, hostile tone
+2. COORDINATION: scheduling, logistics, childcare arrangements, pickup/dropoff
+3. FINANCIAL: payment discussions, support issues, expense sharing
+4. CHILD-RELATED: school events, medical issues, activities, welfare concerns
+5. LEGAL/PROCEDURAL: court dates, attorney communications, compliance issues
+
+MASSACHUSETTS FAMILY LAW COMMUNICATION TERMS:
+- "threatening message", "harassing communication", "inappropriate contact"
+- "parenting coordination", "scheduling conflict", "pickup arrangements"
+- "support payment", "expense sharing", "financial disagreement"
+- "school communication", "medical emergency", "child welfare"
+- "court order violation", "contempt of court", "non-compliance"
+
+RESPONSE FORMAT - Return valid JSON:
+{
+  "searchTerms": ["Array of 3-5 optimized communication search terms"],
+  "searchStrategy": "broad|targeted",
+  "reasoning": "Why these communication terms were chosen",
+  "expectedDocuments": ["Types of communication documents likely to contain this info"],
+  "communicationPatterns": ["Specific patterns or behaviors to look for"]
+}`,
+      template: `Original Question: {originalQuery}
+Current Context: {currentContext}
+Missing Communication Information: {missingInfo}
+Previous Search Terms: {previousTerms}
+Documents Already Found: {foundDocuments}
+
+Generate search terms that identify relevant communication patterns and content using family law terminology.`,
+      variables: ['originalQuery', 'currentContext', 'missingInfo', 'previousTerms', 'foundDocuments'],
+      modelConfig: {
+        modelId: BEDROCK_MODELS.CLAUDE_3_HAIKU,
+        maxTokens: 1024,
+        temperature: 0.4,
+      }
+    });
+  }
+
+  registerTemplate(template: PromptTemplate): void {
+    this.templates.set(template.id, template);
+  }
+
+  getTemplate(id: string): PromptTemplate | null {
+    return this.templates.get(id) || null;
+  }
+
+  getAllTemplates(): PromptTemplate[] {
+    return Array.from(this.templates.values());
+  }
+
+  renderPrompt(templateId: string, context: PromptContext): {
+    prompt: string;
+    systemPrompt?: string;
+    modelConfig?: BedrockModelConfig;
+  } | null {
+    const template = this.getTemplate(templateId);
+    if (!template) {
+      return null;
+    }
+
+    // Validate that all required variables are provided
+    const missingVars = template.variables.filter(variable => !(variable in context));
+    if (missingVars.length > 0) {
+      throw new Error(`Missing required variables: ${missingVars.join(', ')}`);
+    }
+
+    // Replace variables in the template
+    let renderedPrompt = template.template;
+    for (const [key, value] of Object.entries(context)) {
+      const regex = new RegExp(`{${key}}`, 'g');
+      renderedPrompt = renderedPrompt.replace(regex, String(value));
+    }
+
+    return {
+      prompt: renderedPrompt,
+      systemPrompt: template.systemPrompt,
+      modelConfig: template.modelConfig,
+    };
+  }
+
+  validateTemplate(template: PromptTemplate): boolean {
+    if (!template.id || !template.name || !template.template) {
+      return false;
+    }
+
+    // Check that all referenced variables are declared
+    const templateVars = this.extractVariables(template.template);
+    const declaredVars = new Set(template.variables);
+    
+    return templateVars.every(variable => declaredVars.has(variable));
+  }
+
+  private extractVariables(template: string): string[] {
+    const matches = template.match(/{([^}]+)}/g);
+    if (!matches) return [];
+    
+    return matches.map(match => match.slice(1, -1));
+  }
+}
+
+// Default prompt templates for common legal scenarios using real database structure
+export const LEGAL_QUERY_EXAMPLES = {
+  financial: [
+    "SELECT ft.amount, ft.payer_name, ft.payee_name, ft.transaction_date, ft.description, d.filename, d.\"originalName\" FROM financial_transactions ft JOIN documents d ON ft.document_id = d.id WHERE ft.case_id = $1 AND ft.amount > 10000 ORDER BY ft.amount DESC",
+    "SELECT SUM(ft.amount) as total_amount, ft.entity_name, COUNT(*) as transaction_count FROM financial_transactions ft WHERE ft.case_id = $1 AND ft.entity_name ILIKE '%Elite Academy%' GROUP BY ft.entity_name",
+    "SELECT fe.entity_name, fe.normalized_name, fe.entity_type, fe.total_mentions, SUM(ft.amount) as total_transactions FROM financial_entities fe LEFT JOIN financial_transactions ft ON fe.entity_name = ft.entity_name AND fe.case_id = ft.case_id WHERE fe.case_id = $1 GROUP BY fe.entity_name, fe.normalized_name, fe.entity_type, fe.total_mentions ORDER BY total_transactions DESC NULLS LAST",
+    "SELECT * FROM financial_summary_by_case WHERE case_id = $1",
+    "SELECT a.asset_type, a.description, a.estimated_value, av.valuation_amount, av.valuation_date, d.filename FROM assets a LEFT JOIN asset_valuations av ON a.id = av.asset_id JOIN documents d ON a.document_id = d.id WHERE a.case_id = $1 ORDER BY COALESCE(av.valuation_amount, a.estimated_value) DESC"
+  ],
+  custody: [
+    "SELECT ci.child_name, ci.age, ci.date_of_birth, ce.expense_category, SUM(ce.amount) as total_expenses FROM children_information ci LEFT JOIN child_expenses ce ON ci.id = ce.child_id WHERE ci.case_id = $1 GROUP BY ci.child_name, ci.age, ci.date_of_birth, ce.expense_category ORDER BY total_expenses DESC NULLS LAST",
+    "SELECT cui.custody_type, cui.description, cui.involved_children, d.filename FROM custody_information cui JOIN documents d ON cui.document_id = d.id WHERE cui.case_id = $1",
+    "SELECT * FROM children_summary_by_case WHERE case_id = $1",
+    "SELECT cr.record_type, cr.record_subtype, cr.content, ci.child_name FROM child_records cr JOIN children_information ci ON cr.child_id = ci.id WHERE cr.case_id = $1"
+  ],
+  communication: [
+    "SELECT c.from_party, c.to_party, c.subject, c.communication_date, c.sentiment, c.contains_threats, d.filename FROM communications c JOIN documents d ON c.document_id = d.id WHERE c.case_id = $1 AND c.contains_threats = true ORDER BY c.communication_date DESC",
+    "SELECT c.*, d.filename FROM communications c JOIN documents d ON c.document_id = d.id WHERE c.case_id = $1 AND (c.content ILIKE '%threat%' OR c.content ILIKE '%harm%' OR c.sentiment = 'hostile') ORDER BY c.communication_date DESC",
+    "SELECT cp.participant_name, cp.normalized_name, cp.total_communications, cp.first_communication_date, cp.last_communication_date FROM communication_participants cp WHERE cp.case_id = $1 ORDER BY cp.total_communications DESC",
+    "SELECT ct.subject, ct.participants, ct.message_count, ct.start_date, ct.end_date FROM communication_threads ct WHERE ct.case_id = $1 ORDER BY ct.message_count DESC",
+    "SELECT * FROM communications_summary_by_case WHERE case_id = $1"
+  ],
+  discovery: [
+    "SELECT d.filename, d.\"originalName\", d.\"documentType\", d.\"containsThreats\", d.\"involvesChildren\", d.\"isFinancial\", d.\"assetsdetected\", d.\"behavioralincidentsdetected\" FROM documents d WHERE d.\"caseId\" = $1 AND (d.\"assetsdetected\" = true OR d.\"behavioralincidentsdetected\" = true OR d.\"containsThreats\" = true)",
+    "SELECT bi.incident_type, bi.incident_subtype, bi.severity, bi.description, bi.incident_date, bi.involved_parties, d.filename FROM behavioral_incidents bi JOIN documents d ON bi.document_id = d.id WHERE bi.case_id = $1 ORDER BY bi.incident_date DESC",
+    "SELECT d.filename, d.\"originalName\", d.\"documentType\" FROM documents d WHERE d.\"caseId\" = $1 AND (d.\"extractedText\" ILIKE '%custody agreement%' OR d.\"extractedText\" ILIKE '%parenting plan%' OR d.\"extractedText\" ILIKE '%visitation%')",
+    "SELECT * FROM case_overview WHERE case_id = $1",
+    "SELECT * FROM behavioral_summary_by_case WHERE case_id = $1"
+  ]
+};
+
+// Export singleton instance
+export const promptEngine = new PromptTemplateEngine();

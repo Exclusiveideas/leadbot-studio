@@ -1,0 +1,58 @@
+/* Auth Form Pointer Events Override */
+/* This allows the orb to detect hover even when forms are on top */
+
+/* Make form wrappers pass through pointer events */
+.login-form_wrapper,
+.signup-form_wrapper,
+.form_wrapper {
+  pointer-events: none !important;
+}
+
+/* Re-enable pointer events for interactive elements */
+.login-form_wrapper > *,
+.signup-form_wrapper > *,
+.form_wrapper > *,
+.login-formBtn,
+.signup-formBtn,
+.formBtn,
+.login-backBtn,
+.signup-backBtn,
+.backBtn,
+input,
+button,
+textarea,
+select,
+a,
+label,
+.login-agreementBox,
+.signup-agreementBox,
+.login-forget_acc,
+.signup-forget_acc {
+  pointer-events: auto !important;
+}
+
+/* Ensure auth background wrapper allows orb interaction */
+.login-authBGWrapper,
+.signup-authBGWrapper,
+.authBGWrapper {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+/* Ensure content is above background but allows pass-through */
+/* Exclude back buttons from relative positioning */
+.login-authPage > *:not(.login-authBGWrapper):not(.login-backBtn),
+.signup-authPage > *:not(.signup-authBGWrapper):not(.signup-backBtn),
+.authPage > *:not(.authBGWrapper):not(.backBtn) {
+  position: relative;
+  z-index: 1;
+}
+
+/* Ensure back buttons maintain absolute positioning */
+.login-backBtn,
+.signup-backBtn,
+.backBtn {
+  position: absolute !important;
+  z-index: 4 !important;
+}
