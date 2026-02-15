@@ -1,12 +1,31 @@
+"use client";
+
 import Link from "next/link";
-import { Check, ArrowRight, X } from "lucide-react";
-import { notFound } from "next/navigation";
+import { Check, ArrowRight, X, MessageSquare } from "lucide-react";
+import { notFound, useParams } from "next/navigation";
 import {
-  FadeInUp,
-  StaggerContainer,
-  StaggerItem,
-  ScaleIn,
-} from "@/components/marketing/motion";
+  ScrollReveal,
+  StaggerReveal,
+} from "@/components/marketing/gsap-animations";
+import { motion } from "framer-motion";
+
+const heroFade = {
+  hidden: { opacity: 0, y: 20 },
+  visible: (delay: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, delay, ease: [0.25, 0.1, 0.25, 1] },
+  }),
+};
+
+const heroSlideLeft = {
+  hidden: { opacity: 0, x: -30 },
+  visible: (delay: number) => ({
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.7, delay, ease: [0.25, 0.1, 0.25, 1] },
+  }),
+};
 
 const nicheData: Record<
   string,
@@ -40,7 +59,7 @@ const nicheData: Record<
       {
         title: "Answer FAQs Instantly",
         description:
-          "Upload your FAQs and the chatbot handles 'Do I have a case?' questions accurately, without providing legal advice.",
+          'Upload your FAQs and the chatbot handles "Do I have a case?" questions accurately, without providing legal advice.',
       },
       {
         title: "Book Consultations 24/7",
@@ -227,12 +246,9 @@ const nicheData: Record<
   },
 };
 
-export default async function NicheLandingPage({
-  params,
-}: {
-  params: Promise<{ nicheSlug: string }>;
-}) {
-  const { nicheSlug } = await params;
+export default function NicheLandingPage() {
+  const params = useParams();
+  const nicheSlug = params.nicheSlug as string;
   const niche = nicheData[nicheSlug];
 
   if (!niche) {
@@ -240,146 +256,212 @@ export default async function NicheLandingPage({
   }
 
   return (
-    <div className="px-6 py-28">
-      <div className="mx-auto max-w-5xl">
-        {/* Hero */}
-        <FadeInUp>
-          <div className="text-center">
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-brand-border bg-brand-surface px-4 py-1.5 text-xs font-medium text-brand-muted">
+    <>
+      {/* Hero */}
+      <section className="relative overflow-hidden px-6 pb-16 pt-16 sm:pb-24 sm:pt-28 lg:px-8">
+        <div className="gradient-mesh absolute inset-0" />
+        <div className="bg-dot-grid absolute inset-0 opacity-30" />
+
+        <div className="relative mx-auto max-w-4xl">
+          <motion.div
+            variants={heroFade}
+            initial="hidden"
+            animate="visible"
+            custom={0}
+          >
+            <div className="mb-5 inline-flex items-center gap-2 rounded-lg border border-brand-accent-from/30 bg-brand-accent-from/10 px-3 py-1.5 text-xs font-medium text-brand-secondary">
               <span className="inline-block h-1.5 w-1.5 rounded-full bg-gradient-accent" />
               {niche.name}
             </div>
-            <h1 className="text-4xl font-bold tracking-tight text-brand-primary sm:text-5xl">
+          </motion.div>
+
+          <motion.div
+            variants={heroSlideLeft}
+            initial="hidden"
+            animate="visible"
+            custom={0.1}
+          >
+            <h1 className="max-w-3xl text-[clamp(2rem,4vw+0.5rem,3.5rem)] font-extrabold leading-[1.08] tracking-[-0.03em] text-brand-primary">
               {niche.headline}
             </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-brand-muted">
+          </motion.div>
+
+          <motion.div
+            variants={heroFade}
+            initial="hidden"
+            animate="visible"
+            custom={0.2}
+          >
+            <p className="mt-6 max-w-2xl text-lg leading-[1.7] text-brand-muted">
               {niche.subheadline}
             </p>
-            <div className="mt-8">
+          </motion.div>
+
+          <motion.div
+            variants={heroFade}
+            initial="hidden"
+            animate="visible"
+            custom={0.3}
+          >
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
               <Link
                 href="/signup"
-                className="bg-gradient-accent group inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-base font-semibold text-brand-primary shadow-lg shadow-brand-accent-from/20 transition-all hover:shadow-xl hover:brightness-105"
+                className="bg-gradient-accent group inline-flex items-center justify-center gap-2.5 rounded-xl px-7 py-3.5 text-[15px] font-semibold text-brand-primary shadow-[0_8px_30px_rgba(255,171,122,0.25)] transition-all hover:shadow-[0_12px_40px_rgba(255,171,122,0.35)] hover:brightness-105"
               >
                 {niche.ctaText}
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </Link>
+              <Link
+                href="/demo"
+                className="inline-flex items-center justify-center gap-2 text-sm font-medium text-brand-muted underline underline-offset-4 transition-colors hover:text-brand-primary"
+              >
+                See it in action
+              </Link>
             </div>
-          </div>
-        </FadeInUp>
+          </motion.div>
+        </div>
+      </section>
 
-        {/* Pain Points */}
-        <div className="mt-28">
-          <FadeInUp>
-            <h2 className="text-center text-2xl font-bold tracking-tight text-brand-primary sm:text-3xl">
-              Sound Familiar?
-            </h2>
-          </FadeInUp>
+      {/* Pain Points */}
+      <section className="bg-brand-surface px-6 py-16 sm:py-24 lg:px-8">
+        <div className="mx-auto max-w-4xl">
+          <ScrollReveal direction="left" distance={40}>
+            <div className="mb-10 sm:mb-14">
+              <div className="accent-line mb-5" />
+              <h2 className="text-[clamp(1.5rem,3vw,2.5rem)] font-bold tracking-[-0.02em] text-brand-primary">
+                Sound familiar?
+              </h2>
+            </div>
+          </ScrollReveal>
 
-          <StaggerContainer className="mt-10 grid gap-4 sm:grid-cols-2">
+          <StaggerReveal
+            className="grid gap-3 sm:grid-cols-2 sm:gap-4"
+            childSelector=".stagger-item"
+          >
             {niche.painPoints.map((pain) => (
-              <StaggerItem key={pain}>
-                <div className="flex items-start gap-3 rounded-2xl border border-red-100 bg-red-50/50 p-5">
-                  <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-red-100">
-                    <X className="h-3 w-3 text-red-500" />
-                  </div>
-                  <span className="text-sm leading-relaxed text-brand-secondary">
-                    {pain}
-                  </span>
+              <div
+                key={pain}
+                className="stagger-item flex items-start gap-3.5 rounded-xl border border-red-100 bg-white p-5 elevation-1"
+              >
+                <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-red-50">
+                  <X className="h-3.5 w-3.5 text-red-400" />
                 </div>
-              </StaggerItem>
+                <span className="text-sm leading-[1.7] text-brand-secondary">
+                  {pain}
+                </span>
+              </div>
             ))}
-          </StaggerContainer>
+          </StaggerReveal>
         </div>
+      </section>
 
-        {/* How It Helps */}
-        <div className="mt-28">
-          <FadeInUp>
-            <h2 className="text-center text-2xl font-bold tracking-tight text-brand-primary sm:text-3xl">
-              How LeadBotStudio Helps
-            </h2>
-          </FadeInUp>
+      {/* How It Helps */}
+      <section className="px-6 py-20 sm:py-28 lg:px-8">
+        <div className="mx-auto max-w-4xl">
+          <ScrollReveal direction="left" distance={40}>
+            <div className="mb-12 max-w-xl sm:mb-16">
+              <div className="accent-line mb-5" />
+              <h2 className="text-[clamp(1.5rem,3vw,2.5rem)] font-bold tracking-[-0.02em] text-brand-primary">
+                How LeadBotStudio helps
+              </h2>
+            </div>
+          </ScrollReveal>
 
-          <StaggerContainer className="mt-12 grid gap-8 md:grid-cols-2">
+          <StaggerReveal
+            className="grid gap-6 sm:gap-8 md:grid-cols-2"
+            childSelector=".stagger-item"
+          >
             {niche.howItHelps.map((item) => (
-              <StaggerItem key={item.title}>
-                <div className="flex gap-4">
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-accent text-brand-primary">
-                    <Check className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-brand-primary">
-                      {item.title}
-                    </h3>
-                    <p className="mt-1.5 text-sm leading-relaxed text-brand-muted">
-                      {item.description}
-                    </p>
-                  </div>
+              <div key={item.title} className="stagger-item flex gap-4">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-accent-from/15">
+                  <Check className="h-4 w-4 text-brand-accent-to" />
                 </div>
-              </StaggerItem>
-            ))}
-          </StaggerContainer>
-        </div>
-
-        {/* Sample Questions */}
-        <div className="mt-28">
-          <FadeInUp>
-            <h2 className="text-center text-2xl font-bold tracking-tight text-brand-primary sm:text-3xl">
-              Questions Your Chatbot Can Handle
-            </h2>
-          </FadeInUp>
-
-          <StaggerContainer className="mt-10 grid gap-4 sm:grid-cols-2">
-            {niche.sampleQuestions.map((q) => (
-              <StaggerItem key={q}>
-                <div className="rounded-2xl border border-brand-border bg-white p-5">
-                  <p className="text-sm italic leading-relaxed text-brand-muted">
-                    &ldquo;{q}&rdquo;
+                <div>
+                  <h3 className="font-bold tracking-tight text-brand-primary">
+                    {item.title}
+                  </h3>
+                  <p className="mt-1.5 text-sm leading-[1.7] text-brand-muted">
+                    {item.description}
                   </p>
                 </div>
-              </StaggerItem>
-            ))}
-          </StaggerContainer>
-        </div>
-
-        {/* CTA */}
-        <div className="relative mt-28 overflow-hidden rounded-3xl bg-brand-primary px-8 py-16 text-center">
-          <div
-            className="glow-orb left-0 top-0 h-[300px] w-[300px]"
-            style={{ background: "rgba(255, 215, 140, 0.15)" }}
-          />
-          <div
-            className="glow-orb bottom-0 right-0 h-[250px] w-[250px]"
-            style={{ background: "rgba(255, 171, 122, 0.1)" }}
-          />
-
-          <ScaleIn>
-            <div className="relative">
-              <h2 className="text-2xl font-bold text-white sm:text-3xl">
-                Ready to Start Capturing Leads?
-              </h2>
-              <p className="mt-4 text-white/60">
-                Set up your {niche.name.toLowerCase()} chatbot in 5 minutes. No
-                coding required.
-              </p>
-              <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-                <Link
-                  href="/signup"
-                  className="bg-gradient-accent group inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-base font-semibold text-brand-primary transition-all hover:brightness-105"
-                >
-                  {niche.ctaText}
-                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                </Link>
-                <Link
-                  href="/pricing"
-                  className="rounded-full border border-white/20 px-8 py-3.5 text-base font-semibold text-white transition-all hover:border-white/40 hover:bg-white/5"
-                >
-                  View Pricing
-                </Link>
               </div>
-            </div>
-          </ScaleIn>
+            ))}
+          </StaggerReveal>
         </div>
-      </div>
-    </div>
+      </section>
+
+      {/* Sample Questions */}
+      <section className="bg-brand-surface px-6 py-16 sm:py-24 lg:px-8">
+        <div className="mx-auto max-w-4xl">
+          <ScrollReveal direction="left" distance={40}>
+            <div className="mb-10 sm:mb-14">
+              <div className="accent-line mb-5" />
+              <h2 className="text-[clamp(1.5rem,3vw,2.5rem)] font-bold tracking-[-0.02em] text-brand-primary">
+                Questions your chatbot can handle
+              </h2>
+            </div>
+          </ScrollReveal>
+
+          <StaggerReveal
+            className="grid gap-3 sm:grid-cols-2 sm:gap-4"
+            childSelector=".stagger-item"
+          >
+            {niche.sampleQuestions.map((q) => (
+              <div
+                key={q}
+                className="stagger-item flex items-start gap-3.5 rounded-xl border border-brand-border bg-white p-5 elevation-1"
+              >
+                <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-brand-accent-from/10">
+                  <MessageSquare className="h-3.5 w-3.5 text-brand-accent-to" />
+                </div>
+                <p className="text-sm leading-[1.7] text-brand-muted">
+                  &ldquo;{q}&rdquo;
+                </p>
+              </div>
+            ))}
+          </StaggerReveal>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="relative overflow-hidden bg-brand-primary px-6 py-20 sm:py-28 lg:px-8">
+        <div className="bg-dot-grid absolute inset-0 opacity-10" />
+        <div
+          className="glow-orb left-0 top-0 h-[300px] w-[300px]"
+          style={{ background: "rgba(255, 215, 140, 0.1)" }}
+        />
+        <div
+          className="glow-orb bottom-0 right-0 h-[250px] w-[250px]"
+          style={{ background: "rgba(255, 171, 122, 0.06)" }}
+        />
+
+        <div className="relative mx-auto max-w-2xl text-center">
+          <ScrollReveal direction="up">
+            <h2 className="text-[clamp(1.5rem,3vw+0.5rem,2.5rem)] font-extrabold leading-[1.15] tracking-[-0.02em] text-white">
+              Ready to start capturing leads?
+            </h2>
+            <p className="mt-4 text-base leading-[1.7] text-white/50">
+              Set up your {niche.name.toLowerCase()} chatbot in 5 minutes. No
+              coding required.
+            </p>
+            <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+              <Link
+                href="/signup"
+                className="bg-gradient-accent group inline-flex items-center gap-2.5 rounded-xl px-8 py-4 text-base font-semibold text-brand-primary shadow-[0_8px_30px_rgba(255,171,122,0.3)] transition-all hover:shadow-[0_12px_40px_rgba(255,171,122,0.4)] hover:brightness-105"
+              >
+                {niche.ctaText}
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              </Link>
+              <Link
+                href="/pricing"
+                className="inline-flex items-center gap-2 text-sm font-medium text-white/50 underline underline-offset-4 transition-colors hover:text-white"
+              >
+                View pricing
+              </Link>
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+    </>
   );
 }
