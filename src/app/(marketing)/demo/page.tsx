@@ -261,6 +261,18 @@ export default function DemoPage() {
               Get started free
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </Link>
+            <p className="mt-6 text-xs text-white/25">
+              Built by{" "}
+              <a
+                href="https://seira.ai"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-white/40 underline underline-offset-2 transition-colors hover:text-white/60"
+              >
+                Seira AI
+              </a>{" "}
+              — AI tools for modern professionals.
+            </p>
           </ScrollReveal>
         </div>
       </section>

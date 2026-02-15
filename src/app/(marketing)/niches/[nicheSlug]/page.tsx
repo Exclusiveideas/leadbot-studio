@@ -1,7 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { Check, ArrowRight, X, MessageSquare } from "lucide-react";
+import {
+  Check,
+  ArrowRight,
+  X,
+  MessageSquare,
+  FileSearch,
+  FolderOpen,
+  Search,
+} from "lucide-react";
 import { notFound, useParams } from "next/navigation";
 import {
   ScrollReveal,
@@ -423,38 +431,136 @@ export default function NicheLandingPage() {
         </div>
       </section>
 
+      {/* Seira AI Bridge — Law Firms only */}
+      {nicheSlug === "law-firm" && (
+        <section className="relative overflow-hidden bg-brand-primary px-6 py-20 sm:py-28 lg:px-8">
+          <div className="bg-dot-grid absolute inset-0 opacity-10" />
+          <div
+            className="glow-orb -right-16 top-0 h-[300px] w-[300px]"
+            style={{ background: "rgba(55, 132, 255, 0.08)" }}
+          />
+
+          <div className="relative mx-auto max-w-4xl">
+            <ScrollReveal direction="up">
+              <div className="mb-12 sm:mb-14">
+                <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs font-medium tracking-wide text-white/50">
+                  BUILT BY SEIRA AI
+                </div>
+                <h2 className="max-w-2xl text-[clamp(1.5rem,3vw+0.5rem,2.5rem)] font-extrabold leading-[1.1] tracking-[-0.02em] text-white">
+                  Your AI-powered legal practice,{" "}
+                  <span className="text-gradient">end to end</span>
+                </h2>
+                <p className="mt-4 max-w-2xl text-base leading-[1.7] text-white/45">
+                  LeadBotStudio captures your clients. Seira AI helps you serve
+                  them — with AI document processing, intelligent case
+                  management, and e-discovery that&apos;s 10x faster.
+                </p>
+              </div>
+            </ScrollReveal>
+
+            <StaggerReveal
+              className="grid gap-5 sm:gap-6 md:grid-cols-3"
+              childSelector=".stagger-item"
+            >
+              {[
+                {
+                  icon: FileSearch,
+                  title: "AI Document Processing",
+                  description:
+                    "Auto-classify contracts, pleadings, and emails. OCR with 99.5% accuracy. Process thousands of documents simultaneously.",
+                },
+                {
+                  icon: FolderOpen,
+                  title: "Case Management",
+                  description:
+                    "Organize documents by case, collaborate with your team, and maintain full audit trails for compliance.",
+                },
+                {
+                  icon: Search,
+                  title: "AI-Powered Search",
+                  description:
+                    "Semantic search across all your case documents. Find what matters in seconds, not hours.",
+                },
+              ].map((item) => (
+                <div
+                  key={item.title}
+                  className="stagger-item rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm"
+                >
+                  <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-brand-blue/20">
+                    <item.icon className="h-5 w-5 text-brand-blue" />
+                  </div>
+                  <h3 className="text-lg font-bold tracking-tight text-white">
+                    {item.title}
+                  </h3>
+                  <p className="mt-2 text-sm leading-[1.7] text-white/45">
+                    {item.description}
+                  </p>
+                </div>
+              ))}
+            </StaggerReveal>
+
+            <ScrollReveal direction="up" delay={0.2}>
+              <div className="mt-10 text-center">
+                <a
+                  href="https://seira.ai"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group inline-flex items-center gap-2.5 rounded-xl border border-white/15 bg-white/5 px-7 py-3.5 text-[15px] font-semibold text-white transition-all hover:border-white/25 hover:bg-white/10"
+                >
+                  See how Seira AI transforms legal workflows
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                </a>
+              </div>
+            </ScrollReveal>
+          </div>
+        </section>
+      )}
+
       {/* CTA */}
-      <section className="relative overflow-hidden bg-brand-primary px-6 py-20 sm:py-28 lg:px-8">
-        <div className="bg-dot-grid absolute inset-0 opacity-10" />
-        <div
-          className="glow-orb left-0 top-0 h-[300px] w-[300px]"
-          style={{ background: "rgba(255, 215, 140, 0.1)" }}
-        />
-        <div
-          className="glow-orb bottom-0 right-0 h-[250px] w-[250px]"
-          style={{ background: "rgba(255, 171, 122, 0.06)" }}
-        />
+      <section
+        className={`relative overflow-hidden px-6 py-20 sm:py-28 lg:px-8 ${nicheSlug === "law-firm" ? "bg-brand-surface" : "bg-brand-primary"}`}
+      >
+        {nicheSlug !== "law-firm" && (
+          <>
+            <div className="bg-dot-grid absolute inset-0 opacity-10" />
+            <div
+              className="glow-orb left-0 top-0 h-[300px] w-[300px]"
+              style={{ background: "rgba(255, 215, 140, 0.1)" }}
+            />
+            <div
+              className="glow-orb bottom-0 right-0 h-[250px] w-[250px]"
+              style={{ background: "rgba(255, 171, 122, 0.06)" }}
+            />
+          </>
+        )}
+        {nicheSlug === "law-firm" && (
+          <div className="bg-dot-grid absolute inset-0 opacity-30" />
+        )}
 
         <div className="relative mx-auto max-w-2xl text-center">
           <ScrollReveal direction="up">
-            <h2 className="text-[clamp(1.5rem,3vw+0.5rem,2.5rem)] font-extrabold leading-[1.15] tracking-[-0.02em] text-white">
+            <h2
+              className={`text-[clamp(1.5rem,3vw+0.5rem,2.5rem)] font-extrabold leading-[1.15] tracking-[-0.02em] ${nicheSlug === "law-firm" ? "text-brand-primary" : "text-white"}`}
+            >
               Ready to start capturing leads?
             </h2>
-            <p className="mt-4 text-base leading-[1.7] text-white/50">
+            <p
+              className={`mt-4 text-base leading-[1.7] ${nicheSlug === "law-firm" ? "text-brand-muted" : "text-white/50"}`}
+            >
               Set up your {niche.name.toLowerCase()} chatbot in 5 minutes. No
               coding required.
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Link
                 href="/signup"
-                className="bg-gradient-accent group inline-flex items-center gap-2.5 rounded-xl px-8 py-4 text-base font-semibold text-brand-primary shadow-[0_8px_30px_rgba(255,171,122,0.3)] transition-all hover:shadow-[0_12px_40px_rgba(255,171,122,0.4)] hover:brightness-105"
+                className="bg-gradient-accent group inline-flex items-center gap-2.5 rounded-xl px-8 py-4 text-base font-semibold text-brand-primary shadow-[0_8px_30px_rgba(255,171,122,0.25)] transition-all hover:shadow-[0_12px_40px_rgba(255,171,122,0.35)] hover:brightness-105"
               >
                 {niche.ctaText}
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </Link>
               <Link
                 href="/pricing"
-                className="inline-flex items-center gap-2 text-sm font-medium text-white/50 underline underline-offset-4 transition-colors hover:text-white"
+                className={`inline-flex items-center gap-2 text-sm font-medium underline underline-offset-4 transition-colors ${nicheSlug === "law-firm" ? "text-brand-muted hover:text-brand-primary" : "text-white/50 hover:text-white"}`}
               >
                 View pricing
               </Link>

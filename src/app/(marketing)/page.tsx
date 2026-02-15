@@ -21,6 +21,9 @@ import {
   Youtube,
   Link2,
   Sparkles,
+  ExternalLink,
+  Search,
+  FolderOpen,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import {
@@ -92,9 +95,20 @@ export default function HomePage() {
                 animate="visible"
                 custom={0}
               >
-                <div className="mb-6 inline-flex items-center gap-2 rounded-lg border border-brand-accent-from/30 bg-brand-accent-from/10 px-3 py-1.5 text-xs font-medium text-brand-secondary">
-                  <Zap className="h-3.5 w-3.5 text-brand-accent-to" />
-                  AI chatbots for service professionals
+                <div className="mb-4 flex flex-wrap items-center gap-2">
+                  <div className="inline-flex items-center gap-2 rounded-lg border border-brand-accent-from/30 bg-brand-accent-from/10 px-3 py-1.5 text-xs font-medium text-brand-secondary">
+                    <Zap className="h-3.5 w-3.5 text-brand-accent-to" />
+                    AI chatbots for service professionals
+                  </div>
+                  <a
+                    href="https://seira.ai"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-brand-border bg-white/60 px-3 py-1.5 text-xs font-medium text-brand-muted transition-colors hover:border-brand-muted hover:text-brand-primary"
+                  >
+                    From the makers of Seira AI
+                    <ExternalLink className="h-3 w-3" />
+                  </a>
                 </div>
               </motion.div>
 
@@ -904,29 +918,130 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ─── FINAL CTA ─── */}
-      <section className="relative overflow-hidden bg-brand-primary px-6 py-24 sm:py-36 lg:px-8">
-        {/* Background effects */}
-        <div
-          className="glow-orb left-1/4 top-0 h-[300px] w-[300px] sm:h-[500px] sm:w-[500px]"
-          style={{ background: "rgba(255, 215, 140, 0.1)" }}
-        />
-        <div
-          className="glow-orb right-1/4 bottom-0 hidden h-[400px] w-[400px] sm:block"
-          style={{ background: "rgba(255, 171, 122, 0.08)" }}
-        />
+      {/* ─── SEIRA AI BRIDGE ─── */}
+      <section className="relative overflow-hidden bg-brand-primary px-6 py-20 sm:py-28 lg:px-8">
         <div className="bg-dot-grid absolute inset-0 opacity-10" />
+        <div
+          className="glow-orb -left-20 top-1/2 h-[300px] w-[300px]"
+          style={{ background: "rgba(255, 215, 140, 0.08)" }}
+        />
+        <div
+          className="glow-orb -right-20 top-0 h-[250px] w-[250px]"
+          style={{ background: "rgba(55, 132, 255, 0.06)" }}
+        />
+
+        <div className="relative mx-auto max-w-5xl">
+          <ScrollReveal direction="up">
+            <div className="mb-12 text-center sm:mb-16">
+              <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs font-medium tracking-wide text-white/50">
+                FROM THE MAKERS OF SEIRA AI
+              </div>
+              <h2 className="text-[clamp(1.75rem,3vw+0.5rem,3rem)] font-extrabold leading-[1.1] tracking-[-0.03em] text-white">
+                Capture leads.{" "}
+                <span className="text-gradient">Then manage the cases.</span>
+              </h2>
+              <p className="mx-auto mt-5 max-w-2xl text-base leading-[1.7] text-white/45 sm:text-lg">
+                LeadBotStudio brings clients to your door. Seira AI helps you
+                serve them — with AI-powered document processing, case
+                management, and e-discovery built for legal professionals.
+              </p>
+            </div>
+          </ScrollReveal>
+
+          <StaggerReveal
+            className="grid gap-5 sm:gap-6 md:grid-cols-2"
+            childSelector=".stagger-item"
+          >
+            {/* LeadBotStudio card */}
+            <div className="stagger-item rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm sm:p-8">
+              <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-accent">
+                <MessageSquare className="h-5 w-5 text-brand-primary" />
+              </div>
+              <p className="text-xs font-semibold uppercase tracking-[0.1em] text-brand-accent-from">
+                LeadBotStudio
+              </p>
+              <h3 className="mt-2 text-xl font-bold tracking-tight text-white">
+                Get clients
+              </h3>
+              <ul className="mt-4 space-y-2.5">
+                {[
+                  "AI chatbots that qualify leads 24/7",
+                  "Smart lead capture forms",
+                  "Appointment booking built in",
+                  "Works on any website platform",
+                ].map((item) => (
+                  <li
+                    key={item}
+                    className="flex items-start gap-2.5 text-sm text-white/50"
+                  >
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand-accent-to" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Seira AI card */}
+            <div className="stagger-item rounded-2xl border border-brand-blue/20 bg-brand-blue/5 p-6 backdrop-blur-sm sm:p-8">
+              <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-brand-blue/20">
+                <Search className="h-5 w-5 text-brand-blue" />
+              </div>
+              <p className="text-xs font-semibold uppercase tracking-[0.1em] text-brand-blue">
+                Seira AI
+              </p>
+              <h3 className="mt-2 text-xl font-bold tracking-tight text-white">
+                Serve clients
+              </h3>
+              <ul className="mt-4 space-y-2.5">
+                {[
+                  "AI document processing — 10x faster",
+                  "Intelligent case management",
+                  "Semantic search across all documents",
+                  "Enterprise security & compliance",
+                ].map((item) => (
+                  <li
+                    key={item}
+                    className="flex items-start gap-2.5 text-sm text-white/50"
+                  >
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand-blue" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </StaggerReveal>
+
+          <ScrollReveal direction="up" delay={0.2}>
+            <div className="mt-10 text-center">
+              <a
+                href="https://seira.ai"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-center gap-2.5 rounded-xl border border-white/15 bg-white/5 px-7 py-3.5 text-[15px] font-semibold text-white transition-all hover:border-white/25 hover:bg-white/10"
+              >
+                Explore Seira AI
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              </a>
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {/* ─── FINAL CTA ─── */}
+      <section className="relative overflow-hidden bg-brand-surface px-6 py-24 sm:py-36 lg:px-8">
+        {/* Background effects */}
+        <div className="bg-dot-grid absolute inset-0 opacity-30" />
 
         <div className="relative mx-auto max-w-3xl text-center">
           <ScrollReveal direction="up">
-            <h2 className="text-[clamp(1.75rem,4vw+0.5rem,3.5rem)] font-extrabold leading-[1.1] tracking-[-0.03em] text-white">
+            <h2 className="text-[clamp(1.75rem,4vw+0.5rem,3.5rem)] font-extrabold leading-[1.1] tracking-[-0.03em] text-brand-primary">
               Stop losing leads.
               <br />
               <span className="text-gradient">Start converting.</span>
             </h2>
           </ScrollReveal>
           <ScrollReveal direction="up" delay={0.1}>
-            <p className="mx-auto mt-6 max-w-md text-lg leading-[1.7] text-white/50">
+            <p className="mx-auto mt-6 max-w-md text-lg leading-[1.7] text-brand-muted">
               Your competitors are already using AI chatbots. Every day without
               one is leads lost.
             </p>
@@ -935,21 +1050,21 @@ export default function HomePage() {
             <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
               <Link
                 href="/signup"
-                className="bg-gradient-accent group inline-flex items-center gap-2.5 rounded-xl px-8 py-4 text-base font-semibold text-brand-primary shadow-[0_8px_30px_rgba(255,171,122,0.3)] transition-all hover:shadow-[0_12px_40px_rgba(255,171,122,0.4)] hover:brightness-105"
+                className="bg-gradient-accent group inline-flex items-center gap-2.5 rounded-xl px-8 py-4 text-base font-semibold text-brand-primary shadow-[0_8px_30px_rgba(255,171,122,0.25)] transition-all hover:shadow-[0_12px_40px_rgba(255,171,122,0.35)] hover:brightness-105"
               >
                 Build your chatbot — free
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </Link>
               <Link
                 href="/demo"
-                className="inline-flex items-center gap-2 text-sm font-medium text-white/60 underline underline-offset-4 transition-colors hover:text-white"
+                className="inline-flex items-center gap-2 text-sm font-medium text-brand-muted underline underline-offset-4 transition-colors hover:text-brand-primary"
               >
                 Or see a live demo first
               </Link>
             </div>
           </ScrollReveal>
           <ScrollReveal direction="up" delay={0.3}>
-            <p className="mt-6 text-xs text-white/30">
+            <p className="mt-6 text-xs text-brand-light">
               Free 14-day trial. No credit card required.
             </p>
           </ScrollReveal>

@@ -124,8 +124,17 @@ export default function MarketingLayout({
                 LeadBot<span className="text-gradient">Studio</span>
               </Link>
               <p className="mt-3 max-w-xs text-sm leading-relaxed text-white/40">
-                AI chatbots that convert visitors into leads. Built for service
-                professionals.
+                AI chatbots that convert visitors into leads. Built by the team
+                behind{" "}
+                <a
+                  href="https://seira.ai"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-white/60 underline underline-offset-2 transition-colors hover:text-white"
+                >
+                  Seira AI
+                </a>
+                .
               </p>
             </div>
 
@@ -192,6 +201,16 @@ export default function MarketingLayout({
                     </Link>
                   </li>
                 ))}
+                <li>
+                  <a
+                    href="https://seira.ai"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-white/50 transition-colors hover:text-white"
+                  >
+                    Seira AI
+                  </a>
+                </li>
               </ul>
             </div>
           </div>
