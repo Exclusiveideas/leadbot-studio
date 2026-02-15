@@ -246,14 +246,17 @@ export default function TeamTab({ user }: { user: User }) {
   }
 
   return (
-    <div className="p-6 space-y-8">
+    <div className="p-4 sm:p-6 space-y-6 sm:space-y-8">
       {/* Invite Form — owners only */}
       {isOwner && (
         <div>
           <h3 className="text-sm font-semibold text-brand-primary uppercase tracking-wide mb-3">
             Invite a team member
           </h3>
-          <form onSubmit={handleSendInvite} className="flex gap-3">
+          <form
+            onSubmit={handleSendInvite}
+            className="flex flex-col sm:flex-row gap-3"
+          >
             <div className="flex-1 relative">
               <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-brand-light" />
               <input
@@ -265,28 +268,30 @@ export default function TeamTab({ user }: { user: User }) {
                 className="w-full pl-10 pr-3 py-2.5 border border-brand-border rounded-lg text-sm text-brand-primary placeholder:text-brand-light focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-brand-blue"
               />
             </div>
-            <select
-              value={inviteRole}
-              onChange={(e) =>
-                setInviteRole(e.target.value as "OWNER" | "MEMBER")
-              }
-              className="border border-brand-border rounded-lg px-3 py-2.5 text-sm text-brand-muted focus:outline-none focus:ring-2 focus:ring-brand-blue"
-            >
-              <option value="MEMBER">Member</option>
-              <option value="OWNER">Owner</option>
-            </select>
-            <button
-              type="submit"
-              disabled={sendingInvite || !inviteEmail.trim()}
-              className="btn-primary inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {sendingInvite ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Send className="h-4 w-4" />
-              )}
-              Send Invite
-            </button>
+            <div className="flex gap-3">
+              <select
+                value={inviteRole}
+                onChange={(e) =>
+                  setInviteRole(e.target.value as "OWNER" | "MEMBER")
+                }
+                className="border border-brand-border rounded-lg px-3 py-2.5 text-sm text-brand-muted focus:outline-none focus:ring-2 focus:ring-brand-blue"
+              >
+                <option value="MEMBER">Member</option>
+                <option value="OWNER">Owner</option>
+              </select>
+              <button
+                type="submit"
+                disabled={sendingInvite || !inviteEmail.trim()}
+                className="btn-primary inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+              >
+                {sendingInvite ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Send className="h-4 w-4" />
+                )}
+                Send Invite
+              </button>
+            </div>
           </form>
         </div>
       )}
@@ -302,7 +307,7 @@ export default function TeamTab({ user }: { user: User }) {
             return (
               <div
                 key={member.id}
-                className="flex items-center justify-between px-4 py-3 hover:bg-brand-surface/50 transition-colors"
+                className="flex items-center justify-between px-3 sm:px-4 py-3 hover:bg-brand-surface/50 transition-colors gap-2"
               >
                 <div className="flex items-center gap-3 min-w-0">
                   {member.image ? (
@@ -406,7 +411,7 @@ export default function TeamTab({ user }: { user: User }) {
             {invites.map((invite) => (
               <div
                 key={invite.id}
-                className="flex items-center justify-between px-4 py-3"
+                className="flex items-center justify-between px-3 sm:px-4 py-3 gap-2"
               >
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="h-9 w-9 rounded-full bg-brand-surface border border-dashed border-brand-border flex items-center justify-center">

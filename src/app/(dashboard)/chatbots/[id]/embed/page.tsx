@@ -113,7 +113,7 @@ export default function EmbedCodePage() {
               <button
                 key={platform.id}
                 onClick={() => setSelectedPlatform(platform.id)}
-                className={`border-b-2 py-4 px-6 text-sm font-medium whitespace-nowrap transition-colors ${
+                className={`border-b-2 py-3 sm:py-4 px-3 sm:px-6 text-sm font-medium whitespace-nowrap transition-colors ${
                   selectedPlatform === platform.id
                     ? "border-transparent text-brand-primary tab-active-border"
                     : "border-transparent text-brand-muted hover:border-brand-border hover:text-brand-primary"
@@ -125,7 +125,7 @@ export default function EmbedCodePage() {
           </nav>
         </div>
         {selectedPlatformConfig && (
-          <div className="p-6">
+          <div className="p-4 sm:p-6">
             <p className="text-sm text-brand-muted">
               {selectedPlatformConfig.description}
             </p>
@@ -134,7 +134,7 @@ export default function EmbedCodePage() {
       </div>
 
       {/* Embed Code Section */}
-      <div className="bg-white rounded-xl elevation-1 p-6 border border-brand-border">
+      <div className="bg-white rounded-xl elevation-1 p-4 sm:p-6 border border-brand-border">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <Code className="h-5 w-5 text-brand-muted" />
@@ -160,8 +160,8 @@ export default function EmbedCodePage() {
           </button>
         </div>
 
-        <div className="bg-gray-900 rounded-xl p-4 overflow-x-auto">
-          <pre className="text-sm text-gray-100 font-mono">
+        <div className="bg-gray-900 rounded-xl p-3 sm:p-4 overflow-x-auto">
+          <pre className="text-xs sm:text-sm text-gray-100 font-mono">
             <code>{embedScript}</code>
           </pre>
         </div>
@@ -169,11 +169,11 @@ export default function EmbedCodePage() {
 
       {/* Installation Instructions */}
       {selectedPlatformConfig && (
-        <div className="bg-white rounded-xl elevation-1 p-6 border border-brand-border">
+        <div className="bg-white rounded-xl elevation-1 p-4 sm:p-6 border border-brand-border">
           <h3 className="text-lg font-medium text-brand-primary mb-4">
             Installation Instructions
           </h3>
-          <ol className="space-y-4 text-sm text-brand-muted">
+          <ol className="space-y-3 sm:space-y-4 text-sm text-brand-muted">
             {selectedPlatformConfig.instructions.map((instruction, index) => (
               <li key={index} className="flex gap-3">
                 <span className="flex-shrink-0 w-6 h-6 bg-brand-blue/10 text-brand-blue rounded-full flex items-center justify-center font-medium text-xs">

@@ -185,12 +185,12 @@ export default function OnboardingPage() {
     <PageTransition>
       <div className="mx-auto max-w-3xl">
         {/* Progress */}
-        <div className="mb-8">
+        <div className="mb-6 md:mb-8">
           <div className="flex items-center justify-between">
             {STEPS.map((s, i) => (
               <div key={s} className="flex items-center">
                 <div
-                  className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium transition-colors ${
+                  className={`flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-full text-xs sm:text-sm font-medium transition-colors ${
                     i < step
                       ? "bg-gradient-accent text-brand-primary"
                       : i === step
@@ -198,11 +198,15 @@ export default function OnboardingPage() {
                         : "border border-brand-border text-brand-light"
                   }`}
                 >
-                  {i < step ? <Check className="h-4 w-4" /> : i + 1}
+                  {i < step ? (
+                    <Check className="h-3 w-3 sm:h-4 sm:w-4" />
+                  ) : (
+                    i + 1
+                  )}
                 </div>
                 {i < STEPS.length - 1 && (
                   <div
-                    className={`mx-2 h-0.5 w-12 rounded-full sm:w-20 transition-colors ${
+                    className={`mx-1 sm:mx-2 h-0.5 w-6 sm:w-12 md:w-20 rounded-full transition-colors ${
                       i < step ? "bg-gradient-accent" : "bg-brand-border"
                     }`}
                   />
@@ -210,9 +214,9 @@ export default function OnboardingPage() {
               </div>
             ))}
           </div>
-          <div className="mt-2 flex justify-between text-xs text-brand-muted">
+          <div className="mt-2 flex justify-between text-[10px] sm:text-xs text-brand-muted">
             {STEPS.map((s) => (
-              <span key={s} className="w-16 text-center sm:w-24">
+              <span key={s} className="w-12 sm:w-16 md:w-24 text-center">
                 {s}
               </span>
             ))}
@@ -220,7 +224,7 @@ export default function OnboardingPage() {
         </div>
 
         {/* Step Content */}
-        <div className="rounded-xl border border-brand-border bg-white p-8 elevation-1 overflow-hidden relative">
+        <div className="rounded-xl border border-brand-border bg-white p-4 sm:p-6 md:p-8 elevation-1 overflow-hidden relative">
           {/* Accent gradient top line */}
           <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-accent" />
 
@@ -228,13 +232,13 @@ export default function OnboardingPage() {
           {step === 0 && (
             <div>
               <div className="accent-line mb-4" />
-              <h2 className="text-2xl font-bold font-heading text-brand-primary">
+              <h2 className="text-xl sm:text-2xl font-bold font-heading text-brand-primary">
                 What industry is your business in?
               </h2>
-              <p className="mt-2 text-brand-muted">
+              <p className="mt-2 text-sm sm:text-base text-brand-muted">
                 We&apos;ll set up your chatbot with industry-specific defaults.
               </p>
-              <StaggerList className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3">
+              <StaggerList className="mt-6 sm:mt-8 grid grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-3">
                 {NICHE_OPTIONS.map((niche) => {
                   const Icon = ICON_MAP[niche.icon];
                   const isSelected = data.nicheType === niche.id;
@@ -244,7 +248,7 @@ export default function OnboardingPage() {
                         onClick={() => {
                           updateData({ nicheType: niche.id });
                         }}
-                        className={`w-full rounded-xl border-2 p-4 text-left transition-all ${
+                        className={`w-full rounded-xl border-2 p-3 sm:p-4 text-left transition-all ${
                           isSelected
                             ? "border-brand-accent-from bg-brand-surface elevation-2"
                             : "border-brand-border hover:border-brand-light hover:elevation-1"
@@ -277,13 +281,13 @@ export default function OnboardingPage() {
           {step === 1 && (
             <div>
               <div className="accent-line mb-4" />
-              <h2 className="text-2xl font-bold font-heading text-brand-primary">
+              <h2 className="text-xl sm:text-2xl font-bold font-heading text-brand-primary">
                 Tell us about your business
               </h2>
               <p className="mt-2 text-brand-muted">
                 This information helps your chatbot represent you accurately.
               </p>
-              <div className="mt-8 space-y-6">
+              <div className="mt-6 sm:mt-8 space-y-4 sm:space-y-6">
                 <div>
                   <label className="block text-sm font-medium text-brand-primary">
                     Business Name *
@@ -344,14 +348,14 @@ export default function OnboardingPage() {
           {step === 2 && (
             <div>
               <div className="accent-line mb-4" />
-              <h2 className="text-2xl font-bold font-heading text-brand-primary">
+              <h2 className="text-xl sm:text-2xl font-bold font-heading text-brand-primary">
                 Customize your chatbot&apos;s look
               </h2>
               <p className="mt-2 text-brand-muted">
                 Match your brand colors and messaging.
               </p>
-              <div className="mt-8 space-y-6">
-                <div className="grid grid-cols-2 gap-4">
+              <div className="mt-6 sm:mt-8 space-y-4 sm:space-y-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-brand-primary">
                       Primary Color
@@ -441,14 +445,14 @@ export default function OnboardingPage() {
           {step === 3 && (
             <div>
               <div className="accent-line mb-4" />
-              <h2 className="text-2xl font-bold font-heading text-brand-primary">
+              <h2 className="text-xl sm:text-2xl font-bold font-heading text-brand-primary">
                 Connect your tools
               </h2>
               <p className="mt-2 text-brand-muted">
                 Optional integrations to supercharge your chatbot. You can set
                 these up later too.
               </p>
-              <div className="mt-8 space-y-6">
+              <div className="mt-6 sm:mt-8 space-y-4 sm:space-y-6">
                 <div>
                   <label className="block text-sm font-medium text-brand-primary">
                     Calendly Link
@@ -480,15 +484,15 @@ export default function OnboardingPage() {
           {step === 4 && (
             <div>
               <div className="accent-line mb-4" />
-              <h2 className="text-2xl font-bold font-heading text-brand-primary">
+              <h2 className="text-xl sm:text-2xl font-bold font-heading text-brand-primary">
                 Review & Create
               </h2>
               <p className="mt-2 text-brand-muted">
                 Here&apos;s a summary of your chatbot. You can edit everything
                 after creation.
               </p>
-              <div className="mt-8 space-y-4">
-                <div className="rounded-lg border border-brand-border p-4">
+              <div className="mt-6 sm:mt-8 space-y-3 sm:space-y-4">
+                <div className="rounded-lg border border-brand-border p-3 sm:p-4">
                   <div className="text-xs font-medium text-brand-muted uppercase tracking-wider">
                     Industry
                   </div>
@@ -497,7 +501,7 @@ export default function OnboardingPage() {
                       "Custom"}
                   </div>
                 </div>
-                <div className="rounded-lg border border-brand-border p-4">
+                <div className="rounded-lg border border-brand-border p-3 sm:p-4">
                   <div className="text-xs font-medium text-brand-muted uppercase tracking-wider">
                     Business Name
                   </div>
@@ -506,7 +510,7 @@ export default function OnboardingPage() {
                   </div>
                 </div>
                 {data.businessDescription && (
-                  <div className="rounded-lg border border-brand-border p-4">
+                  <div className="rounded-lg border border-brand-border p-3 sm:p-4">
                     <div className="text-xs font-medium text-brand-muted uppercase tracking-wider">
                       Description
                     </div>
@@ -515,7 +519,7 @@ export default function OnboardingPage() {
                     </div>
                   </div>
                 )}
-                <div className="rounded-lg border border-brand-border p-4">
+                <div className="rounded-lg border border-brand-border p-3 sm:p-4">
                   <div className="text-xs font-medium text-brand-muted uppercase tracking-wider">
                     Colors
                   </div>
@@ -541,7 +545,7 @@ export default function OnboardingPage() {
                   </div>
                 </div>
                 {data.calendlyLink && (
-                  <div className="rounded-lg border border-brand-border p-4">
+                  <div className="rounded-lg border border-brand-border p-3 sm:p-4">
                     <div className="text-xs font-medium text-brand-muted uppercase tracking-wider">
                       Calendly
                     </div>
@@ -561,11 +565,11 @@ export default function OnboardingPage() {
         </div>
 
         {/* Navigation */}
-        <div className="mt-6 flex justify-between">
+        <div className="mt-4 sm:mt-6 flex justify-between gap-3">
           <button
             onClick={() => setStep((s) => Math.max(0, s - 1))}
             disabled={step === 0}
-            className="btn-secondary flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="btn-secondary flex items-center gap-1.5 sm:gap-2 rounded-lg px-3 sm:px-4 py-2.5 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <ArrowLeft className="h-4 w-4" />
             Back
@@ -575,7 +579,7 @@ export default function OnboardingPage() {
             <button
               onClick={() => setStep((s) => s + 1)}
               disabled={!canProceed()}
-              className="btn-primary flex items-center gap-2 rounded-lg px-6 py-2.5 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-primary flex items-center gap-1.5 sm:gap-2 rounded-lg px-4 sm:px-6 py-2.5 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Next
               <ArrowRight className="h-4 w-4" />
@@ -584,7 +588,7 @@ export default function OnboardingPage() {
             <button
               onClick={handleSubmit}
               disabled={isSubmitting}
-              className="btn-primary flex items-center gap-2 rounded-lg px-6 py-2.5 text-sm font-medium transition-colors disabled:opacity-50"
+              className="btn-primary flex items-center gap-1.5 sm:gap-2 rounded-lg px-4 sm:px-6 py-2.5 text-sm font-medium transition-colors disabled:opacity-50"
             >
               {isSubmitting ? (
                 <>

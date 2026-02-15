@@ -48,14 +48,14 @@ export default function ChatbotTabs({ chatbotId }: ChatbotTabsProps) {
 
   return (
     <div className="border-b border-brand-border mb-6">
-      <nav className="-mb-px flex space-x-8">
+      <nav className="-mb-px flex space-x-4 sm:space-x-6 md:space-x-8 overflow-x-auto scrollbar-hide">
         {tabs.map((tab) => {
           const active = isActiveTab(tab.href);
           return (
             <Link
               key={tab.id}
               href={tab.href}
-              className={`relative border-b-2 py-4 px-1 text-sm font-medium transition-colors duration-150 ${
+              className={`relative whitespace-nowrap border-b-2 py-3 sm:py-4 px-1 text-sm font-medium transition-colors duration-150 ${
                 active
                   ? "border-transparent text-brand-primary"
                   : "border-transparent text-brand-muted hover:text-brand-primary hover:border-brand-border"

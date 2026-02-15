@@ -303,7 +303,7 @@ export default function MFASetup({ user, onUpdate }: MFASetupProps) {
             </p>
 
             <div className="bg-brand-surface rounded-lg p-4 mb-4">
-              <div className="grid grid-cols-2 gap-2 mb-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
                 {regeneratedCodes.map((code, index) => (
                   <div
                     key={index}
@@ -314,7 +314,7 @@ export default function MFASetup({ user, onUpdate }: MFASetupProps) {
                 ))}
               </div>
 
-              <div className="flex space-x-3">
+              <div className="flex flex-col sm:flex-row gap-2 sm:space-x-3">
                 <button
                   onClick={copyRegeneratedCodes}
                   className="flex items-center px-3 py-2 text-sm font-medium text-brand-muted bg-white border border-brand-border rounded-lg hover:bg-brand-surface transition-colors"
@@ -505,7 +505,7 @@ export default function MFASetup({ user, onUpdate }: MFASetupProps) {
                 <img
                   src={mfaData.qrCode}
                   alt="MFA QR Code"
-                  className="border border-brand-border rounded-lg"
+                  className="border border-brand-border rounded-lg max-w-full"
                 />
               </div>
 
@@ -513,7 +513,7 @@ export default function MFASetup({ user, onUpdate }: MFASetupProps) {
                 <p className="text-sm text-brand-muted mb-2">
                   Can't scan? Enter this code manually:
                 </p>
-                <code className="text-sm font-mono text-brand-primary bg-white px-2 py-1 rounded-lg border border-brand-border">
+                <code className="text-xs sm:text-sm font-mono text-brand-primary bg-white px-2 py-1 rounded-lg border border-brand-border break-all">
                   {mfaData.secret}
                 </code>
               </div>
@@ -543,7 +543,7 @@ export default function MFASetup({ user, onUpdate }: MFASetupProps) {
                 )}
               </div>
 
-              <div className="flex space-x-3">
+              <div className="flex flex-col sm:flex-row gap-2 sm:space-x-3">
                 <button
                   type="submit"
                   disabled={isLoading || verificationCode.length !== 6}
@@ -625,7 +625,7 @@ export default function MFASetup({ user, onUpdate }: MFASetupProps) {
                 </p>
               </div>
             </div>
-            <div className="mt-4 flex items-center space-x-4">
+            <div className="mt-4 flex flex-col sm:flex-row sm:items-center gap-3 sm:space-x-4">
               <button
                 onClick={() => setShowRegenerateFlow(true)}
                 disabled={isLoading}

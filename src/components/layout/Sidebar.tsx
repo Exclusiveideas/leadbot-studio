@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Bot, Settings, HelpCircle, LogOut } from "lucide-react";
+import { Bot, Settings, HelpCircle, LogOut, X } from "lucide-react";
 import { clsx } from "clsx";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 
@@ -13,7 +13,12 @@ const navigation = [
   { name: "Settings", href: "/settings", icon: Settings },
 ];
 
-export default function Sidebar() {
+type SidebarProps = {
+  open: boolean;
+  onClose: () => void;
+};
+
+export default function Sidebar({ open, onClose }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [orgName, setOrgName] = useState<string | null>(null);
@@ -45,19 +50,41 @@ export default function Sidebar() {
       .catch(() => {});
   }, []);
 
+  // Close sidebar on route change (mobile)
+  const prevPathname = useRef(pathname);
+  useEffect(() => {
+    if (prevPathname.current !== pathname) {
+      prevPathname.current = pathname;
+      onClose();
+    }
+  }, [pathname, onClose]);
+
   return (
-    <aside className="flex h-full w-64 flex-col bg-brand-primary border-r border-white/10">
+    <aside
+      className={clsx(
+        "fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-brand-primary border-r border-white/10 transition-transform duration-200 ease-in-out md:static md:translate-x-0",
+        open ? "translate-x-0" : "-translate-x-full",
+      )}
+    >
       {/* Accent gradient top line */}
       <div className="h-0.5 bg-gradient-accent shrink-0" />
 
-      {/* Logo */}
-      <div className="flex h-16 items-center gap-2.5 border-b border-white/10 px-6">
-        <div className="h-7 w-7 rounded-lg bg-gradient-accent flex items-center justify-center">
-          <Bot className="h-4 w-4 text-brand-primary" />
+      {/* Logo + Mobile close */}
+      <div className="flex h-16 items-center justify-between border-b border-white/10 px-6">
+        <div className="flex items-center gap-2.5">
+          <div className="h-7 w-7 rounded-lg bg-gradient-accent flex items-center justify-center">
+            <Bot className="h-4 w-4 text-brand-primary" />
+          </div>
+          <span className="text-lg font-bold text-white tracking-tight">
+            LeadBot<span className="text-gradient">Studio</span>
+          </span>
         </div>
-        <span className="text-lg font-bold text-white tracking-tight">
-          LeadBot<span className="text-gradient">Studio</span>
-        </span>
+        <button
+          onClick={onClose}
+          className="rounded-lg p-1.5 text-white/60 hover:bg-white/10 hover:text-white md:hidden"
+        >
+          <X className="h-5 w-5" />
+        </button>
       </div>
 
       {/* Workspace name */}

@@ -260,21 +260,21 @@ export default function KnowledgeBasePage() {
   return (
     <div className="space-y-6">
       {/* Header Actions */}
-      <div className="flex justify-between items-center">
-        <div className="flex gap-3 items-center">
+      <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
+        <div className="flex flex-wrap gap-2 sm:gap-3 items-center">
           <button
             onClick={() => setShowUpload(!showUpload)}
-            className="btn-primary inline-flex items-center px-4 py-2 rounded-lg shadow-sm text-sm font-medium"
+            className="btn-primary inline-flex items-center px-3 sm:px-4 py-2 rounded-lg shadow-sm text-sm font-medium"
           >
-            <Plus className="h-5 w-5 mr-2" />
-            Upload Documents
+            <Plus className="h-4 w-4 sm:h-5 sm:w-5 mr-1.5 sm:mr-2" />
+            Upload
           </button>
           <button
             onClick={() => setShowAddForm(!showAddForm)}
-            className="btn-secondary inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium"
+            className="btn-secondary inline-flex items-center px-3 sm:px-4 py-2 rounded-lg text-sm font-medium"
           >
-            <Plus className="h-5 w-5 mr-2" />
-            Add Text/FAQ/Website
+            <Plus className="h-4 w-4 sm:h-5 sm:w-5 mr-1.5 sm:mr-2" />
+            Add Text/FAQ/URL
           </button>
 
           {!isConnected && (
@@ -285,7 +285,7 @@ export default function KnowledgeBasePage() {
               }}
               className="text-xs px-3 py-1.5 border border-amber-300 text-amber-700 bg-amber-50 rounded-lg hover:bg-amber-100 hover:border-amber-400 transition-colors font-medium"
             >
-              Click to reconnect realtime
+              Reconnect
             </button>
           )}
         </div>
@@ -310,7 +310,7 @@ export default function KnowledgeBasePage() {
 
       {/* Add Text/FAQ/URL Form */}
       {showAddForm && (
-        <div className="bg-white rounded-xl elevation-1 p-6 mb-6 border border-brand-border">
+        <div className="bg-white rounded-xl elevation-1 p-4 sm:p-6 mb-6 border border-brand-border">
           <h3 className="text-lg font-medium text-brand-primary mb-4">
             Add Knowledge Item
           </h3>

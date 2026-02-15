@@ -344,9 +344,9 @@ export default function LeadsPage() {
   return (
     <div className="space-y-8">
       {/* Header Actions */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
         <div>
-          <p className="text-brand-muted">
+          <p className="text-sm sm:text-base text-brand-muted">
             {total} lead{total !== 1 ? "s" : ""}, {contactsTotal} contact
             {contactsTotal !== 1 ? "s" : ""}, {textRequestsTotal} text request
             {textRequestsTotal !== 1 ? "s" : ""} captured
@@ -355,7 +355,7 @@ export default function LeadsPage() {
         <button
           onClick={fetchData}
           disabled={isLoading}
-          className="btn-secondary inline-flex items-center px-4 py-2 rounded-lg shadow-sm text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+          className="btn-secondary inline-flex items-center px-4 py-2 rounded-lg shadow-sm text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed self-start sm:self-auto"
         >
           <RefreshCw
             className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`}
@@ -392,13 +392,13 @@ export default function LeadsPage() {
               <table className="min-w-full divide-y divide-brand-border">
                 <thead className="bg-brand-surface">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-brand-muted uppercase tracking-wider">
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-brand-muted uppercase tracking-wider">
                       Contact
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-brand-muted uppercase tracking-wider">
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-brand-muted uppercase tracking-wider">
                       Case Details
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-brand-muted uppercase tracking-wider">
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-brand-muted uppercase tracking-wider">
                       Captured
                     </th>
                   </tr>
@@ -410,7 +410,7 @@ export default function LeadsPage() {
                       onClick={() => setSelectedLead(lead)}
                       className="hover:bg-brand-surface transition-colors cursor-pointer"
                     >
-                      <td className="px-6 py-4">
+                      <td className="px-3 sm:px-6 py-3 sm:py-4">
                         <div className="flex flex-col gap-1">
                           {lead.name && (
                             <div className="flex items-center gap-2 text-sm font-medium text-brand-primary">
@@ -430,7 +430,7 @@ export default function LeadsPage() {
                           )}
                         </div>
                       </td>
-                      <td className="px-6 py-4">
+                      <td className="px-3 sm:px-6 py-3 sm:py-4">
                         <div className="space-y-1">
                           {lead.caseType && (
                             <div className="text-sm text-brand-primary">
@@ -462,7 +462,7 @@ export default function LeadsPage() {
                           )}
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
                         <div className="flex items-center gap-2 text-sm text-brand-muted">
                           <Calendar className="h-4 w-4" />
                           {formatDate(lead.capturedAt)}
@@ -509,10 +509,10 @@ export default function LeadsPage() {
               <table className="min-w-full divide-y divide-brand-border">
                 <thead className="bg-brand-surface">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-brand-muted uppercase tracking-wider">
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-brand-muted uppercase tracking-wider">
                       Contact
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-brand-muted uppercase tracking-wider">
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-brand-muted uppercase tracking-wider">
                       Captured
                     </th>
                   </tr>
@@ -524,7 +524,7 @@ export default function LeadsPage() {
                       onClick={() => setSelectedLead(contact)}
                       className="hover:bg-brand-surface transition-colors cursor-pointer"
                     >
-                      <td className="px-6 py-4">
+                      <td className="px-3 sm:px-6 py-3 sm:py-4">
                         <div className="flex flex-col gap-1">
                           {contact.name && (
                             <div className="flex items-center gap-2 text-sm font-medium text-brand-primary">
@@ -544,7 +544,7 @@ export default function LeadsPage() {
                           )}
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
                         <div className="flex items-center gap-2 text-sm text-brand-muted">
                           <Calendar className="h-4 w-4" />
                           {formatDate(contact.capturedAt)}
@@ -591,16 +591,16 @@ export default function LeadsPage() {
               <table className="min-w-full divide-y divide-brand-border">
                 <thead className="bg-brand-surface">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-brand-muted uppercase tracking-wider">
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-brand-muted uppercase tracking-wider">
                       Contact
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-brand-muted uppercase tracking-wider">
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-brand-muted uppercase tracking-wider">
                       Message
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-brand-muted uppercase tracking-wider">
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-brand-muted uppercase tracking-wider">
                       Status
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-brand-muted uppercase tracking-wider">
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-brand-muted uppercase tracking-wider">
                       Submitted
                     </th>
                   </tr>
@@ -617,7 +617,7 @@ export default function LeadsPage() {
                       }}
                       className="hover:bg-brand-surface transition-colors cursor-pointer"
                     >
-                      <td className="px-6 py-4">
+                      <td className="px-3 sm:px-6 py-3 sm:py-4">
                         <div className="flex flex-col gap-1">
                           <div className="flex items-center gap-2 text-sm font-medium text-brand-primary">
                             <User className="h-4 w-4 text-brand-muted" />
@@ -635,12 +635,12 @@ export default function LeadsPage() {
                           )}
                         </div>
                       </td>
-                      <td className="px-6 py-4">
+                      <td className="px-3 sm:px-6 py-3 sm:py-4">
                         <p className="text-sm text-brand-primary max-w-xs truncate">
                           {textRequest.message}
                         </p>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
                         <span
                           className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium ${getTextRequestStatusColor(textRequest.status)}`}
                         >
@@ -649,7 +649,7 @@ export default function LeadsPage() {
                             textRequest.status.slice(1).toLowerCase()}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
                         <div className="flex items-center gap-2 text-sm text-brand-muted">
                           <Calendar className="h-4 w-4" />
                           {formatDate(textRequest.createdAt)}

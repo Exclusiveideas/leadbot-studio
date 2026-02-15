@@ -2,10 +2,14 @@
 
 import NotificationPanel from "@/components/notifications/NotificationPanel";
 import { useNotifications } from "@/hooks/useNotifications";
-import { Bell } from "lucide-react";
+import { Bell, Menu } from "lucide-react";
 import { useCallback, useRef, useState } from "react";
 
-export default function Header() {
+type HeaderProps = {
+  onMenuToggle: () => void;
+};
+
+export default function Header({ onMenuToggle }: HeaderProps) {
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const {
@@ -34,8 +38,14 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="flex h-16 items-center justify-between bg-white px-6 elevation-1">
-      <div />
+    <header className="flex h-14 md:h-16 items-center justify-between bg-white px-4 md:px-6 elevation-1">
+      <button
+        onClick={onMenuToggle}
+        className="rounded-lg p-2 text-brand-muted transition-all hover:bg-brand-surface hover:text-brand-primary md:hidden"
+      >
+        <Menu className="h-5 w-5" />
+      </button>
+      <div className="hidden md:block" />
       <div ref={containerRef} className="relative flex items-center gap-2">
         <button
           onClick={handleToggle}

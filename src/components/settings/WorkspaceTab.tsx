@@ -37,7 +37,7 @@ export default function WorkspaceTab({ user }: { user: User }) {
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 sm:p-6 space-y-6">
       <div>
         <h3 className="text-sm font-semibold text-brand-primary uppercase tracking-wide mb-4">
           Workspace settings
@@ -92,7 +92,7 @@ export default function WorkspaceTab({ user }: { user: User }) {
         <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
           <div>
             <dt className="text-brand-muted">Workspace ID</dt>
-            <dd className="mt-0.5 font-mono text-brand-muted text-xs">
+            <dd className="mt-0.5 font-mono text-brand-muted text-xs break-all">
               {user.organization.id}
             </dd>
           </div>

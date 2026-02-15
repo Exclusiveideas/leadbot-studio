@@ -332,6 +332,15 @@ h6,
   );
 }
 
+/* Scrollbar hide utility for horizontal tab scrolling */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 /* ── Dashboard Utilities ── */
 
 /* Main content area background */

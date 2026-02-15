@@ -121,19 +121,19 @@ export default function ChatbotsPage() {
       <div className="py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
-          <div className="flex justify-between items-center mb-8">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 md:mb-8">
             <div>
               <div className="accent-line mb-4" />
-              <h1 className="text-3xl font-bold font-heading text-brand-primary">
+              <h1 className="text-2xl sm:text-3xl font-bold font-heading text-brand-primary">
                 Chatbots
               </h1>
-              <p className="text-brand-muted mt-2">
+              <p className="text-sm sm:text-base text-brand-muted mt-2">
                 Create and manage AI chatbots for client intake
               </p>
             </div>
             <Link
               href="/chatbots/new"
-              className="btn-primary inline-flex items-center px-4 py-2.5 rounded-lg text-sm font-medium shadow-sm"
+              className="btn-primary inline-flex items-center px-4 py-2.5 rounded-lg text-sm font-medium shadow-sm self-start sm:self-auto"
             >
               <Plus className="h-5 w-5 mr-2" />
               Create Chatbot
@@ -158,7 +158,7 @@ export default function ChatbotsPage() {
             />
           ) : (
             /* Chatbots grid */
-            <StaggerList className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <StaggerList className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
               {chatbots.map((chatbot) => (
                 <StaggerItem key={chatbot.id}>
                   <Link

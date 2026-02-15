@@ -30,7 +30,7 @@ export default function ChatbotLayoutClient({
               <ArrowLeft className="h-4 w-4 mr-1" />
               Back to Chatbots
             </Link>
-            <h1 className="text-3xl font-bold font-heading text-brand-primary">
+            <h1 className="text-2xl sm:text-3xl font-bold font-heading text-brand-primary">
               {chatbotName}
             </h1>
             <p className="text-brand-muted mt-2">

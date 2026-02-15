@@ -510,10 +510,10 @@ export function ChatbotChatTabbed({ chatbot, userId }: ChatbotChatTabbedProps) {
       )}
 
       {/* Header with Conversation Selector */}
-      <div className="border-b border-gray-200 p-4 flex items-center justify-between">
-        <div className="flex items-center gap-3 flex-1">
-          <MessageSquare className="w-5 h-5 text-gray-500" />
-          <div className="relative flex-1" ref={dropdownRef}>
+      <div className="border-b border-gray-200 p-3 sm:p-4 flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
+          <MessageSquare className="w-5 h-5 text-gray-500 hidden sm:block" />
+          <div className="relative flex-1 min-w-0" ref={dropdownRef}>
             <button
               onClick={() =>
                 setShowConversationDropdown(!showConversationDropdown)
@@ -527,7 +527,7 @@ export function ChatbotChatTabbed({ chatbot, userId }: ChatbotChatTabbedProps) {
             </button>
 
             {showConversationDropdown && (
-              <div className="absolute left-0 top-full mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-96 overflow-y-auto">
+              <div className="absolute left-0 top-full mt-2 w-full sm:w-80 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-96 overflow-y-auto">
                 <div className="p-2">
                   <button
                     onClick={handleNewChat}
@@ -588,15 +588,15 @@ export function ChatbotChatTabbed({ chatbot, userId }: ChatbotChatTabbedProps) {
 
         <button
           onClick={handleNewChat}
-          className="px-4 py-2 btn-primary text-sm font-medium rounded-lg flex items-center gap-2 transition-colors"
+          className="px-3 sm:px-4 py-2 btn-primary text-sm font-medium rounded-lg flex items-center gap-2 transition-colors whitespace-nowrap"
         >
           <Plus className="w-4 h-4" />
-          New Chat
+          <span className="hidden sm:inline">New Chat</span>
         </button>
       </div>
 
       {/* Messages Area */}
-      <div className="h-[600px] overflow-y-auto">
+      <div className="h-[400px] sm:h-[500px] md:h-[600px] overflow-y-auto">
         {showWelcome ? (
           <div className="flex flex-col items-center justify-center h-full p-8">
             <MessageSquare className="w-16 h-16 text-gray-200 mb-4" />
@@ -621,7 +621,7 @@ export function ChatbotChatTabbed({ chatbot, userId }: ChatbotChatTabbedProps) {
                     key={msg.id}
                     className={`flex ${msg.role === "USER" ? "justify-end" : "justify-start"}`}
                   >
-                    <div className="flex flex-col gap-2 max-w-3xl items-end">
+                    <div className="flex flex-col gap-2 max-w-[85%] sm:max-w-md md:max-w-2xl lg:max-w-3xl items-end">
                       {/* Attachments above user message */}
                       {msg.role === "USER" &&
                         msg.attachments &&
@@ -716,7 +716,7 @@ export function ChatbotChatTabbed({ chatbot, userId }: ChatbotChatTabbedProps) {
       </div>
 
       {/* Input Area */}
-      <div className="border-t border-gray-200 p-4 bg-white">
+      <div className="border-t border-gray-200 p-3 sm:p-4 bg-white">
         <div className="flex flex-col gap-3">
           {/* Selected files preview */}
           {selectedFiles.length > 0 && (
@@ -779,7 +779,7 @@ export function ChatbotChatTabbed({ chatbot, userId }: ChatbotChatTabbedProps) {
             <button
               onClick={handleSendMessage}
               disabled={!input.trim() || isSending}
-              className="px-6 py-3 btn-primary rounded-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-colors"
+              className="px-4 sm:px-6 py-3 btn-primary rounded-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-colors"
             >
               {isSending ? (
                 <Loader2 className="w-5 h-5 animate-spin" />

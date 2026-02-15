@@ -31,16 +31,18 @@ export default async function ChatbotLeadFormsPage({
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-brand-primary">Lead Forms</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-brand-primary">
+            Lead Forms
+          </h1>
           <p className="text-sm text-brand-muted mt-1">
             Create and manage custom lead capture forms for your chatbot
           </p>
         </div>
         <Link
           href={`/chatbots/${params.id}/lead-forms/new`}
-          className="btn-primary flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium"
+          className="btn-primary flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium self-start sm:self-auto"
         >
           <Plus className="w-4 h-4" />
           Create Form

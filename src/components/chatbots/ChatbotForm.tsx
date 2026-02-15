@@ -421,7 +421,7 @@ export default function ChatbotForm({
             </label>
             <div className="flex items-center gap-4">
               {thumbnailPreview && !imageLoadError ? (
-                <div className="w-32 h-32 rounded-lg overflow-hidden border-2 border-brand-border bg-brand-surface flex items-center justify-center">
+                <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-lg overflow-hidden border-2 border-brand-border bg-brand-surface flex items-center justify-center">
                   <img
                     src={thumbnailPreview}
                     alt="Thumbnail preview"
@@ -430,7 +430,7 @@ export default function ChatbotForm({
                   />
                 </div>
               ) : (
-                <div className="w-32 h-32 rounded-lg bg-brand-surface flex items-center justify-center text-brand-light border-2 border-brand-border">
+                <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-lg bg-brand-surface flex items-center justify-center text-brand-light border-2 border-brand-border">
                   <ImageIcon className="w-12 h-12" />
                 </div>
               )}
@@ -757,7 +757,7 @@ export default function ChatbotForm({
             <h4 className="text-sm font-medium text-brand-secondary mb-4">
               Widget Colors
             </h4>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Primary Color */}
               <div>
                 <label
@@ -972,11 +972,11 @@ export default function ChatbotForm({
       </Tabs>
 
       {/* Submit Buttons */}
-      <div className="flex items-center gap-4 pt-4 border-t border-brand-border">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 pt-4 border-t border-brand-border">
         <button
           type="submit"
           disabled={isSubmitting}
-          className="btn-primary flex items-center gap-2 px-6 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+          className="btn-primary flex items-center justify-center gap-2 px-6 py-2.5 sm:py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed font-medium"
         >
           {isSubmitting && <Loader2 className="w-4 h-4 animate-spin" />}
           {isSubmitting
@@ -991,7 +991,7 @@ export default function ChatbotForm({
           type="button"
           onClick={() => router.back()}
           disabled={isSubmitting}
-          className="px-6 py-2 bg-white border border-brand-border text-gray-900 rounded-lg hover:bg-brand-surface disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+          className="px-6 py-2.5 sm:py-2 bg-white border border-brand-border text-gray-900 rounded-lg hover:bg-brand-surface disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium text-center"
         >
           Cancel
         </button>
