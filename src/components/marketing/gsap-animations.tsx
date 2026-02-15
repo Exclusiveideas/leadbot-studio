@@ -35,21 +35,28 @@ export function ScrollReveal({
     const sign =
       direction === "up" || direction === "left" ? distance : -distance;
 
-    gsap.from(el, {
-      [axis]: sign,
-      opacity: 0,
-      duration: 0.8,
-      delay,
-      ease: "power3.out",
-      scrollTrigger: {
-        trigger: el,
-        start: "top 85%",
-        toggleActions: "play none none none",
+    const tween = gsap.fromTo(
+      el,
+      { [axis]: sign, opacity: 0 },
+      {
+        [axis]: 0,
+        opacity: 1,
+        duration: 0.8,
+        delay,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: el,
+          start: "top 85%",
+          toggleActions: "play none none none",
+        },
       },
-    });
+    );
+
+    ScrollTrigger.refresh();
 
     return () => {
-      ScrollTrigger.getAll().forEach((t) => t.kill());
+      tween.scrollTrigger?.kill();
+      tween.kill();
     };
   }, [direction, delay, distance]);
 
@@ -77,21 +84,30 @@ export function StaggerReveal({
     const el = ref.current;
     if (!el || prefersReducedMotion()) return;
 
-    gsap.from(el.querySelectorAll(childSelector), {
-      y: 50,
-      opacity: 0,
-      duration: 0.7,
-      stagger: staggerDelay,
-      ease: "power3.out",
-      scrollTrigger: {
-        trigger: el,
-        start: "top 80%",
-        toggleActions: "play none none none",
+    const targets = el.querySelectorAll(childSelector);
+
+    const tween = gsap.fromTo(
+      targets,
+      { y: 50, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.7,
+        stagger: staggerDelay,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: el,
+          start: "top 80%",
+          toggleActions: "play none none none",
+        },
       },
-    });
+    );
+
+    ScrollTrigger.refresh();
 
     return () => {
-      ScrollTrigger.getAll().forEach((t) => t.kill());
+      tween.scrollTrigger?.kill();
+      tween.kill();
     };
   }, [staggerDelay, childSelector]);
 
@@ -128,7 +144,7 @@ export function AnimatedCounter({
 
     const obj = { val: 0 };
 
-    gsap.to(obj, {
+    const tween = gsap.to(obj, {
       val: value,
       duration: 2,
       ease: "power2.out",
@@ -144,8 +160,11 @@ export function AnimatedCounter({
       onUpdate: () => setDisplay(Math.round(obj.val)),
     });
 
+    ScrollTrigger.refresh();
+
     return () => {
-      ScrollTrigger.getAll().forEach((t) => t.kill());
+      tween.scrollTrigger?.kill();
+      tween.kill();
     };
   }, [value]);
 
@@ -184,21 +203,28 @@ export function TextReveal({
       return;
     }
 
-    gsap.from(words, {
-      opacity: 0.15,
-      stagger: 0.04,
-      duration: 0.6,
-      ease: "power2.out",
-      scrollTrigger: {
-        trigger: el,
-        start: "top 80%",
-        end: "top 40%",
-        scrub: true,
+    const tween = gsap.fromTo(
+      words,
+      { opacity: 0.15 },
+      {
+        opacity: 1,
+        stagger: 0.04,
+        duration: 0.6,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: el,
+          start: "top 80%",
+          end: "top 40%",
+          scrub: true,
+        },
       },
-    });
+    );
+
+    ScrollTrigger.refresh();
 
     return () => {
-      ScrollTrigger.getAll().forEach((t) => t.kill());
+      tween.scrollTrigger?.kill();
+      tween.kill();
     };
   }, [text]);
 
@@ -228,7 +254,7 @@ export function ParallaxLayer({
     const el = ref.current;
     if (!el || prefersReducedMotion()) return;
 
-    gsap.to(el, {
+    const tween = gsap.to(el, {
       yPercent: speed,
       ease: "none",
       scrollTrigger: {
@@ -239,8 +265,11 @@ export function ParallaxLayer({
       },
     });
 
+    ScrollTrigger.refresh();
+
     return () => {
-      ScrollTrigger.getAll().forEach((t) => t.kill());
+      tween.scrollTrigger?.kill();
+      tween.kill();
     };
   }, [speed]);
 
