@@ -53,16 +53,33 @@ export async function POST(request: NextRequest) {
     // Hash password
     const hashedPassword = await hashPassword(password);
 
-    // Create user
-    const user = await prisma.user.create({
-      data: {
-        id: nanoid(),
-        email,
-        name,
-        password: hashedPassword,
-        isActive: true,
-        isVerified: false,
-      },
+    // Create user and organization in a transaction
+    const { user } = await prisma.$transaction(async (tx) => {
+      const userId = nanoid();
+      const orgId = nanoid();
+
+      const org = await tx.organization.create({
+        data: {
+          id: orgId,
+          name: `${name}'s Workspace`,
+          createdBy: userId,
+        },
+      });
+
+      const user = await tx.user.create({
+        data: {
+          id: userId,
+          email,
+          name,
+          password: hashedPassword,
+          isActive: true,
+          isVerified: false,
+          organizationId: org.id,
+          organizationRole: "OWNER",
+        },
+      });
+
+      return { user, org };
     });
 
     // Generate email verification token

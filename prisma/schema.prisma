@@ -30,7 +30,7 @@ model User {
   updatedAt                     DateTime  @updatedAt
   lastVerificationEmailSentAt   DateTime?
   organizationId                String?
-  organizationRole              String?
+  organizationRole              OrganizationRole?
   leadCaptureEmailNotifications Boolean   @default(true)
   mfaLastVerifiedAt             DateTime?
   failedLoginAttempts           Int       @default(0)
@@ -41,7 +41,8 @@ model User {
   notifications        Notification[]
   createdChatbots      Chatbot[]       @relation("ChatbotCreator")
   createdOrganizations Organization[]  @relation("OrganizationCreator")
-  organization         Organization?   @relation("OrganizationMembers", fields: [organizationId], references: [id])
+  sentInvites          OrganizationInvite[] @relation("InviteSender")
+  organization         Organization?   @relation("OrganizationMembers", fields: [organizationId], references: [id], onDelete: SetNull)
 
   @@index([organizationId])
   @@map("users")
@@ -58,11 +59,37 @@ model Organization {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
+  plan     String?
+
   chatbots Chatbot[]
-  creator  User?     @relation("OrganizationCreator", fields: [createdBy], references: [id])
+  invites  OrganizationInvite[]
+  creator  User?     @relation("OrganizationCreator", fields: [createdBy], references: [id], onDelete: SetNull)
   users    User[]    @relation("OrganizationMembers")
 
   @@map("organizations")
+}
+
+model OrganizationInvite {
+  id             String           @id @default(cuid())
+  organizationId String
+  email          String
+  role           OrganizationRole @default(MEMBER)
+  status         InviteStatus     @default(PENDING)
+  token          String           @unique
+  invitedBy      String
+  expiresAt      DateTime
+  acceptedAt     DateTime?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  inviter      User         @relation("InviteSender", fields: [invitedBy], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([email])
+  @@index([organizationId])
+  @@index([organizationId, status])
+  @@map("organization_invites")
 }
 
 model Session {
@@ -549,9 +576,24 @@ enum TextRequestStatus {
   RESPONDED
 }
 
+enum OrganizationRole {
+  OWNER
+  MEMBER
+}
+
+enum InviteStatus {
+  PENDING
+  ACCEPTED
+  REVOKED
+  EXPIRED
+}
+
 enum NotificationType {
   LEAD_CAPTURED
   BOOKING_CREATED
   TEXT_REQUEST_CREATED
   SYSTEM_ALERT
+  ORGANIZATION_INVITATION
+  INVITATION_ACCEPTED
+  INVITATION_DECLINED
 }

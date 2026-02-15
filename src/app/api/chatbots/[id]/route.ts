@@ -31,28 +31,11 @@ export const GET = withRLS(
       );
     }
 
-    // Check if user has access to this chatbot
-    // Personal chatbots (organizationId = null) can only be accessed by creator
-    // Organization chatbots can be accessed by anyone in the organization
-    const isPersonalChatbot = chatbot.organizationId === null;
-    const isCreator = chatbot.createdBy === session.user.id;
-    const isSameOrganization =
-      chatbot.organizationId === session.user.organization?.id;
-
-    if (isPersonalChatbot) {
-      if (!isCreator) {
-        return NextResponse.json(
-          { success: false, error: "Access denied" },
-          { status: 403 },
-        );
-      }
-    } else {
-      if (!isSameOrganization) {
-        return NextResponse.json(
-          { success: false, error: "Access denied" },
-          { status: 403 },
-        );
-      }
+    if (chatbot.organizationId !== session.user.organization.id) {
+      return NextResponse.json(
+        { success: false, error: "Access denied" },
+        { status: 403 },
+      );
     }
 
     return NextResponse.json({
@@ -85,26 +68,11 @@ export const PATCH = withRLS(
       );
     }
 
-    // Check if user has access to this chatbot
-    const isPersonalChatbot = existingChatbot.organizationId === null;
-    const isCreator = existingChatbot.createdBy === session.user.id;
-    const isSameOrganization =
-      existingChatbot.organizationId === session.user.organization?.id;
-
-    if (isPersonalChatbot) {
-      if (!isCreator) {
-        return NextResponse.json(
-          { success: false, error: "Access denied" },
-          { status: 403 },
-        );
-      }
-    } else {
-      if (!isSameOrganization) {
-        return NextResponse.json(
-          { success: false, error: "Access denied" },
-          { status: 403 },
-        );
-      }
+    if (existingChatbot.organizationId !== session.user.organization.id) {
+      return NextResponse.json(
+        { success: false, error: "Access denied" },
+        { status: 403 },
+      );
     }
 
     // Parse and validate request body (FormData)
@@ -210,26 +178,19 @@ export const DELETE = withRLS(
       );
     }
 
-    // Check if user has access to this chatbot
-    const isPersonalChatbot = existingChatbot.organizationId === null;
-    const isCreator = existingChatbot.createdBy === session.user.id;
-    const isSameOrganization =
-      existingChatbot.organizationId === session.user.organization?.id;
+    if (existingChatbot.organizationId !== session.user.organization.id) {
+      return NextResponse.json(
+        { success: false, error: "Access denied" },
+        { status: 403 },
+      );
+    }
 
-    if (isPersonalChatbot) {
-      if (!isCreator) {
-        return NextResponse.json(
-          { success: false, error: "Access denied" },
-          { status: 403 },
-        );
-      }
-    } else {
-      if (!isSameOrganization) {
-        return NextResponse.json(
-          { success: false, error: "Access denied" },
-          { status: 403 },
-        );
-      }
+    // Only owners can delete chatbots
+    if (session.user.organizationRole !== "OWNER") {
+      return NextResponse.json(
+        { success: false, error: "Only organization owners can delete chatbots" },
+        { status: 403 },
+      );
     }
 
     // Delete chatbot

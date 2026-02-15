@@ -27,10 +27,7 @@ export async function GET(
       return NextResponse.json({ error: "Booking not found" }, { status: 404 });
     }
 
-    if (
-      booking.chatbot.createdBy !== session.userId &&
-      booking.chatbot.organizationId !== session.organization?.id
-    ) {
+    if (booking.chatbot.organizationId !== session.organization.id) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
@@ -68,10 +65,7 @@ export async function PATCH(
       return NextResponse.json({ error: "Booking not found" }, { status: 404 });
     }
 
-    if (
-      booking.chatbot.createdBy !== session.userId &&
-      booking.chatbot.organizationId !== session.organization?.id
-    ) {
+    if (booking.chatbot.organizationId !== session.organization.id) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 

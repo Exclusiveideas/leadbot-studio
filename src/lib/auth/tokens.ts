@@ -6,6 +6,7 @@ const JWT_EXPIRES_IN = "7d";
 const RESET_TOKEN_EXPIRES_IN = "1h";
 const EMAIL_TOKEN_EXPIRES_IN = "24h";
 const MFA_SETUP_TOKEN_EXPIRES_IN = "15m";
+const INVITE_TOKEN_EXPIRES_IN = "7d";
 
 export interface JWTPayload {
   userId: string;
@@ -14,7 +15,9 @@ export interface JWTPayload {
 }
 
 export interface TokenPayload extends JWTPayload {
-  type: "access" | "reset" | "email_verification" | "mfa_setup";
+  type: "access" | "reset" | "email_verification" | "mfa_setup" | "organization_invite";
+  organizationId?: string;
+  invitedBy?: string;
 }
 
 export function generateAccessToken(payload: JWTPayload): string {
@@ -46,6 +49,18 @@ export function generateMfaSetupToken(userId: string, email: string): string {
   return jwt.sign({ userId, email, type: "mfa_setup" }, getJwtSecret(), {
     expiresIn: MFA_SETUP_TOKEN_EXPIRES_IN,
   });
+}
+
+export function generateInviteToken(
+  organizationId: string,
+  email: string,
+  invitedBy: string,
+): string {
+  return jwt.sign(
+    { organizationId, email, invitedBy, type: "organization_invite", userId: "" },
+    getJwtSecret(),
+    { expiresIn: INVITE_TOKEN_EXPIRES_IN },
+  );
 }
 
 export function verifyToken(token: string): TokenPayload {

@@ -34,14 +34,7 @@ export const POST = withRLS(
         );
       }
 
-      // Check access: allow if org matches OR if personal chatbot and user is creator
-      const hasOrgAccess =
-        chatbot.organizationId &&
-        chatbot.organizationId === session.user.organization?.id;
-      const hasCreatorAccess =
-        !chatbot.organizationId && chatbot.createdBy === session.user.id;
-
-      if (!hasOrgAccess && !hasCreatorAccess) {
+      if (chatbot.organizationId !== session.user.organization.id) {
         return NextResponse.json({ error: "Access denied" }, { status: 403 });
       }
 

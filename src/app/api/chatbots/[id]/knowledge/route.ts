@@ -34,16 +34,7 @@ export const GET = withRLS(
       );
     }
 
-    // Allow access if:
-    // 1. Chatbot has organizationId and it matches user's organizationId
-    // 2. Chatbot has no organizationId and user is the creator
-    const hasOrgAccess =
-      chatbot.organizationId &&
-      chatbot.organizationId === session.user.organization?.id;
-    const hasCreatorAccess =
-      !chatbot.organizationId && chatbot.createdBy === session.user.id;
-
-    if (!hasOrgAccess && !hasCreatorAccess) {
+    if (chatbot.organizationId !== session.user.organization.id) {
       return NextResponse.json(
         { success: false, error: "Access denied" },
         { status: 403 },
@@ -91,16 +82,7 @@ export const POST = withRLS(
       );
     }
 
-    // Allow access if:
-    // 1. Chatbot has organizationId and it matches user's organizationId
-    // 2. Chatbot has no organizationId and user is the creator
-    const hasOrgAccess =
-      chatbot.organizationId &&
-      chatbot.organizationId === session.user.organization?.id;
-    const hasCreatorAccess =
-      !chatbot.organizationId && chatbot.createdBy === session.user.id;
-
-    if (!hasOrgAccess && !hasCreatorAccess) {
+    if (chatbot.organizationId !== session.user.organization.id) {
       return NextResponse.json(
         { success: false, error: "Access denied" },
         { status: 403 },

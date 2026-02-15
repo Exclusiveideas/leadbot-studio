@@ -16,40 +16,15 @@ export async function listChatbots(
 ) {
   const where: Prisma.ChatbotWhereInput = {};
 
-  // Show chatbots that either:
-  // 1. Belong to the user's organization (if they have one)
-  // 2. Are personal chatbots created by the user (organizationId is null AND createdBy matches userId)
-  if (filters.userId) {
-    const conditions: Prisma.ChatbotWhereInput[] = [
-      // Personal chatbots created by this user
-      { organizationId: null, createdBy: filters.userId },
-    ];
-
-    // If user has an organization, also show org chatbots
-    if (filters.organizationId) {
-      conditions.push({ organizationId: filters.organizationId });
-    }
-
-    where.OR = conditions;
-  } else if (filters.organizationId) {
-    // Fallback: only filter by organization if no userId provided
+  if (filters.organizationId) {
     where.organizationId = filters.organizationId;
   }
 
   if (filters.search) {
-    // If we already have OR conditions, we need to combine them properly
-    const searchConditions: Prisma.ChatbotWhereInput[] = [
+    where.OR = [
       { name: { contains: filters.search, mode: "insensitive" } },
       { description: { contains: filters.search, mode: "insensitive" } },
     ];
-
-    if (where.OR) {
-      // Combine existing OR with search OR using AND
-      where.AND = [{ OR: where.OR }, { OR: searchConditions }];
-      delete where.OR;
-    } else {
-      where.OR = searchConditions;
-    }
   }
 
   const [chatbots, total] = await Promise.all([
@@ -112,7 +87,7 @@ export async function getChatbot(
 
 export async function createChatbot(
   data: CreateChatbotInput,
-  organizationId: string | null,
+  organizationId: string,
   userId: string,
   thumbnail: string | null,
   db: Omit<typeof prisma, "$transaction"> = prisma,
@@ -130,7 +105,7 @@ export async function createChatbot(
       aiModel: data.aiModel,
       allowedDomains: data.allowedDomains,
       embedCode,
-      organizationId: organizationId || undefined,
+      organizationId,
       createdBy: userId,
       status: "DRAFT", // Always create as DRAFT
     },

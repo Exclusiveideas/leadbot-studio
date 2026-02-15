@@ -130,14 +130,7 @@ export async function GET(
       return new Response("Chatbot not found", { status: 404 });
     }
 
-    // Check access rights (same logic as GET /api/chatbots/[id]/knowledge)
-    const hasOrgAccess =
-      chatbot.organizationId &&
-      chatbot.organizationId === session.organization?.id;
-    const hasCreatorAccess =
-      !chatbot.organizationId && chatbot.createdBy === session.userId;
-
-    if (!hasOrgAccess && !hasCreatorAccess) {
+    if (chatbot.organizationId !== session.organization.id) {
       return new Response("Access denied", { status: 403 });
     }
 

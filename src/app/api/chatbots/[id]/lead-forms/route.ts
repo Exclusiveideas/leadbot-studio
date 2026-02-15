@@ -24,10 +24,7 @@ export async function GET(
     }
 
     // Check ownership
-    if (
-      chatbot.createdBy !== session.userId &&
-      chatbot.organizationId !== session.organization?.id
-    ) {
+    if (chatbot.organizationId !== session.organization.id) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
@@ -62,10 +59,7 @@ export async function POST(
       return NextResponse.json({ error: "Chatbot not found" }, { status: 404 });
     }
 
-    if (
-      chatbot.createdBy !== session.userId &&
-      chatbot.organizationId !== session.organization?.id
-    ) {
+    if (chatbot.organizationId !== session.organization.id) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 

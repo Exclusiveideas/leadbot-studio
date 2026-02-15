@@ -8,8 +8,8 @@ export interface User {
   mfaVerified: boolean;
   hasPassword: boolean;
   canExport: boolean;
-  organizationRole?: string;
-  organization?: {
+  organizationRole: "OWNER" | "MEMBER";
+  organization: {
     id: string;
     name: string;
     subtitle?: string;

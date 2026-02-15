@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Bot, Settings, HelpCircle, LayoutDashboard } from "lucide-react";
 import { clsx } from "clsx";
+import { useEffect, useState } from "react";
 
 const navigation = [
   { name: "Chatbots", href: "/chatbots", icon: Bot },
@@ -12,6 +13,18 @@ const navigation = [
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const [orgName, setOrgName] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch("/api/auth/session", { credentials: "include" })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data?.user?.organization?.name) {
+          setOrgName(data.user.organization.name);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   return (
     <aside className="flex h-full w-64 flex-col border-r border-gray-200 bg-white">
@@ -20,6 +33,18 @@ export default function Sidebar() {
         <LayoutDashboard className="h-6 w-6 text-blue-600" />
         <span className="text-lg font-bold text-gray-900">LeadBotStudio</span>
       </div>
+
+      {/* Workspace name */}
+      {orgName && (
+        <div className="px-6 py-3 border-b border-gray-100">
+          <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">
+            Workspace
+          </p>
+          <p className="text-sm font-medium text-gray-700 truncate mt-0.5">
+            {orgName}
+          </p>
+        </div>
+      )}
 
       {/* Navigation */}
       <nav className="flex-1 space-y-1 px-3 py-4">

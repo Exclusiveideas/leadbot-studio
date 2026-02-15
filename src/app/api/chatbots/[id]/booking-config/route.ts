@@ -24,10 +24,7 @@ export async function GET(
       return NextResponse.json({ error: "Chatbot not found" }, { status: 404 });
     }
 
-    if (
-      chatbot.createdBy !== session.userId &&
-      chatbot.organizationId !== session.organization?.id
-    ) {
+    if (chatbot.organizationId !== session.organization.id) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
@@ -63,10 +60,7 @@ export async function PATCH(
       return NextResponse.json({ error: "Chatbot not found" }, { status: 404 });
     }
 
-    if (
-      chatbot.createdBy !== session.userId &&
-      chatbot.organizationId !== session.organization?.id
-    ) {
+    if (chatbot.organizationId !== session.organization.id) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 

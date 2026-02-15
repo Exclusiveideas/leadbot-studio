@@ -71,23 +71,7 @@ export const getServerSession = cache(
           dbError.code === "P1001" ||
           dbError.message?.includes("Can't reach database")
         ) {
-          return {
-            user: {
-              id: session.userId,
-              email: session.email || "",
-              name: session.email?.split("@")[0] || "User",
-              mfaEnabled: false,
-              mfaVerified: session.mfaVerified || false,
-              hasPassword: false,
-              canExport: false,
-            },
-            session: {
-              id: session.sessionId || "",
-              expiresAt: new Date(
-                Date.now() + SESSION_DURATION_MS,
-              ).toISOString(),
-            },
-          };
+          return null;
         }
         throw dbError;
       }
@@ -132,8 +116,8 @@ export const getServerSession = cache(
           mfaVerified: session.mfaVerified || false,
           hasPassword: !!user.password,
           canExport: user.canExport,
-          organizationRole: user.organizationRole || undefined,
-          organization: user.organization || undefined,
+          organizationRole: (user.organizationRole as "OWNER" | "MEMBER") || "MEMBER",
+          organization: user.organization || { id: "", name: "" },
         },
         session: {
           id: session.sessionId || "",
@@ -167,8 +151,8 @@ export async function requireOrgAdmin(): Promise<ServerSessionData> {
   }
 
   const userRole = sessionData.user.organizationRole;
-  if (userRole !== "admin" && userRole !== "creator") {
-    throw new Error("Organization admin access required");
+  if (userRole !== "OWNER") {
+    throw new Error("Organization owner access required");
   }
 
   return sessionData;

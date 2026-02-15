@@ -13,7 +13,7 @@ import type { NicheType } from "@/lib/constants/niches";
 export async function POST(request: NextRequest) {
   try {
     const session = await getSession();
-    if (!session?.userId) {
+    if (!session?.userId || !session?.organization.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -55,40 +55,45 @@ export async function POST(request: NextRequest) {
       customInstructions ||
       (services?.length ? `Services offered: ${services.join(", ")}` : "");
 
-    const chatbot = await prisma.chatbot.create({
-      data: {
-        name: businessName,
-        description: businessDescription || template.description,
-        nicheType: nicheType as NicheType,
-        status: "DRAFT",
-        aiModel: "claude-3-5-haiku",
-        persona: resolvedPersona,
-        customInstructions: resolvedInstructions,
-        welcomeMessage: welcomeMessage || template.defaultWelcomeMessage,
-        chatGreeting: chatGreeting || template.defaultChatGreeting,
-        appearance: appearance || template.defaultAppearance,
-        suggestedQuestions: suggestedQuestions || template.suggestedQuestions,
-        embedCode,
-        allowedDomains: websiteUrl ? [websiteUrl] : [],
-        calendlyLink: calendlyLink || null,
-        bookingConfig: bookingConfig || null,
-        textConfig: textConfig || null,
-        createdBy: session.userId,
-      },
-    });
+    const chatbot = await prisma.$transaction(async (tx) => {
+      const created = await tx.chatbot.create({
+        data: {
+          name: businessName,
+          description: businessDescription || template.description,
+          nicheType: nicheType as NicheType,
+          status: "DRAFT",
+          aiModel: "claude-3-5-haiku",
+          persona: resolvedPersona,
+          customInstructions: resolvedInstructions,
+          welcomeMessage: welcomeMessage || template.defaultWelcomeMessage,
+          chatGreeting: chatGreeting || template.defaultChatGreeting,
+          appearance: appearance || template.defaultAppearance,
+          suggestedQuestions: suggestedQuestions || template.suggestedQuestions,
+          embedCode,
+          allowedDomains: websiteUrl ? [websiteUrl] : [],
+          calendlyLink: calendlyLink || null,
+          bookingConfig: bookingConfig || null,
+          textConfig: textConfig || null,
+          organizationId: session.organization.id,
+          createdBy: session.userId,
+        },
+      });
 
-    const defaultForm = getDefaultLeadFormForNiche(nicheType as NicheType);
-    await prisma.chatbotLeadForm.create({
-      data: {
-        chatbotId: chatbot.id,
-        name: defaultForm.name,
-        description: defaultForm.description,
-        fields: defaultForm.fields,
-        appearance: defaultForm.appearance,
-        behavior: defaultForm.behavior,
-        isDefault: true,
-        isActive: true,
-      },
+      const defaultForm = getDefaultLeadFormForNiche(nicheType as NicheType);
+      await tx.chatbotLeadForm.create({
+        data: {
+          chatbotId: created.id,
+          name: defaultForm.name,
+          description: defaultForm.description,
+          fields: defaultForm.fields,
+          appearance: defaultForm.appearance,
+          behavior: defaultForm.behavior,
+          isDefault: true,
+          isActive: true,
+        },
+      });
+
+      return created;
     });
 
     return NextResponse.json({

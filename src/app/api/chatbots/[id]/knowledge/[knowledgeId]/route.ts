@@ -73,15 +73,7 @@ export const DELETE = withRLS(
           id: knowledgeId,
           chatbotId,
           chatbot: {
-            OR: [
-              {
-                organizationId: session.user.organization?.id || null,
-              },
-              {
-                organizationId: null,
-                createdBy: session.user.id,
-              },
-            ],
+            organizationId: session.user.organization.id,
           },
         },
         include: {

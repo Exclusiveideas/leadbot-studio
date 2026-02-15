@@ -19,7 +19,7 @@ export const GET = withRLS(
     // Parse query parameters
     const { searchParams } = new URL(request.url);
     const filters = {
-      organizationId: session.user.organization?.id || undefined,
+      organizationId: session.user.organization.id,
       userId: session.user.id,
       search: searchParams.get("search") || undefined,
       limit: searchParams.get("limit")
@@ -104,7 +104,7 @@ export const POST = withRLS(
     try {
       const chatbot = await createChatbot(
         data,
-        session.user.organization?.id || null,
+        session.user.organization.id,
         session.user.id,
         thumbnailS3Key,
         tx,

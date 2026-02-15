@@ -1028,3 +1028,111 @@ export async function sendTextRequestNotificationEmail(
     html,
   });
 }
+
+export async function sendOrganizationInviteEmail(
+  recipientEmail: string,
+  organizationName: string,
+  inviterName: string,
+  inviteUrl: string,
+) {
+  const html = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>You're Invited - ${APP_NAME}</title>
+      </head>
+      <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #E5E9E7;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color: #E5E9E7; padding: 40px 20px;">
+          <tr>
+            <td align="center">
+              <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width: 600px; background-color: #FFFFFF; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(7, 18, 5, 0.08);">
+
+                <!-- Header with gradient -->
+                <tr>
+                  <td style="background: linear-gradient(135deg, #7C3AED 0%, #A855F7 100%); padding: 48px 40px; text-align: center;">
+                    <div style="background-color: rgba(255, 255, 255, 0.2); width: 72px; height: 72px; border-radius: 50%; margin: 0 auto 20px; text-align: center; line-height: 72px;">
+                      <span style="font-size: 36px; vertical-align: middle;">&#129309;</span>
+                    </div>
+                    <h1 style="margin: 0; color: #FFFFFF; font-size: 32px; font-weight: 700; letter-spacing: -0.5px;">
+                      You're Invited!
+                    </h1>
+                    <p style="margin: 12px 0 0 0; color: #FFFFFF; font-size: 18px; font-weight: 400; opacity: 0.95;">
+                      Join ${organizationName} on ${APP_NAME}
+                    </p>
+                  </td>
+                </tr>
+
+                <!-- Body content -->
+                <tr>
+                  <td style="padding: 48px 40px;">
+                    <p style="margin: 0 0 24px 0; color: #071205; font-size: 16px; line-height: 1.6;">
+                      Hi there,
+                    </p>
+                    <p style="margin: 0 0 24px 0; color: #071205; font-size: 16px; line-height: 1.6;">
+                      <strong>${inviterName}</strong> has invited you to join <strong style="color: #7C3AED;">${organizationName}</strong> on ${APP_NAME}.
+                    </p>
+
+                    <!-- Info box -->
+                    <div style="background-color: #F5F3FF; border-left: 4px solid #7C3AED; padding: 20px; border-radius: 8px; margin-bottom: 32px;">
+                      <p style="margin: 0; color: #071205; font-size: 14px; line-height: 1.6;">
+                        As a team member, you'll be able to manage chatbots, view leads, and collaborate with your team.
+                      </p>
+                    </div>
+
+                    <!-- CTA Button -->
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td align="center" style="padding: 0 0 32px 0;">
+                          <a href="${inviteUrl}"
+                             style="display: inline-block; background-color: #071205; color: #FFFFFF; padding: 16px 48px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px; box-shadow: 0 2px 8px rgba(7, 18, 5, 0.2);">
+                            Accept Invitation
+                          </a>
+                        </td>
+                      </tr>
+                    </table>
+
+                    <!-- Expiry notice -->
+                    <p style="margin: 0 0 24px 0; color: #708485; font-size: 14px; text-align: center;">
+                      This invitation expires in 7 days.
+                    </p>
+
+                    <!-- Alternative link -->
+                    <div style="padding: 24px; background-color: #F8F9FA; border-radius: 8px;">
+                      <p style="margin: 0 0 12px 0; color: #708485; font-size: 13px; text-align: center;">
+                        Button not working? Copy and paste this link:
+                      </p>
+                      <p style="margin: 0; color: #708485; font-size: 12px; word-break: break-all; text-align: center; font-family: monospace;">
+                        ${inviteUrl}
+                      </p>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Footer -->
+                <tr>
+                  <td style="background-color: #E5E9E7; padding: 32px 40px; text-align: center;">
+                    <p style="margin: 0 0 8px 0; color: #071205; font-size: 18px; font-weight: 600;">
+                      ${APP_NAME}
+                    </p>
+                    <p style="margin: 0; color: #708485; font-size: 13px;">
+                      AI chatbots that convert visitors into leads
+                    </p>
+                  </td>
+                </tr>
+
+              </table>
+            </td>
+          </tr>
+        </table>
+      </body>
+    </html>
+  `;
+
+  return sendEmail({
+    to: recipientEmail,
+    subject: `${inviterName} invited you to join ${organizationName} on ${APP_NAME}`,
+    html,
+  });
+}

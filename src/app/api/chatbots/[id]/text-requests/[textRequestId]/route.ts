@@ -33,10 +33,7 @@ export async function GET(
       );
     }
 
-    if (
-      textRequest.chatbot.createdBy !== session.userId &&
-      textRequest.chatbot.organizationId !== session.organization?.id
-    ) {
+    if (textRequest.chatbot.organizationId !== session.organization.id) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
@@ -80,10 +77,7 @@ export async function PATCH(
       );
     }
 
-    if (
-      textRequest.chatbot.createdBy !== session.userId &&
-      textRequest.chatbot.organizationId !== session.organization?.id
-    ) {
+    if (textRequest.chatbot.organizationId !== session.organization.id) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 

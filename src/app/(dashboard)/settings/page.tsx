@@ -4,7 +4,9 @@ import PageLoadingError from "@/components/layout/pageLoadingError";
 import MFASetup from "@/components/settings/MFASetup";
 import SettingsProfileTabSkeleton from "@/components/settings/SettingsProfileTabSkeleton";
 import SettingsSecurityTabSkeleton from "@/components/settings/SettingsSecurityTabSkeleton";
-import { Shield, User as UserIcon } from "lucide-react";
+import TeamTab from "@/components/settings/TeamTab";
+import WorkspaceTab from "@/components/settings/WorkspaceTab";
+import { Building, Shield, User as UserIcon, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { useToast } from "@/components/ui/toast";
@@ -13,6 +15,8 @@ import type { ServerSessionData as SessionData } from "@/types/session";
 const tabs = [
   { id: "profile", name: "Profile", icon: UserIcon },
   { id: "security", name: "Security", icon: Shield },
+  { id: "team", name: "Team", icon: Users },
+  { id: "workspace", name: "Workspace", icon: Building },
 ];
 
 function SettingsContent() {
@@ -94,6 +98,19 @@ function SettingsContent() {
           <div className="bg-white rounded-xl border border-gray-200">
             {activeTab === "profile" && <SettingsProfileTabSkeleton />}
             {activeTab === "security" && <SettingsSecurityTabSkeleton />}
+            {(activeTab === "team" || activeTab === "workspace") && (
+              <div className="p-6 space-y-4">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="flex items-center gap-3 animate-pulse">
+                    <div className="h-9 w-9 rounded-full bg-gray-200" />
+                    <div className="flex-1 space-y-2">
+                      <div className="h-4 w-32 bg-gray-200 rounded" />
+                      <div className="h-3 w-48 bg-gray-100 rounded" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -190,6 +207,10 @@ function SettingsContent() {
               <MFASetup user={user} onUpdate={fetchSession} />
             </div>
           )}
+
+          {activeTab === "team" && <TeamTab user={user} />}
+
+          {activeTab === "workspace" && <WorkspaceTab user={user} />}
         </div>
       </div>
     </div>
