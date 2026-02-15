@@ -39,14 +39,14 @@ const valkeyConfig = getValkeyConfig();
 // Create separate connections for different purposes
 export const cacheClient = new Redis({
   ...valkeyConfig,
-  db: 0, // Database 0 for caching
-  keyPrefix: "cache:",
+  db: 3, // Database 3 for caching (0-2 used by Seira AI)
+  keyPrefix: "lbs:cache:",
 });
 
 export const sessionClient = new Redis({
   ...valkeyConfig,
-  db: 1, // Database 1 for sessions
-  keyPrefix: "session:",
+  db: 4, // Database 4 for sessions (0-2 used by Seira AI)
+  keyPrefix: "lbs:session:",
 });
 
 // Connection management
@@ -217,11 +217,11 @@ export const cache = {
     try {
       const operation = async () => {
         await ensureConnected();
-        const keys = await cacheClient.keys(`cache:${pattern}`);
+        const keys = await cacheClient.keys(`lbs:cache:${pattern}`);
         if (keys.length === 0) return 0;
 
         // Remove the prefix before deleting
-        const keysToDelete = keys.map((key) => key.replace("cache:", ""));
+        const keysToDelete = keys.map((key) => key.replace("lbs:cache:", ""));
         return await cacheClient.del(...keysToDelete);
       };
       return await withTimeout(operation(), CACHE_OPERATION_TIMEOUT, 0);
