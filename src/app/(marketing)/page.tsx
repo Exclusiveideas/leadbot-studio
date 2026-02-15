@@ -5,363 +5,643 @@ import {
   Heart,
   Home,
   TrendingUp,
-  Sparkles,
   MessageSquare,
   Users,
   Calendar,
   BarChart3,
   Code,
   Zap,
+  ArrowRight,
+  Check,
+  Quote,
 } from "lucide-react";
+import {
+  FadeInUp,
+  FadeInOnly,
+  ScaleIn,
+} from "@/components/marketing/motion";
 
-const niches = [
-  {
-    name: "Law Firms",
-    description: "Qualify clients, answer legal questions, book consultations",
-    icon: Scale,
-    color: "bg-blue-100 text-blue-700",
-    href: "/niches/law-firm",
-  },
-  {
-    name: "Business Coaches",
-    description: "Engage prospects, demonstrate expertise, book discovery calls",
-    icon: Target,
-    color: "bg-purple-100 text-purple-700",
-    href: "/niches/business-coach",
-  },
-  {
-    name: "Therapists",
-    description:
-      "Reduce stigma, answer questions, schedule initial consultations",
-    icon: Heart,
-    color: "bg-green-100 text-green-700",
-    href: "/niches/therapist",
-  },
-  {
-    name: "Real Estate Agents",
-    description: "Qualify buyers/sellers, schedule showings, capture leads",
-    icon: Home,
-    color: "bg-red-100 text-red-700",
-    href: "/niches/real-estate",
-  },
-  {
-    name: "Financial Advisors",
-    description: "Educate prospects, qualify leads, book planning sessions",
-    icon: TrendingUp,
-    color: "bg-sky-100 text-sky-700",
-    href: "/niches/financial-advisor",
-  },
-  {
-    name: "Custom",
-    description: "Build a chatbot for any business with full customization",
-    icon: Sparkles,
-    color: "bg-gray-100 text-gray-700",
-    href: "/signup",
-  },
-];
-
-const features = [
-  {
-    name: "AI-Powered Conversations",
-    description:
-      "Natural language chatbot that understands context, answers questions from your knowledge base, and qualifies leads.",
-    icon: MessageSquare,
-  },
-  {
-    name: "Smart Lead Capture",
-    description:
-      "Dynamic forms with conditional logic that capture qualified leads. AI extracts info from conversation to pre-fill fields.",
-    icon: Users,
-  },
-  {
-    name: "Appointment Booking",
-    description:
-      "Calendly integration and built-in booking wizard. Visitors book appointments directly without leaving your site.",
-    icon: Calendar,
-  },
-  {
-    name: "Analytics Dashboard",
-    description:
-      "Track conversations, leads, and conversion rates. Know what prospects ask most and optimize your chatbot.",
-    icon: BarChart3,
-  },
-  {
-    name: "Easy Embed",
-    description:
-      "One line of code. Works with WordPress, Shopify, Wix, Squarespace, Webflow, and any custom website.",
-    icon: Code,
-  },
-  {
-    name: "5-Minute Setup",
-    description:
-      "Choose your industry, upload your content, customize branding, and go live. No coding required.",
-    icon: Zap,
-  },
-];
-
-const steps = [
-  {
-    number: "1",
-    title: "Choose Your Industry",
-    description:
-      "Select from pre-built templates for law firms, coaches, therapists, real estate, financial advisors, or create a custom bot.",
-  },
-  {
-    number: "2",
-    title: "Add Your Content",
-    description:
-      "Upload FAQs, documents, website URLs, or YouTube videos. Our AI learns your business instantly.",
-  },
-  {
-    number: "3",
-    title: "Embed & Go Live",
-    description:
-      "Copy one line of code, paste it on your website, and start capturing leads 24/7.",
-  },
+const industries = [
+  { name: "Law Firms", icon: Scale, href: "/niches/law-firm" },
+  { name: "Business Coaches", icon: Target, href: "/niches/business-coach" },
+  { name: "Therapists", icon: Heart, href: "/niches/therapist" },
+  { name: "Real Estate", icon: Home, href: "/niches/real-estate" },
+  { name: "Financial Advisors", icon: TrendingUp, href: "/niches/financial-advisor" },
 ];
 
 export default function HomePage() {
   return (
     <>
-      {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-blue-50 to-white px-6 py-24 text-center">
-        <div className="mx-auto max-w-4xl">
-          <h1 className="text-5xl font-bold tracking-tight text-gray-900 sm:text-6xl">
-            Turn Your Website Into a{" "}
-            <span className="text-blue-600">24/7 Sales Machine</span>
-          </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg text-gray-600">
-            AI chatbots built for your industry. Capture leads, answer
-            questions, and book appointments automatically — even while you
-            sleep. Set up in 5 minutes.
-          </p>
-          <div className="mt-10 flex items-center justify-center gap-4">
+      {/* ─── HERO ─── */}
+      <section className="relative overflow-hidden px-6 pb-28 pt-20 sm:pt-28">
+        {/* Glow orbs */}
+        <div
+          className="glow-orb -left-20 -top-20 h-[600px] w-[600px]"
+          style={{ background: "rgba(255, 215, 140, 0.22)" }}
+        />
+        <div
+          className="glow-orb -right-20 top-32 h-[500px] w-[500px]"
+          style={{ background: "rgba(255, 171, 122, 0.16)" }}
+        />
+
+        <div className="relative mx-auto max-w-4xl">
+          <FadeInUp>
+            <p className="text-center text-sm font-medium tracking-wide text-brand-muted">
+              AI chatbots for service professionals
+            </p>
+          </FadeInUp>
+
+          <FadeInUp delay={0.08}>
+            <h1 className="mt-5 text-center text-[clamp(2.5rem,6vw,4.5rem)] font-bold leading-[1.06] tracking-tight text-brand-primary">
+              The AI notepad that turns
+              <br className="hidden sm:block" />{" "}
+              your website into a{" "}
+              <span className="decorated-underline">lead machine</span>
+            </h1>
+          </FadeInUp>
+
+          <FadeInUp delay={0.16}>
+            <p className="mx-auto mt-7 max-w-xl text-center text-lg leading-relaxed text-brand-muted">
+              Capture leads, answer questions, and book appointments
+              automatically — even while you sleep. Set up in 5 minutes.
+            </p>
+          </FadeInUp>
+
+          <FadeInUp delay={0.24}>
+            <div className="mt-10 flex items-center justify-center gap-4">
+              <Link
+                href="/signup"
+                className="bg-gradient-accent group inline-flex items-center gap-2 rounded-full px-7 py-3 text-[15px] font-semibold text-brand-primary shadow-lg shadow-brand-accent-from/20 transition-all hover:shadow-xl hover:shadow-brand-accent-from/30 hover:brightness-105"
+              >
+                Get started free
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              </Link>
+              <Link
+                href="/demo"
+                className="rounded-full border border-brand-border px-7 py-3 text-[15px] font-semibold text-brand-primary transition-all hover:border-brand-muted hover:bg-brand-surface"
+              >
+                See it in action
+              </Link>
+            </div>
+          </FadeInUp>
+        </div>
+      </section>
+
+      {/* ─── INDUSTRY MARQUEE ─── */}
+      <section className="border-y border-brand-border/50 py-5">
+        <div className="marquee-container">
+          <div className="marquee-track" style={{ animationDuration: "40s" }}>
+            {[...industries, ...industries, ...industries, ...industries].map(
+              (ind, i) => (
+                <Link
+                  key={`${ind.name}-${i}`}
+                  href={ind.href}
+                  className="mx-3 inline-flex shrink-0 items-center gap-2 rounded-full border border-brand-border bg-white px-5 py-2 text-sm font-medium text-brand-primary transition-colors hover:border-brand-accent-from/50 hover:bg-brand-surface"
+                >
+                  <ind.icon className="h-4 w-4 text-brand-muted" />
+                  {ind.name}
+                </Link>
+              ),
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── FEATURE 1: AI Conversations — Asymmetric 2-col ─── */}
+      <section className="px-6 py-28">
+        <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[1fr_1.3fr] lg:gap-20">
+          <FadeInUp>
+            <div>
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-brand-surface px-3 py-1 text-xs font-semibold uppercase tracking-wider text-brand-muted">
+                <MessageSquare className="h-3.5 w-3.5" />
+                Conversations
+              </div>
+              <h2 className="text-3xl font-bold leading-tight tracking-tight text-brand-primary sm:text-4xl">
+                Your AI talks to visitors so you don&apos;t have to
+              </h2>
+              <p className="mt-5 text-base leading-relaxed text-brand-muted">
+                Natural language chatbot that understands context, answers
+                questions from your knowledge base, and qualifies leads —
+                all in your brand&apos;s voice.
+              </p>
+              <ul className="mt-6 space-y-3">
+                <li className="flex items-start gap-2.5 text-sm text-brand-muted">
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand-accent-to" />
+                  Trained on your content — FAQs, docs, URLs, videos
+                </li>
+                <li className="flex items-start gap-2.5 text-sm text-brand-muted">
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand-accent-to" />
+                  Qualifies leads before they reach your inbox
+                </li>
+                <li className="flex items-start gap-2.5 text-sm text-brand-muted">
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand-accent-to" />
+                  Works 24/7 — nights, weekends, holidays
+                </li>
+              </ul>
+            </div>
+          </FadeInUp>
+
+          <FadeInUp delay={0.15}>
+            <div className="feature-visual aspect-[4/3] w-full p-8 lg:p-12">
+              {/* Chat mockup */}
+              <div className="flex flex-col gap-3">
+                <div className="self-start rounded-2xl rounded-tl-sm bg-white px-4 py-2.5 text-sm text-brand-secondary shadow-sm">
+                  Hi! I was in a car accident last week. Do I have a case?
+                </div>
+                <div className="self-end rounded-2xl rounded-tr-sm bg-gradient-accent px-4 py-2.5 text-sm text-brand-primary shadow-sm max-w-[80%]">
+                  I&apos;m sorry to hear that. I can help you understand your options. Were there any injuries involved?
+                </div>
+                <div className="self-start rounded-2xl rounded-tl-sm bg-white px-4 py-2.5 text-sm text-brand-secondary shadow-sm">
+                  Yes, I&apos;ve been having back pain since the accident.
+                </div>
+                <div className="self-end rounded-2xl rounded-tr-sm bg-gradient-accent px-4 py-2.5 text-sm text-brand-primary shadow-sm max-w-[80%]">
+                  Based on what you&apos;ve described, you may have grounds for a personal injury claim. Would you like to schedule a free consultation with our attorney?
+                </div>
+                <div className="mt-1 self-end">
+                  <div className="inline-flex items-center gap-1.5 rounded-full bg-brand-primary px-4 py-1.5 text-xs font-medium text-white">
+                    <Calendar className="h-3 w-3" /> Book consultation
+                  </div>
+                </div>
+              </div>
+            </div>
+          </FadeInUp>
+        </div>
+      </section>
+
+      {/* ─── INLINE TESTIMONIAL ─── */}
+      <section className="border-y border-brand-border/50 px-6 py-16">
+        <FadeInOnly>
+          <div className="mx-auto max-w-3xl text-center">
+            <Quote className="mx-auto h-8 w-8 text-brand-accent-from opacity-50" />
+            <blockquote className="mt-4 text-xl font-medium leading-relaxed text-brand-primary sm:text-2xl">
+              &ldquo;We went from 3 consultations per month to 15. The chatbot
+              qualifies leads before they even talk to us.&rdquo;
+            </blockquote>
+            <div className="mt-5 text-sm text-brand-muted">
+              <span className="font-semibold text-brand-secondary">Sarah Mitchell</span>
+              {" "}— Managing Partner, Mitchell Family Law
+            </div>
+          </div>
+        </FadeInOnly>
+      </section>
+
+      {/* ─── FEATURE 2: Lead Capture — Reversed layout ─── */}
+      <section className="px-6 py-28">
+        <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[1.3fr_1fr] lg:gap-20">
+          <FadeInUp>
+            <div className="feature-visual aspect-[4/3] w-full p-8 lg:p-12 order-2 lg:order-1">
+              {/* Lead form mockup */}
+              <div className="mx-auto max-w-sm rounded-xl bg-white p-5 shadow-sm">
+                <p className="text-sm font-semibold text-brand-primary">
+                  Almost there — let us know how to reach you
+                </p>
+                <div className="mt-4 space-y-3">
+                  <div className="rounded-lg border border-brand-border bg-brand-surface px-3 py-2 text-xs text-brand-muted">
+                    Full name
+                  </div>
+                  <div className="rounded-lg border border-brand-border bg-brand-surface px-3 py-2 text-xs text-brand-muted">
+                    Email address
+                  </div>
+                  <div className="rounded-lg border border-brand-border bg-brand-surface px-3 py-2 text-xs text-brand-muted">
+                    Phone number
+                  </div>
+                  <div className="flex gap-2">
+                    <div className="flex-1 rounded-lg border border-brand-accent-from/50 bg-brand-accent-from/10 px-3 py-2 text-center text-xs font-medium text-brand-primary">
+                      Urgent
+                    </div>
+                    <div className="flex-1 rounded-lg border border-brand-border bg-brand-surface px-3 py-2 text-center text-xs text-brand-muted">
+                      Not urgent
+                    </div>
+                  </div>
+                  <div className="bg-gradient-accent rounded-lg px-3 py-2 text-center text-xs font-semibold text-brand-primary">
+                    Request Callback
+                  </div>
+                </div>
+                <p className="mt-3 text-center text-[10px] text-brand-light">
+                  AI pre-filled 2 of 3 fields from conversation
+                </p>
+              </div>
+            </div>
+          </FadeInUp>
+
+          <FadeInUp delay={0.15}>
+            <div className="order-1 lg:order-2">
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-brand-surface px-3 py-1 text-xs font-semibold uppercase tracking-wider text-brand-muted">
+                <Users className="h-3.5 w-3.5" />
+                Lead capture
+              </div>
+              <h2 className="text-3xl font-bold leading-tight tracking-tight text-brand-primary sm:text-4xl">
+                Capture leads without breaking the conversation
+              </h2>
+              <p className="mt-5 text-base leading-relaxed text-brand-muted">
+                Dynamic forms appear at the right moment — after the AI has
+                built trust and qualified intent. Information from the
+                conversation auto-fills fields so visitors submit faster.
+              </p>
+              <ul className="mt-6 space-y-3">
+                <li className="flex items-start gap-2.5 text-sm text-brand-muted">
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand-accent-to" />
+                  Conditional logic — different fields for different needs
+                </li>
+                <li className="flex items-start gap-2.5 text-sm text-brand-muted">
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand-accent-to" />
+                  AI pre-fills fields from conversation context
+                </li>
+                <li className="flex items-start gap-2.5 text-sm text-brand-muted">
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand-accent-to" />
+                  Instant email notifications for your team
+                </li>
+              </ul>
+            </div>
+          </FadeInUp>
+        </div>
+      </section>
+
+      {/* ─── FEATURE 3: Booking + Analytics — stacked showcase ─── */}
+      <section className="bg-brand-primary px-6 py-28 text-white">
+        <div className="mx-auto max-w-6xl">
+          <FadeInUp>
+            <div className="mx-auto max-w-2xl text-center">
+              <h2 className="text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
+                Book appointments.{" "}
+                <span className="text-gradient">Track everything.</span>
+              </h2>
+              <p className="mt-5 text-base leading-relaxed text-white/60">
+                Calendly integration, built-in booking wizard, and a real-time
+                analytics dashboard — see exactly how your chatbot performs.
+              </p>
+            </div>
+          </FadeInUp>
+
+          {/* Two capabilities side by side in asymmetric cards */}
+          <div className="mt-16 grid gap-6 lg:grid-cols-2">
+            <FadeInUp delay={0.1}>
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm">
+                <Calendar className="h-8 w-8 text-brand-accent-from" />
+                <h3 className="mt-4 text-xl font-semibold">
+                  Appointment Booking
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-white/50">
+                  Visitors book directly from the chat — no phone tag, no
+                  back-and-forth emails. Integrates with Calendly or use our
+                  built-in booking wizard with categories, time slots, and
+                  confirmations.
+                </p>
+                {/* Mini calendar mockup */}
+                <div className="mt-6 grid grid-cols-7 gap-1 rounded-xl bg-white/5 p-4">
+                  {["M", "T", "W", "T", "F", "S", "S"].map((d, i) => (
+                    <div
+                      key={`day-${i}`}
+                      className="text-center text-[10px] font-medium text-white/30"
+                    >
+                      {d}
+                    </div>
+                  ))}
+                  {Array.from({ length: 28 }, (_, i) => (
+                    <div
+                      key={`date-${i}`}
+                      className={`flex h-7 items-center justify-center rounded-md text-xs ${
+                        i === 14
+                          ? "bg-gradient-accent font-semibold text-brand-primary"
+                          : i === 10 || i === 17 || i === 22
+                            ? "bg-white/10 text-white/70"
+                            : "text-white/30"
+                      }`}
+                    >
+                      {i + 1}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </FadeInUp>
+
+            <FadeInUp delay={0.2}>
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm">
+                <BarChart3 className="h-8 w-8 text-brand-accent-from" />
+                <h3 className="mt-4 text-xl font-semibold">
+                  Analytics Dashboard
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-white/50">
+                  Track conversations, leads, and conversion rates in real time.
+                  Know what questions prospects ask most and optimize your
+                  chatbot for better results.
+                </p>
+                {/* Mini chart mockup */}
+                <div className="mt-6 flex items-end gap-2 rounded-xl bg-white/5 p-4">
+                  {[35, 45, 30, 60, 50, 75, 65, 80, 70, 90, 85, 95].map(
+                    (h, i) => (
+                      <div
+                        key={`bar-${i}`}
+                        className="flex-1 rounded-t-sm bg-gradient-accent opacity-70"
+                        style={{ height: `${h}px` }}
+                      />
+                    ),
+                  )}
+                </div>
+              </div>
+            </FadeInUp>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── HOW IT WORKS — Vertical timeline, not grid ─── */}
+      <section className="px-6 py-28">
+        <div className="mx-auto max-w-3xl">
+          <FadeInUp>
+            <div className="text-center">
+              <h2 className="text-3xl font-bold tracking-tight text-brand-primary sm:text-4xl">
+                Go live in 5 minutes
+              </h2>
+              <p className="mt-4 text-base text-brand-muted">
+                No coding. No developers. No complexity.
+              </p>
+            </div>
+          </FadeInUp>
+
+          <div className="relative mt-16">
+            {/* Vertical line */}
+            <div className="absolute left-6 top-0 bottom-0 w-px bg-brand-border sm:left-8" />
+
+            {/* Step 1 */}
+            <FadeInUp>
+              <div className="relative mb-14 pl-16 sm:pl-20">
+                <div className="bg-gradient-accent absolute left-0 top-0 flex h-12 w-12 items-center justify-center rounded-full text-sm font-bold text-brand-primary sm:h-16 sm:w-16 sm:text-base">
+                  01
+                </div>
+                <h3 className="text-xl font-semibold text-brand-primary">
+                  Choose your industry
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-brand-muted">
+                  Select from pre-built templates for law firms, coaches,
+                  therapists, real estate, financial advisors — or create a
+                  fully custom bot from scratch.
+                </p>
+              </div>
+            </FadeInUp>
+
+            {/* Step 2 */}
+            <FadeInUp delay={0.1}>
+              <div className="relative mb-14 pl-16 sm:pl-20">
+                <div className="bg-gradient-accent absolute left-0 top-0 flex h-12 w-12 items-center justify-center rounded-full text-sm font-bold text-brand-primary sm:h-16 sm:w-16 sm:text-base">
+                  02
+                </div>
+                <h3 className="text-xl font-semibold text-brand-primary">
+                  Add your content
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-brand-muted">
+                  Upload FAQs, documents, website URLs, or YouTube videos. Our
+                  AI learns your business instantly and speaks in your voice.
+                </p>
+              </div>
+            </FadeInUp>
+
+            {/* Step 3 */}
+            <FadeInUp delay={0.2}>
+              <div className="relative pl-16 sm:pl-20">
+                <div className="bg-gradient-accent absolute left-0 top-0 flex h-12 w-12 items-center justify-center rounded-full text-sm font-bold text-brand-primary sm:h-16 sm:w-16 sm:text-base">
+                  03
+                </div>
+                <h3 className="text-xl font-semibold text-brand-primary">
+                  Embed & go live
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-brand-muted">
+                  Copy one line of code, paste it on your website, and start
+                  capturing leads 24/7. Works with WordPress, Shopify, Wix,
+                  Squarespace, Webflow, and any custom site.
+                </p>
+              </div>
+            </FadeInUp>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── EMBED PLATFORMS MARQUEE (reversed) ─── */}
+      <section className="border-y border-brand-border/50 py-5">
+        <div className="marquee-container">
+          <div
+            className="marquee-track-reverse"
+            style={{ animationDuration: "50s" }}
+          >
+            {[
+              "WordPress",
+              "Shopify",
+              "Wix",
+              "Squarespace",
+              "Webflow",
+              "Next.js",
+              "React",
+              "HTML",
+              "WordPress",
+              "Shopify",
+              "Wix",
+              "Squarespace",
+              "Webflow",
+              "Next.js",
+              "React",
+              "HTML",
+            ].map((platform, i) => (
+              <span
+                key={`${platform}-${i}`}
+                className="mx-4 inline-flex shrink-0 items-center gap-2 text-sm font-medium text-brand-light"
+              >
+                <Code className="h-3.5 w-3.5" />
+                {platform}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── PRICING — single featured + mention others ─── */}
+      <section className="px-6 py-28">
+        <div className="mx-auto max-w-5xl">
+          <FadeInUp>
+            <div className="text-center">
+              <h2 className="text-3xl font-bold tracking-tight text-brand-primary sm:text-4xl">
+                One new client pays for your{" "}
+                <span className="text-gradient">entire year</span>
+              </h2>
+              <p className="mt-4 text-base text-brand-muted">
+                Plans that make sense for service professionals.
+              </p>
+            </div>
+          </FadeInUp>
+
+          <FadeInUp delay={0.1}>
+            <div className="mx-auto mt-14 grid max-w-4xl gap-6 lg:grid-cols-[1fr_1.5fr_1fr]">
+              {/* Basic */}
+              <div className="flex flex-col rounded-2xl border border-brand-border bg-white p-7">
+                <p className="text-xs font-semibold uppercase tracking-wider text-brand-light">
+                  Basic
+                </p>
+                <div className="mt-3">
+                  <span className="text-3xl font-bold text-brand-primary">$20</span>
+                  <span className="text-sm text-brand-muted">/mo</span>
+                </div>
+                <p className="mt-2 text-xs text-brand-muted">Solo practitioners</p>
+                <ul className="mt-5 flex-1 space-y-2 text-xs text-brand-muted">
+                  <li className="flex gap-2">
+                    <Check className="h-3.5 w-3.5 shrink-0 text-brand-accent-to" />
+                    1 chatbot
+                  </li>
+                  <li className="flex gap-2">
+                    <Check className="h-3.5 w-3.5 shrink-0 text-brand-accent-to" />
+                    500 conversations/mo
+                  </li>
+                  <li className="flex gap-2">
+                    <Check className="h-3.5 w-3.5 shrink-0 text-brand-accent-to" />
+                    Knowledge base & forms
+                  </li>
+                </ul>
+                <Link
+                  href="/signup"
+                  className="mt-6 block rounded-full border border-brand-border py-2 text-center text-xs font-semibold text-brand-primary transition-all hover:bg-brand-surface"
+                >
+                  Get Started
+                </Link>
+              </div>
+
+              {/* Pro (featured) */}
+              <div className="border-gradient relative flex flex-col rounded-2xl p-7 shadow-lg shadow-brand-accent-from/10">
+                <div className="bg-gradient-accent absolute -top-3 left-1/2 -translate-x-1/2 rounded-full px-4 py-1 text-xs font-semibold text-brand-primary">
+                  Most Popular
+                </div>
+                <p className="text-xs font-semibold uppercase tracking-wider text-brand-accent-to">
+                  Pro
+                </p>
+                <div className="mt-3">
+                  <span className="text-4xl font-bold text-brand-primary">$50</span>
+                  <span className="text-sm text-brand-muted">/mo</span>
+                </div>
+                <p className="mt-2 text-xs text-brand-muted">Growing practices</p>
+                <ul className="mt-5 flex-1 space-y-2.5 text-sm text-brand-muted">
+                  <li className="flex gap-2.5">
+                    <Check className="h-4 w-4 shrink-0 text-brand-accent-to" />
+                    3 chatbots
+                  </li>
+                  <li className="flex gap-2.5">
+                    <Check className="h-4 w-4 shrink-0 text-brand-accent-to" />
+                    Unlimited conversations
+                  </li>
+                  <li className="flex gap-2.5">
+                    <Check className="h-4 w-4 shrink-0 text-brand-accent-to" />
+                    All knowledge types incl. YouTube
+                  </li>
+                  <li className="flex gap-2.5">
+                    <Check className="h-4 w-4 shrink-0 text-brand-accent-to" />
+                    Booking wizard
+                  </li>
+                  <li className="flex gap-2.5">
+                    <Check className="h-4 w-4 shrink-0 text-brand-accent-to" />
+                    White-label
+                  </li>
+                  <li className="flex gap-2.5">
+                    <Check className="h-4 w-4 shrink-0 text-brand-accent-to" />
+                    Analytics dashboard
+                  </li>
+                </ul>
+                <Link
+                  href="/signup"
+                  className="bg-gradient-accent mt-6 block rounded-full py-2.5 text-center text-sm font-semibold text-brand-primary transition-all hover:brightness-105"
+                >
+                  Get Started
+                </Link>
+              </div>
+
+              {/* Agency */}
+              <div className="flex flex-col rounded-2xl border border-brand-border bg-white p-7">
+                <p className="text-xs font-semibold uppercase tracking-wider text-brand-light">
+                  Agency
+                </p>
+                <div className="mt-3">
+                  <span className="text-3xl font-bold text-brand-primary">$150</span>
+                  <span className="text-sm text-brand-muted">/mo</span>
+                </div>
+                <p className="mt-2 text-xs text-brand-muted">Agencies & teams</p>
+                <ul className="mt-5 flex-1 space-y-2 text-xs text-brand-muted">
+                  <li className="flex gap-2">
+                    <Check className="h-3.5 w-3.5 shrink-0 text-brand-accent-to" />
+                    10 chatbots
+                  </li>
+                  <li className="flex gap-2">
+                    <Check className="h-3.5 w-3.5 shrink-0 text-brand-accent-to" />
+                    Unlimited everything
+                  </li>
+                  <li className="flex gap-2">
+                    <Check className="h-3.5 w-3.5 shrink-0 text-brand-accent-to" />
+                    Team management & API
+                  </li>
+                </ul>
+                <Link
+                  href="/signup"
+                  className="mt-6 block rounded-full border border-brand-border py-2 text-center text-xs font-semibold text-brand-primary transition-all hover:bg-brand-surface"
+                >
+                  Get Started
+                </Link>
+              </div>
+            </div>
+          </FadeInUp>
+
+          <FadeInUp delay={0.15}>
+            <p className="mt-8 text-center text-sm text-brand-light">
+              All plans include a 14-day free trial. No credit card required.{" "}
+              <Link
+                href="/pricing"
+                className="font-medium text-brand-accent-to underline underline-offset-2 transition-colors hover:text-brand-accent-from"
+              >
+                Compare all features →
+              </Link>
+            </p>
+          </FadeInUp>
+        </div>
+      </section>
+
+      {/* ─── SECOND TESTIMONIAL ─── */}
+      <section className="bg-brand-surface px-6 py-16">
+        <FadeInOnly>
+          <div className="mx-auto max-w-3xl text-center">
+            <Quote className="mx-auto h-8 w-8 text-brand-accent-from opacity-50" />
+            <blockquote className="mt-4 text-xl font-medium leading-relaxed text-brand-primary sm:text-2xl">
+              &ldquo;Setup took less than 10 minutes. The chatbot now handles
+              80% of the questions we used to answer manually.&rdquo;
+            </blockquote>
+            <div className="mt-5 text-sm text-brand-muted">
+              <span className="font-semibold text-brand-secondary">Dr. James Okafor</span>
+              {" "}— Okafor Financial Planning
+            </div>
+          </div>
+        </FadeInOnly>
+      </section>
+
+      {/* ─── FINAL CTA ─── */}
+      <section className="relative overflow-hidden px-6 py-32">
+        <div
+          className="glow-orb left-1/4 top-0 h-[500px] w-[500px]"
+          style={{ background: "rgba(255, 215, 140, 0.2)" }}
+        />
+        <div
+          className="glow-orb right-1/4 bottom-0 h-[400px] w-[400px]"
+          style={{ background: "rgba(255, 171, 122, 0.15)" }}
+        />
+
+        <div className="relative mx-auto max-w-3xl text-center">
+          <ScaleIn>
+            <h2 className="text-3xl font-bold tracking-tight text-brand-primary sm:text-5xl">
+              Stop losing 90% of your{" "}
+              <span className="decorated-underline">website visitors</span>
+            </h2>
+            <p className="mt-6 text-base leading-relaxed text-brand-muted sm:text-lg">
+              Your competitors are already using AI chatbots. Every day without
+              one is leads lost.
+            </p>
             <Link
               href="/signup"
-              className="rounded-lg bg-blue-600 px-8 py-3.5 text-base font-semibold text-white shadow-sm transition-colors hover:bg-blue-700"
+              className="bg-gradient-accent group mt-8 inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-base font-semibold text-brand-primary shadow-lg shadow-brand-accent-from/20 transition-all hover:shadow-xl hover:shadow-brand-accent-from/30 hover:brightness-105"
             >
-              Start Free
+              Build your chatbot — free
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </Link>
-            <Link
-              href="/demo"
-              className="rounded-lg border border-gray-300 bg-white px-8 py-3.5 text-base font-semibold text-gray-700 shadow-sm transition-colors hover:bg-gray-50"
-            >
-              See Demo
-            </Link>
-          </div>
-          <p className="mt-4 text-sm text-gray-500">
-            No credit card required. Free plan available.
-          </p>
-        </div>
-      </section>
-
-      {/* Niche Showcase */}
-      <section className="px-6 py-24">
-        <div className="mx-auto max-w-7xl">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold text-gray-900">
-              Built for Your Industry
-            </h2>
-            <p className="mt-4 text-lg text-gray-600">
-              Pre-configured templates with industry-specific prompts, lead
-              forms, and qualification logic.
-            </p>
-          </div>
-          <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {niches.map((niche) => (
-              <Link
-                key={niche.name}
-                href={niche.href}
-                className="group rounded-xl border border-gray-200 p-6 transition-all hover:border-blue-300 hover:shadow-md"
-              >
-                <div
-                  className={`inline-flex rounded-lg p-3 ${niche.color}`}
-                >
-                  <niche.icon className="h-6 w-6" />
-                </div>
-                <h3 className="mt-4 text-lg font-semibold text-gray-900 group-hover:text-blue-600">
-                  {niche.name}
-                </h3>
-                <p className="mt-2 text-sm text-gray-600">
-                  {niche.description}
-                </p>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Features */}
-      <section className="bg-gray-50 px-6 py-24">
-        <div className="mx-auto max-w-7xl">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold text-gray-900">
-              Everything You Need to Convert Visitors
-            </h2>
-            <p className="mt-4 text-lg text-gray-600">
-              A complete lead generation platform, not just a chatbot.
-            </p>
-          </div>
-          <div className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {features.map((feature) => (
-              <div key={feature.name} className="flex gap-4">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-600 text-white">
-                  <feature.icon className="h-5 w-5" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900">
-                    {feature.name}
-                  </h3>
-                  <p className="mt-1 text-sm text-gray-600">
-                    {feature.description}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* How It Works */}
-      <section className="px-6 py-24">
-        <div className="mx-auto max-w-7xl">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold text-gray-900">
-              Go Live in 5 Minutes
-            </h2>
-            <p className="mt-4 text-lg text-gray-600">
-              No coding, no developers, no complexity.
-            </p>
-          </div>
-          <div className="mt-16 grid gap-12 md:grid-cols-3">
-            {steps.map((step) => (
-              <div key={step.number} className="text-center">
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-blue-600 text-lg font-bold text-white">
-                  {step.number}
-                </div>
-                <h3 className="mt-4 text-lg font-semibold text-gray-900">
-                  {step.title}
-                </h3>
-                <p className="mt-2 text-sm text-gray-600">
-                  {step.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Pricing Preview */}
-      <section className="bg-gray-50 px-6 py-24">
-        <div className="mx-auto max-w-5xl">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold text-gray-900">
-              Simple, Transparent Pricing
-            </h2>
-            <p className="mt-4 text-lg text-gray-600">
-              One new client pays for your entire year.
-            </p>
-          </div>
-          <div className="mt-16 grid gap-8 md:grid-cols-3">
-            {/* Basic */}
-            <div className="rounded-xl border border-gray-200 bg-white p-8">
-              <h3 className="text-lg font-semibold text-gray-900">Basic</h3>
-              <p className="mt-1 text-sm text-gray-500">
-                For solo practitioners
-              </p>
-              <div className="mt-4">
-                <span className="text-4xl font-bold text-gray-900">$20</span>
-                <span className="text-gray-500">/month</span>
-              </div>
-              <ul className="mt-6 space-y-3 text-sm text-gray-600">
-                <li>1 chatbot</li>
-                <li>500 conversations/month</li>
-                <li>Knowledge base (FAQs, docs)</li>
-                <li>Lead capture forms</li>
-                <li>Email notifications</li>
-              </ul>
-              <Link
-                href="/signup"
-                className="mt-8 block rounded-lg border border-gray-300 py-2.5 text-center text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50"
-              >
-                Get Started
-              </Link>
-            </div>
-
-            {/* Pro */}
-            <div className="relative rounded-xl border-2 border-blue-600 bg-white p-8">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-blue-600 px-3 py-1 text-xs font-semibold text-white">
-                Most Popular
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900">Pro</h3>
-              <p className="mt-1 text-sm text-gray-500">
-                For growing practices
-              </p>
-              <div className="mt-4">
-                <span className="text-4xl font-bold text-gray-900">$50</span>
-                <span className="text-gray-500">/month</span>
-              </div>
-              <ul className="mt-6 space-y-3 text-sm text-gray-600">
-                <li>3 chatbots</li>
-                <li>Unlimited conversations</li>
-                <li>All knowledge types (incl. YouTube)</li>
-                <li>Booking wizard</li>
-                <li>White-label (remove branding)</li>
-                <li>Analytics dashboard</li>
-              </ul>
-              <Link
-                href="/signup"
-                className="mt-8 block rounded-lg bg-blue-600 py-2.5 text-center text-sm font-semibold text-white transition-colors hover:bg-blue-700"
-              >
-                Get Started
-              </Link>
-            </div>
-
-            {/* Agency */}
-            <div className="rounded-xl border border-gray-200 bg-white p-8">
-              <h3 className="text-lg font-semibold text-gray-900">Agency</h3>
-              <p className="mt-1 text-sm text-gray-500">
-                For agencies & teams
-              </p>
-              <div className="mt-4">
-                <span className="text-4xl font-bold text-gray-900">$150</span>
-                <span className="text-gray-500">/month</span>
-              </div>
-              <ul className="mt-6 space-y-3 text-sm text-gray-600">
-                <li>10 chatbots</li>
-                <li>Unlimited everything</li>
-                <li>White-label</li>
-                <li>Team management</li>
-                <li>Priority support</li>
-                <li>API access</li>
-              </ul>
-              <Link
-                href="/signup"
-                className="mt-8 block rounded-lg border border-gray-300 py-2.5 text-center text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50"
-              >
-                Get Started
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Final CTA */}
-      <section className="px-6 py-24 text-center">
-        <div className="mx-auto max-w-3xl">
-          <h2 className="text-3xl font-bold text-gray-900">
-            Stop Losing 90% of Your Website Visitors
-          </h2>
-          <p className="mt-4 text-lg text-gray-600">
-            Your competitors are already using AI chatbots. Every day without
-            one is leads lost. Start converting today.
-          </p>
-          <Link
-            href="/signup"
-            className="mt-8 inline-block rounded-lg bg-blue-600 px-8 py-3.5 text-base font-semibold text-white shadow-sm transition-colors hover:bg-blue-700"
-          >
-            Build Your Chatbot Now — Free
-          </Link>
+          </ScaleIn>
         </div>
       </section>
     </>

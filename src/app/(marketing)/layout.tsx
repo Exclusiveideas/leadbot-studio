@@ -1,68 +1,128 @@
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
+import { Menu, X } from "lucide-react";
+
+const navLinks = [
+  { href: "/pricing", label: "Pricing" },
+  { href: "/niches/law-firm", label: "Industries" },
+  { href: "/demo", label: "Demo" },
+];
 
 export default function MarketingLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation */}
-      <nav className="border-b border-gray-100">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <Link href="/" className="text-xl font-bold text-gray-900">
-            LeadBotStudio
+      <nav className="fixed top-0 z-50 w-full border-b border-brand-border/50 bg-white/80 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+          <Link
+            href="/"
+            className="text-xl font-semibold tracking-tight text-brand-primary"
+          >
+            LeadBot<span className="text-gradient">Studio</span>
           </Link>
-          <div className="hidden items-center gap-8 md:flex">
-            <Link
-              href="/pricing"
-              className="text-sm text-gray-600 hover:text-gray-900"
-            >
-              Pricing
-            </Link>
-            <Link
-              href="/niches/law-firm"
-              className="text-sm text-gray-600 hover:text-gray-900"
-            >
-              Industries
-            </Link>
-            <Link
-              href="/demo"
-              className="text-sm text-gray-600 hover:text-gray-900"
-            >
-              Demo
-            </Link>
+
+          {/* Desktop Nav */}
+          <div className="hidden items-center gap-10 md:flex">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="relative text-sm font-medium text-brand-muted transition-colors hover:text-brand-primary"
+              >
+                {link.label}
+              </Link>
+            ))}
           </div>
-          <div className="flex items-center gap-4">
+
+          <div className="flex items-center gap-3">
             <Link
               href="/login"
-              className="text-sm font-medium text-gray-600 hover:text-gray-900"
+              className="hidden text-sm font-medium text-brand-muted transition-colors hover:text-brand-primary sm:block"
             >
               Log in
             </Link>
             <Link
               href="/signup"
-              className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700"
+              className="bg-gradient-accent rounded-full px-5 py-2 text-sm font-semibold text-brand-primary shadow-sm transition-all hover:shadow-md hover:brightness-105"
             >
               Get Started Free
             </Link>
+
+            {/* Mobile menu button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="ml-2 text-brand-muted md:hidden"
+            >
+              {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+            </button>
           </div>
         </div>
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div className="border-t border-brand-border/50 bg-white px-6 py-4 md:hidden">
+            <div className="flex flex-col gap-4">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-sm font-medium text-brand-muted transition-colors hover:text-brand-primary"
+                >
+                  {link.label}
+                </Link>
+              ))}
+              <Link
+                href="/login"
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-sm font-medium text-brand-muted transition-colors hover:text-brand-primary"
+              >
+                Log in
+              </Link>
+            </div>
+          </div>
+        )}
       </nav>
+
+      {/* Spacer for fixed nav */}
+      <div className="h-[65px]" />
 
       {children}
 
       {/* Footer */}
-      <footer className="border-t border-gray-100 bg-gray-50">
-        <div className="mx-auto max-w-7xl px-6 py-12">
-          <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
+      <footer className="bg-brand-primary text-white">
+        <div className="mx-auto max-w-6xl px-6 py-16">
+          <div className="grid grid-cols-2 gap-10 md:grid-cols-4">
+            <div className="col-span-2 md:col-span-1">
+              <Link
+                href="/"
+                className="text-lg font-semibold tracking-tight"
+              >
+                LeadBot<span className="text-gradient">Studio</span>
+              </Link>
+              <p className="mt-3 text-sm leading-relaxed text-white/50">
+                AI chatbots that convert visitors into leads. Built for service
+                professionals.
+              </p>
+            </div>
+
             <div>
-              <h3 className="text-sm font-semibold text-gray-900">Product</h3>
-              <ul className="mt-4 space-y-2">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-white/40">
+                Product
+              </h3>
+              <ul className="mt-4 space-y-2.5">
                 <li>
                   <Link
                     href="/pricing"
-                    className="text-sm text-gray-600 hover:text-gray-900"
+                    className="text-sm text-white/60 transition-colors hover:text-white"
                   >
                     Pricing
                   </Link>
@@ -70,22 +130,23 @@ export default function MarketingLayout({
                 <li>
                   <Link
                     href="/demo"
-                    className="text-sm text-gray-600 hover:text-gray-900"
+                    className="text-sm text-white/60 transition-colors hover:text-white"
                   >
                     Demo
                   </Link>
                 </li>
               </ul>
             </div>
+
             <div>
-              <h3 className="text-sm font-semibold text-gray-900">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-white/40">
                 Industries
               </h3>
-              <ul className="mt-4 space-y-2">
+              <ul className="mt-4 space-y-2.5">
                 <li>
                   <Link
                     href="/niches/law-firm"
-                    className="text-sm text-gray-600 hover:text-gray-900"
+                    className="text-sm text-white/60 transition-colors hover:text-white"
                   >
                     Law Firms
                   </Link>
@@ -93,7 +154,7 @@ export default function MarketingLayout({
                 <li>
                   <Link
                     href="/niches/business-coach"
-                    className="text-sm text-gray-600 hover:text-gray-900"
+                    className="text-sm text-white/60 transition-colors hover:text-white"
                   >
                     Business Coaches
                   </Link>
@@ -101,7 +162,7 @@ export default function MarketingLayout({
                 <li>
                   <Link
                     href="/niches/therapist"
-                    className="text-sm text-gray-600 hover:text-gray-900"
+                    className="text-sm text-white/60 transition-colors hover:text-white"
                   >
                     Therapists
                   </Link>
@@ -109,41 +170,31 @@ export default function MarketingLayout({
                 <li>
                   <Link
                     href="/niches/real-estate"
-                    className="text-sm text-gray-600 hover:text-gray-900"
+                    className="text-sm text-white/60 transition-colors hover:text-white"
                   >
                     Real Estate
                   </Link>
                 </li>
               </ul>
             </div>
+
             <div>
-              <h3 className="text-sm font-semibold text-gray-900">Company</h3>
-              <ul className="mt-4 space-y-2">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-white/40">
+                Company
+              </h3>
+              <ul className="mt-4 space-y-2.5">
                 <li>
                   <Link
                     href="/about"
-                    className="text-sm text-gray-600 hover:text-gray-900"
+                    className="text-sm text-white/60 transition-colors hover:text-white"
                   >
                     About
                   </Link>
                 </li>
                 <li>
                   <Link
-                    href="/contact"
-                    className="text-sm text-gray-600 hover:text-gray-900"
-                  >
-                    Contact
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold text-gray-900">Legal</h3>
-              <ul className="mt-4 space-y-2">
-                <li>
-                  <Link
                     href="/privacy"
-                    className="text-sm text-gray-600 hover:text-gray-900"
+                    className="text-sm text-white/60 transition-colors hover:text-white"
                   >
                     Privacy
                   </Link>
@@ -151,7 +202,7 @@ export default function MarketingLayout({
                 <li>
                   <Link
                     href="/terms"
-                    className="text-sm text-gray-600 hover:text-gray-900"
+                    className="text-sm text-white/60 transition-colors hover:text-white"
                   >
                     Terms
                   </Link>
@@ -159,7 +210,8 @@ export default function MarketingLayout({
               </ul>
             </div>
           </div>
-          <div className="mt-8 border-t border-gray-200 pt-8 text-center text-sm text-gray-500">
+
+          <div className="mt-12 border-t border-white/10 pt-8 text-center text-xs text-white/30">
             &copy; {new Date().getFullYear()} LeadBotStudio. All rights
             reserved.
           </div>

@@ -1,6 +1,12 @@
 import Link from "next/link";
-import { Check, ArrowRight } from "lucide-react";
+import { Check, ArrowRight, X } from "lucide-react";
 import { notFound } from "next/navigation";
+import {
+  FadeInUp,
+  StaggerContainer,
+  StaggerItem,
+  ScaleIn,
+} from "@/components/marketing/motion";
 
 const nicheData: Record<
   string,
@@ -12,7 +18,6 @@ const nicheData: Record<
     howItHelps: { title: string; description: string }[];
     sampleQuestions: string[];
     ctaText: string;
-    color: string;
   }
 > = {
   "law-firm": {
@@ -55,7 +60,6 @@ const nicheData: Record<
       "Can I schedule a free consultation?",
     ],
     ctaText: "Build Your Law Firm Chatbot",
-    color: "blue",
   },
   "business-coach": {
     name: "Business Coaches",
@@ -97,7 +101,6 @@ const nicheData: Record<
       "Can I book a free strategy session?",
     ],
     ctaText: "Build Your Coaching Chatbot",
-    color: "purple",
   },
   therapist: {
     name: "Therapists",
@@ -139,7 +142,6 @@ const nicheData: Record<
       "How do I schedule my first appointment?",
     ],
     ctaText: "Build Your Therapy Practice Chatbot",
-    color: "green",
   },
   "real-estate": {
     name: "Real Estate Agents",
@@ -181,7 +183,6 @@ const nicheData: Record<
       "How much is my home worth?",
     ],
     ctaText: "Build Your Real Estate Chatbot",
-    color: "red",
   },
   "financial-advisor": {
     name: "Financial Advisors",
@@ -223,28 +224,7 @@ const nicheData: Record<
       "Can I schedule a free consultation?",
     ],
     ctaText: "Build Your Financial Advisor Chatbot",
-    color: "sky",
   },
-};
-
-const colorMap: Record<string, { bg: string; text: string; border: string }> = {
-  blue: {
-    bg: "bg-blue-600",
-    text: "text-blue-600",
-    border: "border-blue-600",
-  },
-  purple: {
-    bg: "bg-purple-600",
-    text: "text-purple-600",
-    border: "border-purple-600",
-  },
-  green: {
-    bg: "bg-green-600",
-    text: "text-green-600",
-    border: "border-green-600",
-  },
-  red: { bg: "bg-red-600", text: "text-red-600", border: "border-red-600" },
-  sky: { bg: "bg-sky-600", text: "text-sky-600", border: "border-sky-600" },
 };
 
 export default async function NicheLandingPage({
@@ -259,119 +239,145 @@ export default async function NicheLandingPage({
     notFound();
   }
 
-  const colors = colorMap[niche.color] || colorMap.blue;
-
   return (
-    <div className="px-6 py-24">
+    <div className="px-6 py-28">
       <div className="mx-auto max-w-5xl">
         {/* Hero */}
-        <div className="text-center">
-          <p
-            className={`text-sm font-semibold uppercase tracking-wide ${colors.text}`}
-          >
-            {niche.name}
-          </p>
-          <h1 className="mt-2 text-4xl font-bold text-gray-900 sm:text-5xl">
-            {niche.headline}
-          </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg text-gray-600">
-            {niche.subheadline}
-          </p>
-          <div className="mt-8">
-            <Link
-              href="/signup"
-              className={`inline-block rounded-lg ${colors.bg} px-8 py-3.5 text-base font-semibold text-white shadow-sm transition-colors hover:opacity-90`}
-            >
-              {niche.ctaText}
-            </Link>
+        <FadeInUp>
+          <div className="text-center">
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-brand-border bg-brand-surface px-4 py-1.5 text-xs font-medium text-brand-muted">
+              <span className="inline-block h-1.5 w-1.5 rounded-full bg-gradient-accent" />
+              {niche.name}
+            </div>
+            <h1 className="text-4xl font-bold tracking-tight text-brand-primary sm:text-5xl">
+              {niche.headline}
+            </h1>
+            <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-brand-muted">
+              {niche.subheadline}
+            </p>
+            <div className="mt-8">
+              <Link
+                href="/signup"
+                className="bg-gradient-accent group inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-base font-semibold text-brand-primary shadow-lg shadow-brand-accent-from/20 transition-all hover:shadow-xl hover:brightness-105"
+              >
+                {niche.ctaText}
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              </Link>
+            </div>
           </div>
-        </div>
+        </FadeInUp>
 
         {/* Pain Points */}
-        <div className="mt-24">
-          <h2 className="text-center text-2xl font-bold text-gray-900">
-            Sound Familiar?
-          </h2>
-          <div className="mt-8 grid gap-4 sm:grid-cols-2">
+        <div className="mt-28">
+          <FadeInUp>
+            <h2 className="text-center text-2xl font-bold tracking-tight text-brand-primary sm:text-3xl">
+              Sound Familiar?
+            </h2>
+          </FadeInUp>
+
+          <StaggerContainer className="mt-10 grid gap-4 sm:grid-cols-2">
             {niche.painPoints.map((pain) => (
-              <div
-                key={pain}
-                className="flex items-start gap-3 rounded-lg border border-red-100 bg-red-50 p-4"
-              >
-                <span className="mt-0.5 text-red-500">&#10007;</span>
-                <span className="text-sm text-gray-700">{pain}</span>
-              </div>
+              <StaggerItem key={pain}>
+                <div className="flex items-start gap-3 rounded-2xl border border-red-100 bg-red-50/50 p-5">
+                  <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-red-100">
+                    <X className="h-3 w-3 text-red-500" />
+                  </div>
+                  <span className="text-sm leading-relaxed text-brand-secondary">
+                    {pain}
+                  </span>
+                </div>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
         </div>
 
         {/* How It Helps */}
-        <div className="mt-24">
-          <h2 className="text-center text-2xl font-bold text-gray-900">
-            How LeadBotStudio Helps
-          </h2>
-          <div className="mt-12 grid gap-8 md:grid-cols-2">
+        <div className="mt-28">
+          <FadeInUp>
+            <h2 className="text-center text-2xl font-bold tracking-tight text-brand-primary sm:text-3xl">
+              How LeadBotStudio Helps
+            </h2>
+          </FadeInUp>
+
+          <StaggerContainer className="mt-12 grid gap-8 md:grid-cols-2">
             {niche.howItHelps.map((item) => (
-              <div key={item.title} className="flex gap-4">
-                <div
-                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${colors.bg} text-white`}
-                >
-                  <Check className="h-4 w-4" />
+              <StaggerItem key={item.title}>
+                <div className="flex gap-4">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-accent text-brand-primary">
+                    <Check className="h-4 w-4" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-brand-primary">
+                      {item.title}
+                    </h3>
+                    <p className="mt-1.5 text-sm leading-relaxed text-brand-muted">
+                      {item.description}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900">{item.title}</h3>
-                  <p className="mt-1 text-sm text-gray-600">
-                    {item.description}
-                  </p>
-                </div>
-              </div>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
         </div>
 
         {/* Sample Questions */}
-        <div className="mt-24">
-          <h2 className="text-center text-2xl font-bold text-gray-900">
-            Questions Your Chatbot Can Handle
-          </h2>
-          <div className="mt-8 grid gap-3 sm:grid-cols-2">
+        <div className="mt-28">
+          <FadeInUp>
+            <h2 className="text-center text-2xl font-bold tracking-tight text-brand-primary sm:text-3xl">
+              Questions Your Chatbot Can Handle
+            </h2>
+          </FadeInUp>
+
+          <StaggerContainer className="mt-10 grid gap-4 sm:grid-cols-2">
             {niche.sampleQuestions.map((q) => (
-              <div
-                key={q}
-                className="rounded-lg border border-gray-200 bg-white p-4"
-              >
-                <p className="text-sm italic text-gray-600">
-                  &ldquo;{q}&rdquo;
-                </p>
-              </div>
+              <StaggerItem key={q}>
+                <div className="rounded-2xl border border-brand-border bg-white p-5">
+                  <p className="text-sm italic leading-relaxed text-brand-muted">
+                    &ldquo;{q}&rdquo;
+                  </p>
+                </div>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
         </div>
 
         {/* CTA */}
-        <div className="mt-24 text-center">
-          <h2 className="text-2xl font-bold text-gray-900">
-            Ready to Start Capturing Leads?
-          </h2>
-          <p className="mt-4 text-gray-600">
-            Set up your {niche.name.toLowerCase()} chatbot in 5 minutes. No
-            coding required.
-          </p>
-          <div className="mt-8 flex items-center justify-center gap-4">
-            <Link
-              href="/signup"
-              className={`inline-flex items-center gap-2 rounded-lg ${colors.bg} px-8 py-3.5 text-base font-semibold text-white shadow-sm transition-colors hover:opacity-90`}
-            >
-              {niche.ctaText}
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-            <Link
-              href="/pricing"
-              className="rounded-lg border border-gray-300 bg-white px-8 py-3.5 text-base font-semibold text-gray-700 shadow-sm transition-colors hover:bg-gray-50"
-            >
-              View Pricing
-            </Link>
-          </div>
+        <div className="relative mt-28 overflow-hidden rounded-3xl bg-brand-primary px-8 py-16 text-center">
+          <div
+            className="glow-orb left-0 top-0 h-[300px] w-[300px]"
+            style={{ background: "rgba(255, 215, 140, 0.15)" }}
+          />
+          <div
+            className="glow-orb bottom-0 right-0 h-[250px] w-[250px]"
+            style={{ background: "rgba(255, 171, 122, 0.1)" }}
+          />
+
+          <ScaleIn>
+            <div className="relative">
+              <h2 className="text-2xl font-bold text-white sm:text-3xl">
+                Ready to Start Capturing Leads?
+              </h2>
+              <p className="mt-4 text-white/60">
+                Set up your {niche.name.toLowerCase()} chatbot in 5 minutes. No
+                coding required.
+              </p>
+              <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+                <Link
+                  href="/signup"
+                  className="bg-gradient-accent group inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-base font-semibold text-brand-primary transition-all hover:brightness-105"
+                >
+                  {niche.ctaText}
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                </Link>
+                <Link
+                  href="/pricing"
+                  className="rounded-full border border-white/20 px-8 py-3.5 text-base font-semibold text-white transition-all hover:border-white/40 hover:bg-white/5"
+                >
+                  View Pricing
+                </Link>
+              </div>
+            </div>
+          </ScaleIn>
         </div>
       </div>
     </div>

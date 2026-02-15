@@ -3,7 +3,6 @@
 import Logo from "@/components/shared/Logo";
 import { useToast } from "@/components/ui/toast";
 import { ChevronLeft, Eye, EyeClosed } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
@@ -32,6 +31,7 @@ function LoginContent() {
   const [needsVerification, setNeedsVerification] = useState(false);
   const [verificationEmail, setVerificationEmail] = useState("");
   const [isResendingVerification, setIsResendingVerification] = useState(false);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -86,7 +86,6 @@ function LoginContent() {
 
       if (!response.ok) {
         if (data.mfaSetupRequired && data.mfaSetupToken) {
-          // Organization requires MFA - redirect to setup with token
           addToast(
             "Your organization requires multi-factor authentication. Redirecting to setup...",
             "info",
@@ -98,7 +97,6 @@ function LoginContent() {
           setVerificationEmail(data.email);
           addToast(data.error, "error");
         } else if (response.status === 423) {
-          // Account locked - show duration
           const minutes = data.retryAfterSeconds
             ? Math.ceil(data.retryAfterSeconds / 60)
             : 20;
@@ -108,7 +106,6 @@ function LoginContent() {
             10000,
           );
         } else if (data.warning) {
-          // Show warning about remaining attempts along with the error
           addToast(data.error, "error");
           addToast(data.warning, "warning", 8000);
         } else if (data.error) {
@@ -123,7 +120,6 @@ function LoginContent() {
         return;
       }
 
-      // Login successful
       addToast("Login successful!", "success");
       router.push(redirectUrl);
     } catch (error) {
@@ -170,17 +166,7 @@ function LoginContent() {
 
   return (
     <div className="auth-page">
-      <div className="login-authBGWrapper">
-        <Image
-          src="/images/background-auth.webp"
-          alt="auth Image"
-          width={1920}
-          height={1080}
-          className="auth-bg-image"
-          priority
-        />
-        <div className="auth-bg-overlay" />
-      </div>
+      <div className="auth-bg-mesh" />
       <Link href="/" className="auth-back-btn">
         <ChevronLeft size={16} /> <span>Home</span>
       </Link>
@@ -188,7 +174,7 @@ function LoginContent() {
       <div className="auth-form-wrapper">
         <Logo size="big" />
         <div className="auth-header">
-          <h1 className="auth-title">Log in to your account</h1>
+          <h1 className="auth-title">Welcome back</h1>
           <p className="auth-subtitle">
             {mfaRequired
               ? "Enter your authentication code to continue"
@@ -231,7 +217,7 @@ function LoginContent() {
                   <label htmlFor="password" className="auth-form-label">
                     Password
                   </label>
-                  <Link href="/reset-password" className="auth-link">
+                  <Link href="/reset-password" className="auth-link" style={{ fontSize: '12px' }}>
                     Forgot password?
                   </Link>
                 </div>
@@ -242,14 +228,14 @@ function LoginContent() {
                   value={formData.password}
                   onChange={handleChange}
                   className="auth-input"
-                  placeholder="•••••••••••••"
+                  placeholder="Enter your password"
                   disabled={isLoading}
                 />
                 <div
                   className="auth-eye-toggle"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? <EyeClosed size={20} /> : <Eye size={20} />}
+                  {showPassword ? <EyeClosed size={18} /> : <Eye size={18} />}
                 </div>
               </div>
             </>
@@ -328,17 +314,7 @@ function LoginContent() {
 function AuthLoadingFallback() {
   return (
     <div className="auth-page">
-      <div className="login-authBGWrapper">
-        <Image
-          src="/images/background-auth.webp"
-          alt="auth Image"
-          width={1920}
-          height={1080}
-          className="auth-bg-image"
-          priority
-        />
-        <div className="auth-bg-overlay" />
-      </div>
+      <div className="auth-bg-mesh" />
       <div className="auth-form-wrapper">
         <Logo size="big" />
         <div className="auth-loading-container">

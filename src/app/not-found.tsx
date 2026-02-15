@@ -5,21 +5,24 @@ export default function NotFound() {
   return (
     <div className="flex min-h-screen flex-col bg-white">
       {/* Nav */}
-      <nav className="border-b border-gray-100">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <Link href="/" className="text-xl font-bold text-gray-900">
-            LeadBotStudio
+      <nav className="border-b border-brand-border/50">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+          <Link
+            href="/"
+            className="text-xl font-semibold tracking-tight text-brand-primary"
+          >
+            LeadBot<span className="text-gradient">Studio</span>
           </Link>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <Link
               href="/login"
-              className="text-sm font-medium text-gray-600 hover:text-gray-900"
+              className="text-sm font-medium text-brand-muted transition-colors hover:text-brand-primary"
             >
               Log in
             </Link>
             <Link
               href="/signup"
-              className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700"
+              className="bg-gradient-accent rounded-full px-5 py-2 text-sm font-semibold text-brand-primary transition-all hover:brightness-105"
             >
               Get Started Free
             </Link>
@@ -28,31 +31,36 @@ export default function NotFound() {
       </nav>
 
       {/* Content */}
-      <main className="flex flex-1 items-center justify-center px-6">
-        <div className="text-center">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-blue-50">
-            <MessageSquare className="h-8 w-8 text-blue-600" />
+      <main className="relative flex flex-1 items-center justify-center overflow-hidden px-6">
+        <div
+          className="glow-orb left-1/4 top-1/4 h-[400px] w-[400px]"
+          style={{ background: "rgba(255, 215, 140, 0.2)" }}
+        />
+
+        <div className="relative text-center">
+          <div className="bg-gradient-accent mx-auto flex h-14 w-14 items-center justify-center rounded-2xl">
+            <MessageSquare className="h-7 w-7 text-brand-primary" />
           </div>
-          <h1 className="mt-6 text-7xl font-bold tracking-tight text-gray-900">
+          <h1 className="mt-6 text-7xl font-bold tracking-tight text-brand-primary">
             404
           </h1>
-          <p className="mt-4 text-xl font-semibold text-gray-900">
+          <p className="mt-3 text-lg font-semibold text-brand-primary">
             Page not found
           </p>
-          <p className="mt-2 max-w-md text-base text-gray-600">
+          <p className="mx-auto mt-2 max-w-md text-sm text-brand-muted">
             Looks like this page wandered off. Even our chatbots couldn&apos;t
             find it.
           </p>
-          <div className="mt-8 flex items-center justify-center gap-4">
+          <div className="mt-8 flex items-center justify-center gap-3">
             <Link
               href="/"
-              className="rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700"
+              className="bg-gradient-accent rounded-full px-6 py-2.5 text-sm font-semibold text-brand-primary transition-all hover:brightness-105"
             >
               Back to Home
             </Link>
             <Link
               href="/demo"
-              className="rounded-lg border border-gray-300 bg-white px-6 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition-colors hover:bg-gray-50"
+              className="rounded-full border border-brand-border px-6 py-2.5 text-sm font-semibold text-brand-primary transition-all hover:border-brand-muted hover:bg-brand-surface"
             >
               Try the Demo
             </Link>
@@ -61,8 +69,8 @@ export default function NotFound() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-gray-100 bg-gray-50">
-        <div className="mx-auto max-w-7xl px-6 py-8 text-center text-sm text-gray-500">
+      <footer className="border-t border-brand-border/50 bg-brand-surface">
+        <div className="mx-auto max-w-6xl px-6 py-6 text-center text-xs text-brand-light">
           &copy; {new Date().getFullYear()} LeadBotStudio. All rights reserved.
         </div>
       </footer>

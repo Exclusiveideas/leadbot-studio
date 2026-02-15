@@ -2,7 +2,6 @@
 
 import Logo from "@/components/shared/Logo";
 import { ChevronLeft, Eye, EyeClosed } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
@@ -44,7 +43,6 @@ function ResetPasswordForm() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    // Clear error for this field
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
@@ -141,7 +139,6 @@ function ResetPasswordForm() {
 
       if (mode === "request") {
         setRequestSuccess(true);
-        // Development mode - token logging removed for production security
       } else {
         setResetSuccess(true);
       }
@@ -155,24 +152,14 @@ function ResetPasswordForm() {
   if (requestSuccess) {
     return (
       <div className="auth-page">
-        <div className="authBGWrapper">
-          <Image
-            src="/images/background-auth.webp"
-            alt="auth Image"
-            width={1920}
-            height={1080}
-            className="auth-bg-image"
-            priority
-          />
-          <div className="auth-bg-overlay" />
-        </div>
+        <div className="auth-bg-mesh" />
         <Link href="/" className="auth-back-btn">
           <ChevronLeft size={16} /> <span>Home</span>
         </Link>
 
         <div className="auth-form-wrapper">
           <Logo size="big" />
-          <div className="auth-success-icon">✓</div>
+          <div className="auth-success-icon">&#10003;</div>
           <div className="auth-header">
             <h1 className="auth-title">Reset Email Sent!</h1>
             <p className="auth-subtitle">
@@ -192,26 +179,16 @@ function ResetPasswordForm() {
   if (resetSuccess) {
     return (
       <div className="auth-page">
-        <div className="authBGWrapper">
-          <Image
-            src="/images/background-auth.webp"
-            alt="auth Image"
-            width={1920}
-            height={1080}
-            className="auth-bg-image"
-            priority
-          />
-          <div className="auth-bg-overlay" />
-        </div>
+        <div className="auth-bg-mesh" />
         <Link href="/" className="auth-back-btn">
           <ChevronLeft size={16} /> <span>Home</span>
         </Link>
 
         <div className="auth-form-wrapper">
           <Logo size="big" />
-          <div className="auth-success-icon">✓</div>
+          <div className="auth-success-icon">&#10003;</div>
           <div className="auth-header">
-            <h1 className="auth-title">Password Reset Successfully!</h1>
+            <h1 className="auth-title">Password Reset!</h1>
             <p className="auth-subtitle">
               Your password has been reset. You can now log in with your new
               password.
@@ -225,19 +202,10 @@ function ResetPasswordForm() {
       </div>
     );
   }
+
   return (
     <div className="auth-page">
-      <div className="authBGWrapper">
-        <Image
-          src="/images/background-auth.webp"
-          alt="auth Image"
-          width={1920}
-          height={1080}
-          className="auth-bg-image"
-          priority
-        />
-        <div className="auth-bg-overlay" />
-      </div>
+      <div className="auth-bg-mesh" />
       <Link href="/" className="auth-back-btn">
         <ChevronLeft size={16} /> <span>Home</span>
       </Link>
@@ -250,8 +218,8 @@ function ResetPasswordForm() {
           </h1>
           <p className="auth-subtitle">
             {mode === "request"
-              ? "Include the email address associated with your account and we'll send you an email with instructions to reset your password."
-              : "Enter your new password below"}
+              ? "Enter the email associated with your account and we'll send you a reset link."
+              : "Enter your new password below."}
             {mode === "request" && (
               <>
                 {" "}
@@ -280,7 +248,7 @@ function ResetPasswordForm() {
                 value={formData.email}
                 onChange={handleChange}
                 className="auth-input"
-                placeholder="Enter your email"
+                placeholder="you@example.com"
                 disabled={isLoading}
               />
               {errors.email && (
@@ -300,21 +268,21 @@ function ResetPasswordForm() {
                   value={formData.password}
                   onChange={handleChange}
                   className="auth-input"
-                  placeholder="•••••••••••••"
+                  placeholder="Create a strong password"
                   disabled={isLoading}
                 />
                 <div
                   className="auth-eye-toggle"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? <EyeClosed size={20} /> : <Eye size={20} />}
+                  {showPassword ? <EyeClosed size={18} /> : <Eye size={18} />}
                 </div>
                 {errors.password && (
                   <span className="auth-field-error">{errors.password}</span>
                 )}
                 <p className="auth-helper-text">
-                  Password must be at least 8 characters with uppercase,
-                  lowercase, number, and special character
+                  Min 8 characters with uppercase, lowercase, number, and
+                  special character
                 </p>
               </div>
 
@@ -329,7 +297,7 @@ function ResetPasswordForm() {
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   className="auth-input"
-                  placeholder="•••••••••••••"
+                  placeholder="Confirm your password"
                   disabled={isLoading}
                 />
                 <div
@@ -337,9 +305,9 @@ function ResetPasswordForm() {
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 >
                   {showConfirmPassword ? (
-                    <EyeClosed size={20} />
+                    <EyeClosed size={18} />
                   ) : (
-                    <Eye size={20} />
+                    <Eye size={18} />
                   )}
                 </div>
                 {errors.confirmPassword && (
@@ -375,24 +343,21 @@ function ResetPasswordForm() {
   );
 }
 
-// Loading component
 function ResetPasswordLoading() {
   return (
-    <div className="authPage">
-      <div className="authBGWrapper">
-        <div className="w-full h-screen bg-gray-900 animate-pulse" />
-      </div>
-      <div className="form_wrapper w-full max-w-lg">
-        <div className="flex items-center justify-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          <span className="ml-2 text-white">Loading...</span>
+    <div className="auth-page">
+      <div className="auth-bg-mesh" />
+      <div className="auth-form-wrapper">
+        <Logo size="big" />
+        <div className="auth-loading-container">
+          <div className="auth-loading-spinner-large" />
+          <p className="auth-loading-text">Loading...</p>
         </div>
       </div>
     </div>
   );
 }
 
-// Main page component
 export default function ResetPasswordPage() {
   return (
     <Suspense fallback={<ResetPasswordLoading />}>

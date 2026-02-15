@@ -7,21 +7,19 @@ interface LogoProps {
 }
 
 const Logo: React.FC<LogoProps> = ({ size = "normal" }) => {
+  const textSize = size === "big" ? "text-2xl" : "text-xl";
+
   return (
     <div className="logoWrapper">
-      {/* Using a simple text logo for now - can be replaced with actual logo image */}
-       <Link
-            href="/"
-            className="flex items-center space-x-2 text-4xl font-bold"
-          >
-            <span
-              className={`transition-colors text-white`}
-            >
-              LeadBotStudio
-            </span>
-          </Link>
+      <Link
+        href="/"
+        className={`flex items-center ${textSize} font-semibold tracking-tight`}
+      >
+        <span className="text-brand-primary">LeadBot</span>
+        <span className="text-gradient">Studio</span>
+      </Link>
     </div>
   );
-}; 
+};
 
 export default Logo;
