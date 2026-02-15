@@ -54,19 +54,13 @@ export async function POST(request: NextRequest) {
     const hashedPassword = await hashPassword(password);
 
     // Create user and organization in a transaction
+    // Both FKs (user.organizationId, org.createdBy) are nullable,
+    // so we create user first, then org, then link them.
     const { user } = await prisma.$transaction(async (tx) => {
       const userId = nanoid();
       const orgId = nanoid();
 
-      const org = await tx.organization.create({
-        data: {
-          id: orgId,
-          name: `${name}'s Workspace`,
-          createdBy: userId,
-        },
-      });
-
-      const user = await tx.user.create({
+      await tx.user.create({
         data: {
           id: userId,
           email,
@@ -74,12 +68,26 @@ export async function POST(request: NextRequest) {
           password: hashedPassword,
           isActive: true,
           isVerified: false,
-          organizationId: org.id,
+        },
+      });
+
+      await tx.organization.create({
+        data: {
+          id: orgId,
+          name: `${name}'s Workspace`,
+          createdBy: userId,
+        },
+      });
+
+      const user = await tx.user.update({
+        where: { id: userId },
+        data: {
+          organizationId: orgId,
           organizationRole: "OWNER",
         },
       });
 
-      return { user, org };
+      return { user };
     });
 
     // Generate email verification token
