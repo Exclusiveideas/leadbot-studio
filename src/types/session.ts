@@ -7,7 +7,6 @@ export interface User {
   mfaEnabled: boolean;
   mfaVerified: boolean;
   hasPassword: boolean;
-  canExport: boolean;
   organizationRole: "OWNER" | "MEMBER";
   organization: {
     id: string;
