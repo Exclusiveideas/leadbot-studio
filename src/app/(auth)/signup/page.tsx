@@ -1,5 +1,6 @@
 "use client";
 
+import AuthBrandPanel from "@/components/auth/AuthBrandPanel";
 import Logo from "@/components/shared/Logo";
 import { useToast } from "@/components/ui/toast";
 import { ChevronLeft, Eye, EyeClosed } from "lucide-react";
@@ -160,43 +161,57 @@ function SignupContent() {
   if (signupSuccess) {
     return (
       <div className="auth-page">
-        <div className="auth-bg-mesh" />
-        <Link href="/" className="auth-back-btn">
-          <ChevronLeft size={16} /> <span>Home</span>
-        </Link>
+        <AuthBrandPanel
+          headline="You're one step away from capturing more leads"
+          subtext="Join thousands of service professionals already growing their business with AI chatbots."
+          testimonial={{
+            quote:
+              "Setting up took less than 5 minutes. Within the first day, our chatbot booked 3 consultations while I was in court.",
+            name: "James Rodriguez",
+            role: "Immigration Attorney",
+            initials: "JR",
+          }}
+        />
 
-        <div className="auth-form-wrapper">
-          <Logo size="big" />
-          <div className="auth-success-icon">&#10003;</div>
-          <div className="auth-header">
-            <h1 className="auth-title">Account Created!</h1>
-            <p className="auth-subtitle">
-              We&apos;ve sent a verification email to{" "}
-              <strong>{formData.email}</strong>. Please check your inbox and
-              click the verification link to activate your account.
-            </p>
-          </div>
-
-          {verificationToken && process.env.NODE_ENV === "development" && (
-            <div className="auth-dev-box">
-              <p className="auth-dev-label">
-                Development Mode - Click to verify:
-              </p>
-              <Link
-                href={`/verify-email?token=${verificationToken}`}
-                className="auth-dev-link"
-              >
-                Verify Email
-              </Link>
-            </div>
-          )}
-
-          <Link
-            href={`/login${redirectUrl !== "/dashboard" ? `?redirect=${encodeURIComponent(redirectUrl)}` : ""}`}
-            className="auth-btn auth-btn-spaced"
-          >
-            <span>Go to Login</span>
+        <div className="auth-form-panel">
+          <div className="auth-bg-mesh" />
+          <Link href="/" className="auth-back-btn">
+            <ChevronLeft size={16} /> <span>Home</span>
           </Link>
+
+          <div className="auth-form-wrapper">
+            <Logo size="big" />
+            <div className="auth-success-icon">&#10003;</div>
+            <div className="auth-header">
+              <h1 className="auth-title">Account Created!</h1>
+              <p className="auth-subtitle">
+                We&apos;ve sent a verification email to{" "}
+                <strong>{formData.email}</strong>. Please check your inbox and
+                click the verification link to activate your account.
+              </p>
+            </div>
+
+            {verificationToken && process.env.NODE_ENV === "development" && (
+              <div className="auth-dev-box">
+                <p className="auth-dev-label">
+                  Development Mode - Click to verify:
+                </p>
+                <Link
+                  href={`/verify-email?token=${verificationToken}`}
+                  className="auth-dev-link"
+                >
+                  Verify Email
+                </Link>
+              </div>
+            )}
+
+            <Link
+              href={`/login${redirectUrl !== "/dashboard" ? `?redirect=${encodeURIComponent(redirectUrl)}` : ""}`}
+              className="auth-btn auth-btn-spaced"
+            >
+              <span>Go to Login</span>
+            </Link>
+          </div>
         </div>
       </div>
     );
@@ -204,144 +219,158 @@ function SignupContent() {
 
   return (
     <div className="auth-page">
-      <div className="auth-bg-mesh" />
-      <Link href="/" className="auth-back-btn">
-        <ChevronLeft size={16} /> <span>Home</span>
-      </Link>
+      <AuthBrandPanel
+        headline="You're one step away from capturing more leads"
+        subtext="Join thousands of service professionals already growing their business with AI chatbots."
+        testimonial={{
+          quote:
+            "Setting up took less than 5 minutes. Within the first day, our chatbot booked 3 consultations while I was in court.",
+          name: "James Rodriguez",
+          role: "Immigration Attorney",
+          initials: "JR",
+        }}
+      />
 
-      <div className="auth-form-wrapper">
-        <Logo size="big" />
-        <div className="auth-header">
-          <h1 className="auth-title">Create an account</h1>
-          <p className="auth-subtitle">
-            Already have an account?{" "}
-            <Link href="/login" className="auth-link">
-              Log in
-            </Link>
-          </p>
-        </div>
+      <div className="auth-form-panel">
+        <div className="auth-bg-mesh" />
+        <Link href="/" className="auth-back-btn">
+          <ChevronLeft size={16} /> <span>Home</span>
+        </Link>
 
-        <form onSubmit={handleSubmit} className="auth-form">
-          <div className="auth-form-field">
-            <label htmlFor="name" className="auth-form-label">
-              Full Name
-            </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              className="auth-input"
-              placeholder="John Doe"
-              disabled={isLoading}
-            />
-          </div>
-
-          <div className="auth-form-field">
-            <label htmlFor="email" className="auth-form-label">
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className="auth-input"
-              placeholder="you@example.com"
-              autoComplete="email"
-              disabled={isLoading}
-            />
-          </div>
-
-          <div className="auth-form-field">
-            <label htmlFor="signupCode" className="auth-form-label">
-              Signup Code
-            </label>
-            <input
-              type="text"
-              id="signupCode"
-              name="signupCode"
-              value={formData.signupCode}
-              onChange={handleChange}
-              className="auth-input"
-              placeholder="ACME-2024-XXXX"
-              disabled={isLoading}
-            />
-            <p className="auth-helper-text">
-              Enter the signup code provided by your administrator
+        <div className="auth-form-wrapper">
+          <Logo size="big" />
+          <div className="auth-header">
+            <h1 className="auth-title">Create an account</h1>
+            <p className="auth-subtitle">
+              Already have an account?{" "}
+              <Link href="/login" className="auth-link">
+                Log in
+              </Link>
             </p>
           </div>
 
-          <div className="auth-form-field">
-            <label htmlFor="password" className="auth-form-label">
-              Password
-            </label>
-            <input
-              type={showPassword ? "text" : "password"}
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              className="auth-input"
-              placeholder="Create a strong password"
-              disabled={isLoading}
-            />
-            <div
-              className="auth-eye-toggle"
-              onClick={() => setShowPassword(!showPassword)}
-            >
-              {showPassword ? <EyeClosed size={18} /> : <Eye size={18} />}
-            </div>
-            <p className="auth-helper-text">
-              Min 8 characters with uppercase, lowercase, number, and special
-              character
-            </p>
-          </div>
-
-          <div className="auth-form-field">
-            <label className="auth-checkbox-label">
+          <form onSubmit={handleSubmit} className="auth-form">
+            <div className="auth-form-field">
+              <label htmlFor="name" className="auth-form-label">
+                Full Name
+              </label>
               <input
-                type="checkbox"
-                name="agreedToTerms"
-                checked={formData.agreedToTerms}
+                type="text"
+                id="name"
+                name="name"
+                value={formData.name}
                 onChange={handleChange}
-                required
+                className="auth-input"
+                placeholder="John Doe"
+                disabled={isLoading}
               />
-              <span>
-                I agree to the{" "}
-                <a href="//tos" target="_blank" rel="noopener noreferrer">
-                  Terms of Use
-                </a>{" "}
-                and{" "}
-                <a
-                  href="//privacypolicy"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Privacy Policy
-                </a>
-                .
-              </span>
-            </label>
-          </div>
+            </div>
 
-          <button
-            type="submit"
-            className="auth-btn"
-            disabled={isLoading || !btnActive}
-          >
-            {isLoading ? (
-              <div className="auth-loading">
-                <div className="auth-spinner" />
-                <span>Creating Account...</span>
+            <div className="auth-form-field">
+              <label htmlFor="email" className="auth-form-label">
+                Email
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                className="auth-input"
+                placeholder="you@example.com"
+                autoComplete="email"
+                disabled={isLoading}
+              />
+            </div>
+
+            <div className="auth-form-field">
+              <label htmlFor="signupCode" className="auth-form-label">
+                Signup Code
+              </label>
+              <input
+                type="text"
+                id="signupCode"
+                name="signupCode"
+                value={formData.signupCode}
+                onChange={handleChange}
+                className="auth-input"
+                placeholder="ACME-2024-XXXX"
+                disabled={isLoading}
+              />
+              <p className="auth-helper-text">
+                Enter the signup code provided by your administrator
+              </p>
+            </div>
+
+            <div className="auth-form-field">
+              <label htmlFor="password" className="auth-form-label">
+                Password
+              </label>
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                className="auth-input"
+                placeholder="Create a strong password"
+                disabled={isLoading}
+              />
+              <div
+                className="auth-eye-toggle"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <EyeClosed size={18} /> : <Eye size={18} />}
               </div>
-            ) : (
-              <span>Sign Up</span>
-            )}
-          </button>
-        </form>
+              <p className="auth-helper-text">
+                Min 8 characters with uppercase, lowercase, number, and special
+                character
+              </p>
+            </div>
+
+            <div className="auth-form-field">
+              <label className="auth-checkbox-label">
+                <input
+                  type="checkbox"
+                  name="agreedToTerms"
+                  checked={formData.agreedToTerms}
+                  onChange={handleChange}
+                  required
+                />
+                <span>
+                  I agree to the{" "}
+                  <a href="//tos" target="_blank" rel="noopener noreferrer">
+                    Terms of Use
+                  </a>{" "}
+                  and{" "}
+                  <a
+                    href="//privacypolicy"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Privacy Policy
+                  </a>
+                  .
+                </span>
+              </label>
+            </div>
+
+            <button
+              type="submit"
+              className="auth-btn"
+              disabled={isLoading || !btnActive}
+            >
+              {isLoading ? (
+                <div className="auth-loading">
+                  <div className="auth-spinner" />
+                  <span>Creating Account...</span>
+                </div>
+              ) : (
+                <span>Sign Up</span>
+              )}
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );
@@ -350,12 +379,14 @@ function SignupContent() {
 function AuthLoadingFallback() {
   return (
     <div className="auth-page">
-      <div className="auth-bg-mesh" />
-      <div className="auth-form-wrapper">
-        <Logo size="big" />
-        <div className="auth-loading-container">
-          <div className="auth-loading-spinner-large" />
-          <p className="auth-loading-text">Loading...</p>
+      <div className="auth-form-panel">
+        <div className="auth-bg-mesh" />
+        <div className="auth-form-wrapper">
+          <Logo size="big" />
+          <div className="auth-loading-container">
+            <div className="auth-loading-spinner-large" />
+            <p className="auth-loading-text">Loading...</p>
+          </div>
         </div>
       </div>
     </div>

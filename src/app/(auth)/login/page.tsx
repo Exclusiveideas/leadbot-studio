@@ -1,5 +1,6 @@
 "use client";
 
+import AuthBrandPanel from "@/components/auth/AuthBrandPanel";
 import Logo from "@/components/shared/Logo";
 import { useToast } from "@/components/ui/toast";
 import { ChevronLeft, Eye, EyeClosed } from "lucide-react";
@@ -166,146 +167,164 @@ function LoginContent() {
 
   return (
     <div className="auth-page">
-      <div className="auth-bg-mesh" />
-      <Link href="/" className="auth-back-btn">
-        <ChevronLeft size={16} /> <span>Home</span>
-      </Link>
+      <AuthBrandPanel
+        headline="Turn every website visitor into a qualified lead"
+        subtext="AI-powered chatbots that capture leads, book appointments, and answer questions 24/7."
+        testimonial={{
+          quote:
+            "We went from losing 60% of after-hours leads to capturing every single one. The ROI paid for itself in the first week.",
+          name: "Sarah Mitchell",
+          role: "Family Law Attorney",
+          initials: "SM",
+        }}
+      />
 
-      <div className="auth-form-wrapper">
-        <Logo size="big" />
-        <div className="auth-header">
-          <h1 className="auth-title">Welcome back</h1>
-          <p className="auth-subtitle">
-            {mfaRequired
-              ? "Enter your authentication code to continue"
-              : "Don't have an account?"}
+      <div className="auth-form-panel">
+        <div className="auth-bg-mesh" />
+        <Link href="/" className="auth-back-btn">
+          <ChevronLeft size={16} /> <span>Home</span>
+        </Link>
+
+        <div className="auth-form-wrapper">
+          <Logo size="big" />
+          <div className="auth-header">
+            <h1 className="auth-title">Welcome back</h1>
+            <p className="auth-subtitle">
+              {mfaRequired
+                ? "Enter your authentication code to continue"
+                : "Don't have an account?"}
+              {!mfaRequired && (
+                <>
+                  {" "}
+                  <Link
+                    href={`/signup${redirectUrl !== "/dashboard" ? `?redirect=${encodeURIComponent(redirectUrl)}` : ""}`}
+                    className="auth-link"
+                  >
+                    Sign up
+                  </Link>
+                </>
+              )}
+            </p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="auth-form">
             {!mfaRequired && (
               <>
-                {" "}
-                <Link
-                  href={`/signup${redirectUrl !== "/dashboard" ? `?redirect=${encodeURIComponent(redirectUrl)}` : ""}`}
-                  className="auth-link"
-                >
-                  Sign up
-                </Link>
+                <div className="auth-form-field">
+                  <label htmlFor="email" className="auth-form-label">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="auth-input"
+                    placeholder="you@example.com"
+                    disabled={isLoading}
+                  />
+                </div>
+
+                <div className="auth-form-field">
+                  <div className="auth-form-label-row">
+                    <label htmlFor="password" className="auth-form-label">
+                      Password
+                    </label>
+                    <Link
+                      href="/reset-password"
+                      className="auth-link"
+                      style={{ fontSize: "12px" }}
+                    >
+                      Forgot password?
+                    </Link>
+                  </div>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    id="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    className="auth-input"
+                    placeholder="Enter your password"
+                    disabled={isLoading}
+                  />
+                  <div
+                    className="auth-eye-toggle"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <EyeClosed size={18} /> : <Eye size={18} />}
+                  </div>
+                </div>
               </>
             )}
-          </p>
-        </div>
 
-        <form onSubmit={handleSubmit} className="auth-form">
-          {!mfaRequired && (
-            <>
+            {mfaRequired && (
               <div className="auth-form-field">
-                <label htmlFor="email" className="auth-form-label">
-                  Email
+                <label htmlFor="mfaToken" className="auth-form-label">
+                  Two-Factor Authentication Code
                 </label>
                 <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
+                  type="text"
+                  id="mfaToken"
+                  name="mfaToken"
+                  value={formData.mfaToken || ""}
                   onChange={handleChange}
                   className="auth-input"
-                  placeholder="you@example.com"
+                  placeholder="123456 or XXXX-XXXX"
+                  maxLength={9}
                   disabled={isLoading}
+                  autoFocus
                 />
+                <p className="auth-helper-text">
+                  Enter the 6-digit code from your authenticator app or a backup
+                  code (XXXX-XXXX)
+                </p>
               </div>
-
-              <div className="auth-form-field">
-                <div className="auth-form-label-row">
-                  <label htmlFor="password" className="auth-form-label">
-                    Password
-                  </label>
-                  <Link href="/reset-password" className="auth-link" style={{ fontSize: '12px' }}>
-                    Forgot password?
-                  </Link>
-                </div>
-                <input
-                  type={showPassword ? "text" : "password"}
-                  id="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  className="auth-input"
-                  placeholder="Enter your password"
-                  disabled={isLoading}
-                />
-                <div
-                  className="auth-eye-toggle"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? <EyeClosed size={18} /> : <Eye size={18} />}
-                </div>
-              </div>
-            </>
-          )}
-
-          {mfaRequired && (
-            <div className="auth-form-field">
-              <label htmlFor="mfaToken" className="auth-form-label">
-                Two-Factor Authentication Code
-              </label>
-              <input
-                type="text"
-                id="mfaToken"
-                name="mfaToken"
-                value={formData.mfaToken || ""}
-                onChange={handleChange}
-                className="auth-input"
-                placeholder="123456 or XXXX-XXXX"
-                maxLength={9}
-                disabled={isLoading}
-                autoFocus
-              />
-              <p className="auth-helper-text">
-                Enter the 6-digit code from your authenticator app or a backup
-                code (XXXX-XXXX)
-              </p>
-            </div>
-          )}
-
-          <button
-            type="submit"
-            className="auth-btn"
-            disabled={isLoading || (!btnActive && !mfaRequired)}
-          >
-            {isLoading ? (
-              <div className="auth-loading">
-                <div className="auth-spinner" />
-                <span>Signing in...</span>
-              </div>
-            ) : (
-              <span>{mfaRequired ? "Verify" : "Log in"}</span>
             )}
-          </button>
-        </form>
 
-        {needsVerification && (
-          <div className="auth-notice">
-            <h3 className="auth-notice-title">Email Verification Required</h3>
-            <p className="auth-notice-text">
-              Your email address needs to be verified before you can log in.
-              Didn't receive the email? Check your spam folder or request a new
-              one.
-            </p>
             <button
-              type="button"
-              onClick={handleResendVerification}
-              disabled={isResendingVerification}
-              className="auth-btn auth-btn-secondary"
+              type="submit"
+              className="auth-btn"
+              disabled={isLoading || (!btnActive && !mfaRequired)}
             >
-              {isResendingVerification ? (
+              {isLoading ? (
                 <div className="auth-loading">
                   <div className="auth-spinner" />
-                  <span>Sending...</span>
+                  <span>Signing in...</span>
                 </div>
               ) : (
-                <span>Resend verification email</span>
+                <span>{mfaRequired ? "Verify" : "Log in"}</span>
               )}
             </button>
-          </div>
-        )}
+          </form>
+
+          {needsVerification && (
+            <div className="auth-notice">
+              <h3 className="auth-notice-title">Email Verification Required</h3>
+              <p className="auth-notice-text">
+                Your email address needs to be verified before you can log in.
+                Didn&apos;t receive the email? Check your spam folder or request
+                a new one.
+              </p>
+              <button
+                type="button"
+                onClick={handleResendVerification}
+                disabled={isResendingVerification}
+                className="auth-btn auth-btn-secondary"
+              >
+                {isResendingVerification ? (
+                  <div className="auth-loading">
+                    <div className="auth-spinner" />
+                    <span>Sending...</span>
+                  </div>
+                ) : (
+                  <span>Resend verification email</span>
+                )}
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -314,12 +333,14 @@ function LoginContent() {
 function AuthLoadingFallback() {
   return (
     <div className="auth-page">
-      <div className="auth-bg-mesh" />
-      <div className="auth-form-wrapper">
-        <Logo size="big" />
-        <div className="auth-loading-container">
-          <div className="auth-loading-spinner-large" />
-          <p className="auth-loading-text">Loading...</p>
+      <div className="auth-form-panel">
+        <div className="auth-bg-mesh" />
+        <div className="auth-form-wrapper">
+          <Logo size="big" />
+          <div className="auth-loading-container">
+            <div className="auth-loading-spinner-large" />
+            <p className="auth-loading-text">Loading...</p>
+          </div>
         </div>
       </div>
     </div>

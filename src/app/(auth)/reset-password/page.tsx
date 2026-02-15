@@ -1,5 +1,6 @@
 "use client";
 
+import AuthBrandPanel from "@/components/auth/AuthBrandPanel";
 import Logo from "@/components/shared/Logo";
 import { ChevronLeft, Eye, EyeClosed } from "lucide-react";
 import Link from "next/link";
@@ -149,28 +150,46 @@ function ResetPasswordForm() {
     }
   };
 
+  const brandPanel = (
+    <AuthBrandPanel
+      headline="Secure your account, protect your leads"
+      subtext="Your chatbot works around the clock. Make sure your account stays safe so you never miss a lead."
+      testimonial={{
+        quote:
+          "The peace of mind knowing our client data is secure while the chatbot handles inquiries after hours is invaluable.",
+        name: "Dr. Amara Osei",
+        role: "Wellness Coach",
+        initials: "AO",
+      }}
+    />
+  );
+
   if (requestSuccess) {
     return (
       <div className="auth-page">
-        <div className="auth-bg-mesh" />
-        <Link href="/" className="auth-back-btn">
-          <ChevronLeft size={16} /> <span>Home</span>
-        </Link>
+        {brandPanel}
 
-        <div className="auth-form-wrapper">
-          <Logo size="big" />
-          <div className="auth-success-icon">&#10003;</div>
-          <div className="auth-header">
-            <h1 className="auth-title">Reset Email Sent!</h1>
-            <p className="auth-subtitle">
-              If an account exists with <strong>{formData.email}</strong>, you
-              will receive a password reset link shortly.
-            </p>
-          </div>
-
-          <Link href="/login" className="auth-btn auth-btn-spaced">
-            <span>Back to Login</span>
+        <div className="auth-form-panel">
+          <div className="auth-bg-mesh" />
+          <Link href="/" className="auth-back-btn">
+            <ChevronLeft size={16} /> <span>Home</span>
           </Link>
+
+          <div className="auth-form-wrapper">
+            <Logo size="big" />
+            <div className="auth-success-icon">&#10003;</div>
+            <div className="auth-header">
+              <h1 className="auth-title">Reset Email Sent!</h1>
+              <p className="auth-subtitle">
+                If an account exists with <strong>{formData.email}</strong>, you
+                will receive a password reset link shortly.
+              </p>
+            </div>
+
+            <Link href="/login" className="auth-btn auth-btn-spaced">
+              <span>Back to Login</span>
+            </Link>
+          </div>
         </div>
       </div>
     );
@@ -179,25 +198,29 @@ function ResetPasswordForm() {
   if (resetSuccess) {
     return (
       <div className="auth-page">
-        <div className="auth-bg-mesh" />
-        <Link href="/" className="auth-back-btn">
-          <ChevronLeft size={16} /> <span>Home</span>
-        </Link>
+        {brandPanel}
 
-        <div className="auth-form-wrapper">
-          <Logo size="big" />
-          <div className="auth-success-icon">&#10003;</div>
-          <div className="auth-header">
-            <h1 className="auth-title">Password Reset!</h1>
-            <p className="auth-subtitle">
-              Your password has been reset. You can now log in with your new
-              password.
-            </p>
-          </div>
-
-          <Link href="/login" className="auth-btn auth-btn-spaced">
-            <span>Go to Login</span>
+        <div className="auth-form-panel">
+          <div className="auth-bg-mesh" />
+          <Link href="/" className="auth-back-btn">
+            <ChevronLeft size={16} /> <span>Home</span>
           </Link>
+
+          <div className="auth-form-wrapper">
+            <Logo size="big" />
+            <div className="auth-success-icon">&#10003;</div>
+            <div className="auth-header">
+              <h1 className="auth-title">Password Reset!</h1>
+              <p className="auth-subtitle">
+                Your password has been reset. You can now log in with your new
+                password.
+              </p>
+            </div>
+
+            <Link href="/login" className="auth-btn auth-btn-spaced">
+              <span>Go to Login</span>
+            </Link>
+          </div>
         </div>
       </div>
     );
@@ -205,139 +228,143 @@ function ResetPasswordForm() {
 
   return (
     <div className="auth-page">
-      <div className="auth-bg-mesh" />
-      <Link href="/" className="auth-back-btn">
-        <ChevronLeft size={16} /> <span>Home</span>
-      </Link>
+      {brandPanel}
 
-      <div className="auth-form-wrapper">
-        <Logo size="big" />
-        <div className="auth-header">
-          <h1 className="auth-title">
-            {mode === "request" ? "Reset Password" : "Set New Password"}
-          </h1>
-          <p className="auth-subtitle">
-            {mode === "request"
-              ? "Enter the email associated with your account and we'll send you a reset link."
-              : "Enter your new password below."}
-            {mode === "request" && (
-              <>
-                {" "}
-                <Link href="/login" className="auth-link">
-                  Back to Login
-                </Link>
-              </>
-            )}
-          </p>
-        </div>
+      <div className="auth-form-panel">
+        <div className="auth-bg-mesh" />
+        <Link href="/" className="auth-back-btn">
+          <ChevronLeft size={16} /> <span>Home</span>
+        </Link>
 
-        <form onSubmit={handleSubmit} className="auth-form">
-          {errors.general && (
-            <div className="auth-error-msg">{errors.general}</div>
-          )}
-
-          {mode === "request" ? (
-            <div className="auth-form-field">
-              <label htmlFor="email" className="auth-form-label">
-                Email
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                className="auth-input"
-                placeholder="you@example.com"
-                disabled={isLoading}
-              />
-              {errors.email && (
-                <span className="auth-field-error">{errors.email}</span>
+        <div className="auth-form-wrapper">
+          <Logo size="big" />
+          <div className="auth-header">
+            <h1 className="auth-title">
+              {mode === "request" ? "Reset Password" : "Set New Password"}
+            </h1>
+            <p className="auth-subtitle">
+              {mode === "request"
+                ? "Enter the email associated with your account and we'll send you a reset link."
+                : "Enter your new password below."}
+              {mode === "request" && (
+                <>
+                  {" "}
+                  <Link href="/login" className="auth-link">
+                    Back to Login
+                  </Link>
+                </>
               )}
-            </div>
-          ) : (
-            <>
+            </p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="auth-form">
+            {errors.general && (
+              <div className="auth-error-msg">{errors.general}</div>
+            )}
+
+            {mode === "request" ? (
               <div className="auth-form-field">
-                <label htmlFor="password" className="auth-form-label">
-                  New Password
+                <label htmlFor="email" className="auth-form-label">
+                  Email
                 </label>
                 <input
-                  type={showPassword ? "text" : "password"}
-                  id="password"
-                  name="password"
-                  value={formData.password}
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
                   onChange={handleChange}
                   className="auth-input"
-                  placeholder="Create a strong password"
+                  placeholder="you@example.com"
                   disabled={isLoading}
                 />
-                <div
-                  className="auth-eye-toggle"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? <EyeClosed size={18} /> : <Eye size={18} />}
-                </div>
-                {errors.password && (
-                  <span className="auth-field-error">{errors.password}</span>
+                {errors.email && (
+                  <span className="auth-field-error">{errors.email}</span>
                 )}
-                <p className="auth-helper-text">
-                  Min 8 characters with uppercase, lowercase, number, and
-                  special character
-                </p>
-              </div>
-
-              <div className="auth-form-field">
-                <label htmlFor="confirmPassword" className="auth-form-label">
-                  Confirm New Password
-                </label>
-                <input
-                  type={showConfirmPassword ? "text" : "password"}
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  className="auth-input"
-                  placeholder="Confirm your password"
-                  disabled={isLoading}
-                />
-                <div
-                  className="auth-eye-toggle"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                >
-                  {showConfirmPassword ? (
-                    <EyeClosed size={18} />
-                  ) : (
-                    <Eye size={18} />
-                  )}
-                </div>
-                {errors.confirmPassword && (
-                  <span className="auth-field-error">
-                    {errors.confirmPassword}
-                  </span>
-                )}
-              </div>
-            </>
-          )}
-
-          <button
-            type="submit"
-            className="auth-btn"
-            disabled={isLoading || !btnActive}
-          >
-            {isLoading ? (
-              <div className="auth-loading">
-                <div className="auth-spinner" />
-                <span>
-                  {mode === "request" ? "Sending..." : "Resetting..."}
-                </span>
               </div>
             ) : (
-              <span>
-                {mode === "request" ? "Send reset email" : "Reset Password"}
-              </span>
+              <>
+                <div className="auth-form-field">
+                  <label htmlFor="password" className="auth-form-label">
+                    New Password
+                  </label>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    id="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    className="auth-input"
+                    placeholder="Create a strong password"
+                    disabled={isLoading}
+                  />
+                  <div
+                    className="auth-eye-toggle"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <EyeClosed size={18} /> : <Eye size={18} />}
+                  </div>
+                  {errors.password && (
+                    <span className="auth-field-error">{errors.password}</span>
+                  )}
+                  <p className="auth-helper-text">
+                    Min 8 characters with uppercase, lowercase, number, and
+                    special character
+                  </p>
+                </div>
+
+                <div className="auth-form-field">
+                  <label htmlFor="confirmPassword" className="auth-form-label">
+                    Confirm New Password
+                  </label>
+                  <input
+                    type={showConfirmPassword ? "text" : "password"}
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    className="auth-input"
+                    placeholder="Confirm your password"
+                    disabled={isLoading}
+                  />
+                  <div
+                    className="auth-eye-toggle"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  >
+                    {showConfirmPassword ? (
+                      <EyeClosed size={18} />
+                    ) : (
+                      <Eye size={18} />
+                    )}
+                  </div>
+                  {errors.confirmPassword && (
+                    <span className="auth-field-error">
+                      {errors.confirmPassword}
+                    </span>
+                  )}
+                </div>
+              </>
             )}
-          </button>
-        </form>
+
+            <button
+              type="submit"
+              className="auth-btn"
+              disabled={isLoading || !btnActive}
+            >
+              {isLoading ? (
+                <div className="auth-loading">
+                  <div className="auth-spinner" />
+                  <span>
+                    {mode === "request" ? "Sending..." : "Resetting..."}
+                  </span>
+                </div>
+              ) : (
+                <span>
+                  {mode === "request" ? "Send reset email" : "Reset Password"}
+                </span>
+              )}
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );
@@ -346,12 +373,14 @@ function ResetPasswordForm() {
 function ResetPasswordLoading() {
   return (
     <div className="auth-page">
-      <div className="auth-bg-mesh" />
-      <div className="auth-form-wrapper">
-        <Logo size="big" />
-        <div className="auth-loading-container">
-          <div className="auth-loading-spinner-large" />
-          <p className="auth-loading-text">Loading...</p>
+      <div className="auth-form-panel">
+        <div className="auth-bg-mesh" />
+        <div className="auth-form-wrapper">
+          <Logo size="big" />
+          <div className="auth-loading-container">
+            <div className="auth-loading-spinner-large" />
+            <p className="auth-loading-text">Loading...</p>
+          </div>
         </div>
       </div>
     </div>
