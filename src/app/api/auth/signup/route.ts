@@ -9,7 +9,6 @@ import {
   buildRateLimitHeaders,
   formatRateLimitError,
 } from "@/lib/middleware/authRateLimiter";
-import { logAuthEvent } from "@/lib/utils/audit";
 import { nanoid } from "nanoid";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -26,12 +25,6 @@ export async function POST(request: NextRequest) {
     const rateLimitResult = await checkAuthRateLimit("signup", clientIp, email);
 
     if (!rateLimitResult.allowed) {
-      await logAuthEvent(
-        "LOGIN_FAILED",
-        undefined,
-        { email, reason: "Signup rate limited", ip: clientIp },
-        request,
-      );
       return NextResponse.json(
         { error: formatRateLimitError(rateLimitResult) },
         { status: 429, headers: buildRateLimitHeaders(rateLimitResult) },
@@ -95,9 +88,6 @@ export async function POST(request: NextRequest) {
       user.id,
       user.email,
     );
-
-    // Log signup event
-    await logAuthEvent("SIGNUP", user.id, { email }, request);
 
     // Send verification email
     try {

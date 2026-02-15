@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Bot, Settings, HelpCircle } from "lucide-react";
+import { Bot, Settings, HelpCircle, LogOut } from "lucide-react";
 import { clsx } from "clsx";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 
 const navigation = [
   { name: "Chatbots", href: "/chatbots", icon: Bot },
@@ -13,7 +15,24 @@ const navigation = [
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [orgName, setOrgName] = useState<string | null>(null);
+  const [showSignOut, setShowSignOut] = useState(false);
+  const [isSigningOut, setIsSigningOut] = useState(false);
+
+  const handleSignOut = async () => {
+    setIsSigningOut(true);
+    try {
+      await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+      router.push("/login");
+    } catch {
+      setIsSigningOut(false);
+      setShowSignOut(false);
+    }
+  };
 
   useEffect(() => {
     fetch("/api/auth/session", { credentials: "include" })
@@ -76,8 +95,8 @@ export default function Sidebar() {
         })}
       </nav>
 
-      {/* Help */}
-      <div className="border-t border-white/10 p-3">
+      {/* Help & Sign Out */}
+      <div className="border-t border-white/10 p-3 space-y-1">
         <Link
           href="mailto:support@leadbotstudio.com"
           className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-white/60 transition-all duration-150 hover:bg-white/[0.06] hover:text-white"
@@ -85,7 +104,27 @@ export default function Sidebar() {
           <HelpCircle className="h-5 w-5" />
           Help & Support
         </Link>
+        <button
+          onClick={() => setShowSignOut(true)}
+          className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-white/60 transition-all duration-150 hover:bg-red-500/10 hover:text-red-400"
+        >
+          <LogOut className="h-5 w-5" />
+          Sign Out
+        </button>
       </div>
+
+      <ConfirmDialog
+        isOpen={showSignOut}
+        onClose={() => setShowSignOut(false)}
+        onConfirm={handleSignOut}
+        title="Sign Out"
+        message="Are you sure you want to sign out? You'll need to log in again to access your account."
+        confirmText="Sign Out"
+        cancelText="Cancel"
+        variant="warning"
+        icon={<LogOut className="w-6 h-6" />}
+        isLoading={isSigningOut}
+      />
     </aside>
   );
 }

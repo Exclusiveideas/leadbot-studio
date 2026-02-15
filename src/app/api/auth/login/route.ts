@@ -17,7 +17,6 @@ import {
   formatRateLimitError,
   resetAuthRateLimit,
 } from "@/lib/middleware/authRateLimiter";
-import { logAuthEvent } from "@/lib/utils/audit";
 import { nanoid } from "nanoid";
 import { NextRequest, NextResponse } from "next/server";
 import { SESSION_DURATION_MS } from "@/lib/auth/constants";
@@ -46,12 +45,6 @@ export async function POST(request: NextRequest) {
     const rateLimitResult = await checkAuthRateLimit("login", clientIp, email);
 
     if (!rateLimitResult.allowed) {
-      await logAuthEvent(
-        "LOGIN_FAILED",
-        undefined,
-        { email, reason: "Rate limited", ip: clientIp },
-        request,
-      );
       return NextResponse.json(
         { error: formatRateLimitError(rateLimitResult) },
         { status: 429, headers: buildRateLimitHeaders(rateLimitResult) },
@@ -89,12 +82,6 @@ export async function POST(request: NextRequest) {
     });
 
     if (!user || !user.isActive) {
-      await logAuthEvent(
-        "LOGIN_FAILED",
-        undefined,
-        { email, reason: "User not found or inactive" },
-        request,
-      );
       return NextResponse.json(
         { error: "Invalid credentials" },
         { status: 401 },
@@ -104,15 +91,6 @@ export async function POST(request: NextRequest) {
     // Check if account is locked
     const lockoutStatus = checkLockoutStatus(user.lockoutUntil);
     if (lockoutStatus.isLocked) {
-      await logAuthEvent(
-        "LOGIN_FAILED",
-        user.id,
-        {
-          reason: "Account locked",
-          lockoutRemaining: lockoutStatus.remainingSeconds,
-        },
-        request,
-      );
       return NextResponse.json(
         {
           error: "Account temporarily locked",
@@ -128,12 +106,6 @@ export async function POST(request: NextRequest) {
 
     // Verify password (user.password can be null for SSO users)
     if (!user.password) {
-      await logAuthEvent(
-        "LOGIN_FAILED",
-        user.id,
-        { reason: "No password set (SSO user)" },
-        request,
-      );
       return NextResponse.json(
         { error: "Invalid credentials" },
         { status: 401 },
@@ -167,21 +139,6 @@ export async function POST(request: NextRequest) {
 
       const lockoutMinutes = Math.ceil(
         LOCKOUT_CONFIG.LOCKOUT_DURATION_MS / 60000,
-      );
-
-      await logAuthEvent(
-        "LOGIN_FAILED",
-        user.id,
-        {
-          reason: attemptResult.shouldLockout
-            ? "Account locked"
-            : "Invalid password",
-          failedAttempts: attemptResult.newFailedAttempts,
-          ...(attemptResult.shouldLockout && {
-            lockoutDurationMinutes: lockoutMinutes,
-          }),
-        },
-        request,
       );
 
       if (attemptResult.shouldLockout) {
@@ -250,12 +207,6 @@ export async function POST(request: NextRequest) {
 
     // Check if user email is verified
     if (!user.isVerified) {
-      await logAuthEvent(
-        "LOGIN_FAILED",
-        user.id,
-        { reason: "Email not verified" },
-        request,
-      );
       return NextResponse.json(
         {
           error: "Please verify your email before logging in",
@@ -273,13 +224,6 @@ export async function POST(request: NextRequest) {
         userMfaEnabled: user.mfaEnabled,
       })
     ) {
-      await logAuthEvent(
-        "LOGIN_FAILED",
-        user.id,
-        { reason: "Organization requires MFA but user has not enabled it" },
-        request,
-      );
-
       const mfaSetupToken = generateMfaSetupToken(user.id, user.email);
 
       return NextResponse.json(
@@ -312,20 +256,7 @@ export async function POST(request: NextRequest) {
 
         deviceOrIpChangeRequiresMfa = changeCheck.requiresMfa;
 
-        if (changeCheck.requiresMfa) {
-          await logAuthEvent(
-            "LOGIN_FAILED",
-            user.id,
-            {
-              reason: "Device or IP change detected",
-              ipChanged: changeCheck.ipChanged,
-              deviceChanged: changeCheck.deviceChanged,
-              previousIp: lastSession.ipAddress,
-              currentIp: clientIp,
-            },
-            request,
-          );
-        }
+        // No additional action needed for device/IP change beyond MFA requirement
       }
     }
 
@@ -366,12 +297,6 @@ export async function POST(request: NextRequest) {
       }
 
       if (!mfaVerified) {
-        await logAuthEvent(
-          "LOGIN_FAILED",
-          user.id,
-          { reason: "Invalid MFA token" },
-          request,
-        );
         return NextResponse.json(
           { error: "Invalid MFA token" },
           { status: 401 },
@@ -405,8 +330,8 @@ export async function POST(request: NextRequest) {
     const sessionId = nanoid();
     const sessionToken = nanoid(32);
 
-    // Step 3: Parallelize session creation, user update, session cleanup, audit logging, and chatbot count
-    const [session, , , chatbotCount] = await Promise.all([
+    // Step 3: Parallelize session creation, user update, and chatbot count
+    const [session, , chatbotCount] = await Promise.all([
       // Create session in database
       prisma.session.create({
         data: {
@@ -430,8 +355,6 @@ export async function POST(request: NextRequest) {
           lockoutUntil: null,
         },
       }),
-      // Log successful login
-      logAuthEvent("LOGIN", user.id, undefined, request),
       // Count chatbots to determine post-login redirect
       user.organization
         ? prisma.chatbot.count({

@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/db";
 import { verifyToken } from "@/lib/auth/tokens";
-import { logAuthEvent } from "@/lib/utils/audit";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
@@ -45,13 +44,6 @@ export async function POST(request: NextRequest) {
         emailVerified: new Date(),
       },
     });
-
-    await logAuthEvent(
-      "SIGNUP",
-      user.id,
-      { email: user.email, action: "email_verified" },
-      request,
-    );
 
     return NextResponse.json({
       message: "Email verified successfully",

@@ -1,6 +1,5 @@
 import { withRLS } from "@/lib/middleware/rls-wrapper";
 import { deleteFile } from "@/lib/storage/aws-server";
-import { createAuditLog } from "@/lib/utils/audit";
 import { NextRequest, NextResponse } from "next/server";
 
 // Pinecone client configuration (use chatbot-specific index, not AI query index)
@@ -98,18 +97,6 @@ export const DELETE = withRLS(
         );
       }
 
-      // Store metadata for audit logs
-      const knowledgeMetadata = {
-        id: knowledge.id,
-        title: knowledge.title,
-        type: knowledge.type,
-        chatbotId: knowledge.chatbotId,
-        chatbotName: knowledge.chatbot.name,
-        s3Key: knowledge.s3Key,
-        vectorNamespace: knowledge.vectorNamespace,
-        chunkCount: knowledge.chunkCount,
-      };
-
       // 2. Delete from S3 (if s3Key exists)
       if (knowledge.s3Key) {
         try {
@@ -148,49 +135,8 @@ export const DELETE = withRLS(
         deletionResults.pineconeVectors = false;
       }
 
-      // 4. Pre-deletion audit log
-      const preDeleteTime = Date.now();
-      const preDeleteAuditData = {
-        userId: session.user.id,
-        action: "chatbot.knowledge.delete_initiated",
-        resource: "ChatbotKnowledge",
-        resourceId: knowledge.id,
-        details: {
-          chatbotId: knowledge.chatbotId,
-          chatbotName: knowledge.chatbot.name,
-          knowledgeId: knowledge.id,
-          title: knowledge.title,
-          type: knowledge.type,
-          s3Key: knowledge.s3Key,
-          chunkCount: knowledge.chunkCount,
-          deletionResults: {
-            ...deletionResults,
-            database: false, // Not deleted yet
-          },
-          executionTimeMs: preDeleteTime - startTime,
-          deletionSteps: {
-            s3Storage: deletionResults.s3Storage,
-            pineconeVectors: deletionResults.pineconeVectors,
-            database: false,
-          },
-        },
-        oldValues: {
-          title: knowledge.title,
-          type: knowledge.type,
-          content: knowledge.content,
-          s3Key: knowledge.s3Key,
-          chatbotId: knowledge.chatbotId,
-          vectorNamespace: knowledge.vectorNamespace,
-          chunkCount: knowledge.chunkCount,
-        },
-        severity: deletionResults.errors.length > 0 ? "WARNING" : "INFO",
-      } as const;
-
-      // 5. Delete from database (CRITICAL STEP - last)
+      // 4. Delete from database (CRITICAL STEP - last)
       try {
-        // Create pre-deletion audit log
-        await tx.auditLog.create({ data: preDeleteAuditData });
-
         // Delete the knowledge item
         await tx.chatbotKnowledge.delete({
           where: { id: knowledgeId },
@@ -209,44 +155,7 @@ export const DELETE = withRLS(
         );
       }
 
-      // 7. Post-deletion audit log (using stored metadata)
       const totalTime = Date.now() - startTime;
-      try {
-        await tx.auditLog.create({
-          data: {
-            userId: session.user.id,
-            action: "chatbot.knowledge.delete_completed",
-            resource: "ChatbotKnowledge",
-            resourceId: knowledgeMetadata.id,
-            details: {
-              chatbotId: knowledgeMetadata.chatbotId,
-              chatbotName: knowledgeMetadata.chatbotName,
-              knowledgeId: knowledgeMetadata.id,
-              title: knowledgeMetadata.title,
-              type: knowledgeMetadata.type,
-              deletionResults,
-              executionTimeMs: totalTime,
-              deletionSteps: {
-                s3Storage: deletionResults.s3Storage,
-                pineconeVectors: deletionResults.pineconeVectors,
-                database: deletionResults.database,
-              },
-              completionStatus: "SUCCESS",
-            },
-            oldValues: {
-              title: knowledgeMetadata.title,
-              type: knowledgeMetadata.type,
-              chatbotId: knowledgeMetadata.chatbotId,
-              s3Key: knowledgeMetadata.s3Key,
-              chunkCount: knowledgeMetadata.chunkCount,
-            },
-            severity: deletionResults.errors.length > 0 ? "WARNING" : "INFO",
-          } as const,
-        });
-      } catch (auditError) {
-        console.error(`Failed to create completion audit log:`, auditError);
-        // Don't throw here - deletion was successful, just audit logging failed
-      }
 
       // Determine overall success
       const criticalStepsSuccess = deletionResults.database; // Database is critical
@@ -263,30 +172,6 @@ export const DELETE = withRLS(
       });
     } catch (error) {
       console.error("Error deleting knowledge:", error);
-
-      // Create error audit log
-      try {
-        const { knowledgeId } = await params;
-        await tx.auditLog.create({
-          data: {
-            userId: session.user.id,
-            action: "chatbot.knowledge.delete_failed",
-            resource: "ChatbotKnowledge",
-            resourceId: knowledgeId,
-            details: {
-              error: error instanceof Error ? error.message : "Unknown error",
-              deletionResults,
-              executionTimeMs: Date.now() - startTime,
-            },
-            severity: "ERROR",
-          } as const,
-        });
-      } catch (auditError) {
-        console.error(
-          "Failed to create audit log for deletion failure:",
-          auditError,
-        );
-      }
 
       return NextResponse.json(
         {

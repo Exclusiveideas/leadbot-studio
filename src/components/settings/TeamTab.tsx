@@ -240,7 +240,7 @@ export default function TeamTab({ user }: { user: User }) {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-16">
-        <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
+        <Loader2 className="h-6 w-6 animate-spin text-brand-light" />
       </div>
     );
   }
@@ -255,14 +255,14 @@ export default function TeamTab({ user }: { user: User }) {
           </h3>
           <form onSubmit={handleSendInvite} className="flex gap-3">
             <div className="flex-1 relative">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-brand-light" />
               <input
                 type="email"
                 value={inviteEmail}
                 onChange={(e) => setInviteEmail(e.target.value)}
                 placeholder="colleague@example.com"
                 required
-                className="w-full pl-10 pr-3 py-2.5 border border-brand-border rounded-lg text-sm text-brand-primary placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-brand-blue"
+                className="w-full pl-10 pr-3 py-2.5 border border-brand-border rounded-lg text-sm text-brand-primary placeholder:text-brand-light focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-brand-blue"
               />
             </div>
             <select
@@ -278,7 +278,7 @@ export default function TeamTab({ user }: { user: User }) {
             <button
               type="submit"
               disabled={sendingInvite || !inviteEmail.trim()}
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-primary inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {sendingInvite ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -296,7 +296,7 @@ export default function TeamTab({ user }: { user: User }) {
         <h3 className="text-sm font-semibold text-brand-primary uppercase tracking-wide mb-3">
           Team members ({members.length})
         </h3>
-        <div className="border border-brand-border rounded-lg divide-y divide-gray-100">
+        <div className="border border-brand-border rounded-lg divide-y divide-brand-border">
           {members.map((member) => {
             const isSelf = member.id === user.id;
             return (
@@ -312,7 +312,7 @@ export default function TeamTab({ user }: { user: User }) {
                       className="h-9 w-9 rounded-full object-cover"
                     />
                   ) : (
-                    <div className="h-9 w-9 rounded-full bg-gray-100 flex items-center justify-center text-sm font-medium text-brand-muted">
+                    <div className="h-9 w-9 rounded-full bg-brand-surface flex items-center justify-center text-sm font-medium text-brand-muted">
                       {getInitials(member.name, member.email)}
                     </div>
                   )}
@@ -322,7 +322,7 @@ export default function TeamTab({ user }: { user: User }) {
                         {member.name || member.email}
                       </span>
                       {isSelf && (
-                        <span className="text-xs text-gray-400">(you)</span>
+                        <span className="text-xs text-brand-light">(you)</span>
                       )}
                     </div>
                     <p className="text-xs text-brand-muted truncate">
@@ -336,7 +336,7 @@ export default function TeamTab({ user }: { user: User }) {
                     className={`inline-flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full ${
                       member.organizationRole === "OWNER"
                         ? "bg-amber-50 text-amber-700"
-                        : "bg-gray-100 text-brand-muted"
+                        : "bg-brand-surface text-brand-muted"
                     }`}
                   >
                     {member.organizationRole === "OWNER" && (
@@ -345,7 +345,7 @@ export default function TeamTab({ user }: { user: User }) {
                     {member.organizationRole === "OWNER" ? "Owner" : "Member"}
                   </span>
 
-                  <span className="text-xs text-gray-400 hidden sm:block">
+                  <span className="text-xs text-brand-light hidden sm:block">
                     Joined {formatDate(member.createdAt)}
                   </span>
 
@@ -363,7 +363,7 @@ export default function TeamTab({ user }: { user: User }) {
                         aria-label={`Actions for ${member.name || member.email}`}
                         aria-expanded={actionMenuId === member.id}
                         aria-haspopup="menu"
-                        className="p-1.5 rounded-lg text-gray-400 hover:text-brand-muted hover:bg-gray-100 transition-colors"
+                        className="p-1.5 rounded-lg text-brand-light hover:text-brand-muted hover:bg-brand-surface transition-colors"
                       >
                         <MoreVertical className="h-4 w-4" />
                       </button>
@@ -402,28 +402,28 @@ export default function TeamTab({ user }: { user: User }) {
           <h3 className="text-sm font-semibold text-brand-primary uppercase tracking-wide mb-3">
             Pending invites ({invites.length})
           </h3>
-          <div className="border border-brand-border rounded-lg divide-y divide-gray-100">
+          <div className="border border-brand-border rounded-lg divide-y divide-brand-border">
             {invites.map((invite) => (
               <div
                 key={invite.id}
                 className="flex items-center justify-between px-4 py-3"
               >
                 <div className="flex items-center gap-3 min-w-0">
-                  <div className="h-9 w-9 rounded-full bg-brand-surface border border-dashed border-gray-300 flex items-center justify-center">
-                    <UserPlus className="h-4 w-4 text-gray-400" />
+                  <div className="h-9 w-9 rounded-full bg-brand-surface border border-dashed border-brand-border flex items-center justify-center">
+                    <UserPlus className="h-4 w-4 text-brand-light" />
                   </div>
                   <div className="min-w-0">
                     <p className="text-sm text-brand-primary truncate">
                       {invite.email}
                     </p>
-                    <p className="text-xs text-gray-400">
+                    <p className="text-xs text-brand-light">
                       Invited {formatDate(invite.createdAt)} &middot; Expires{" "}
                       {formatDate(invite.expiresAt)}
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-medium text-brand-muted bg-gray-100 px-2 py-1 rounded-full">
+                  <span className="text-xs font-medium text-brand-muted bg-brand-surface px-2 py-1 rounded-full">
                     {invite.role === "OWNER" ? "Owner" : "Member"}
                   </span>
                   <button

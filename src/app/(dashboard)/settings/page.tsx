@@ -91,6 +91,7 @@ function SettingsContent() {
       <div className="min-h-screen">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="mb-8">
+            <div className="accent-line mb-4" />
             <h1 className="text-3xl font-bold font-heading text-brand-primary">
               Settings
             </h1>
@@ -101,7 +102,8 @@ function SettingsContent() {
 
           {renderTabs()}
 
-          <div className="bg-white rounded-xl border border-brand-border elevation-1">
+          <div className="bg-white rounded-xl border border-brand-border elevation-1 overflow-hidden relative">
+            <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-accent" />
             {activeTab === "profile" && <SettingsProfileTabSkeleton />}
             {activeTab === "security" && <SettingsSecurityTabSkeleton />}
             {(activeTab === "team" || activeTab === "workspace") && (
@@ -137,6 +139,7 @@ function SettingsContent() {
       <div className="min-h-screen">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="mb-8">
+            <div className="accent-line mb-4" />
             <h1 className="text-3xl font-bold font-heading text-brand-primary">
               Settings
             </h1>
@@ -147,10 +150,11 @@ function SettingsContent() {
 
           {renderTabs()}
 
-          <div className="bg-white rounded-xl border border-brand-border elevation-1">
+          <div className="bg-white rounded-xl border border-brand-border elevation-1 overflow-hidden relative">
+            <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-accent" />
             {activeTab === "profile" && (
               <div className="p-6">
-                <h2 className="text-xl font-semibold text-brand-primary mb-6">
+                <h2 className="text-xl font-semibold font-heading text-brand-primary mb-6">
                   Profile Settings
                 </h2>
                 <div className="space-y-6">
@@ -186,7 +190,7 @@ function SettingsContent() {
 
             {activeTab === "security" && (
               <div className="p-6">
-                <h2 className="text-xl font-semibold text-brand-primary mb-6">
+                <h2 className="text-xl font-semibold font-heading text-brand-primary mb-6">
                   Security Settings
                 </h2>
                 <MFASetup user={user} onUpdate={fetchSession} />

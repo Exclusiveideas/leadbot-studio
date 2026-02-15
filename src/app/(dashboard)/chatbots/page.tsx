@@ -123,6 +123,7 @@ export default function ChatbotsPage() {
           {/* Header */}
           <div className="flex justify-between items-center mb-8">
             <div>
+              <div className="accent-line mb-4" />
               <h1 className="text-3xl font-bold font-heading text-brand-primary">
                 Chatbots
               </h1>

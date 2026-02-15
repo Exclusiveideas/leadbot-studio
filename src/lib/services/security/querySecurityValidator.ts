@@ -5,7 +5,6 @@
  * Provides comprehensive input validation, security checks, and query complexity analysis.
  */
 
-import { logAuditAsync } from "@/lib/utils/audit";
 import { cache } from "@/lib/config/valkey";
 
 export interface ValidationResult {
@@ -400,20 +399,11 @@ export class QuerySecurityValidator {
     errors: string[],
     warnings: string[],
   ): void {
-    logAuditAsync({
+    console.warn("[QuerySecurity] Elevated risk detected:", {
       userId: context.userId,
-      action: "ai_query_security_validation",
-      resource: "ai_search",
-      resourceId: context.caseId,
-      details: {
-        query: query.substring(0, 200), // Log first 200 chars only
-        riskLevel,
-        errors: errors.length > 0 ? errors : undefined,
-        warnings: warnings.length > 0 ? warnings : undefined,
-        userAgent: context.userAgent,
-        ipAddress: context.ipAddress,
-        sessionId: context.sessionId,
-      },
+      riskLevel,
+      errors: errors.length > 0 ? errors : undefined,
+      warnings: warnings.length > 0 ? warnings : undefined,
     });
   }
 

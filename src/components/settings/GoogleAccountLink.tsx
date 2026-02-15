@@ -97,10 +97,10 @@ export default function GoogleAccountLink({
     return (
       <div className="border-t border-brand-border pt-6 mt-6">
         <div className="flex items-center space-x-3 animate-pulse">
-          <div className="w-10 h-10 bg-gray-200 rounded-lg"></div>
+          <div className="w-10 h-10 bg-brand-surface rounded-lg"></div>
           <div className="flex-1">
-            <div className="h-4 bg-gray-200 rounded w-1/3 mb-2"></div>
-            <div className="h-3 bg-gray-200 rounded w-2/3"></div>
+            <div className="h-4 bg-brand-surface rounded w-1/3 mb-2"></div>
+            <div className="h-3 bg-brand-surface rounded w-2/3"></div>
           </div>
         </div>
       </div>
@@ -177,7 +177,7 @@ export default function GoogleAccountLink({
   return (
     <div className="border-t border-brand-border pt-6 mt-6">
       <div className="flex items-start space-x-3 mb-4">
-        <div className="flex-shrink-0 w-10 h-10 bg-gray-200/50 rounded-lg flex items-center justify-center">
+        <div className="flex-shrink-0 w-10 h-10 bg-brand-surface rounded-lg flex items-center justify-center">
           <Link2 className="w-5 h-5 text-brand-muted" />
         </div>
         <div className="flex-1">
@@ -212,7 +212,7 @@ export default function GoogleAccountLink({
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Enter your password"
             required
-            className="w-full px-3 py-2.5 border border-brand-border rounded-lg text-brand-primary placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-brand-blue"
+            className="w-full px-3 py-2.5 border border-brand-border rounded-lg text-brand-primary placeholder-brand-light focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-brand-blue"
           />
         </div>
 
@@ -232,7 +232,7 @@ export default function GoogleAccountLink({
               placeholder="123456 or XXXX-XXXX"
               required
               maxLength={9}
-              className="w-full px-3 py-2.5 border border-brand-border rounded-lg text-brand-primary placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-brand-blue"
+              className="w-full px-3 py-2.5 border border-brand-border rounded-lg text-brand-primary placeholder-brand-light focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-brand-blue"
             />
             <p className="mt-1 text-xs text-brand-muted">
               Enter the code from your authenticator app or a backup code

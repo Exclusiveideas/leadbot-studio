@@ -3,7 +3,6 @@ import { listChatbots, createChatbot } from "@/lib/services/chatbotService";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { chatbotFiltersSchema } from "@/lib/validation/chatbot";
-import { createAuditLog } from "@/lib/utils/audit";
 import {
   parseChatbotFormData,
   uploadThumbnailToS3,
@@ -109,20 +108,6 @@ export const POST = withRLS(
         thumbnailS3Key,
         tx,
       );
-
-      // Audit log
-      await createAuditLog({
-        userId: session.user.id,
-        action: "chatbot.create",
-        resource: "chatbot",
-        resourceId: chatbot.id,
-        details: {
-          name: chatbot.name,
-          embedCode: chatbot.embedCode,
-        },
-        severity: "INFO",
-        request: request as NextRequest,
-      });
 
       return NextResponse.json({
         success: true,

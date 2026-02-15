@@ -13,7 +13,6 @@ import { bedrockClient } from "../bedrock/client";
 import type { BedrockRequest } from "@/types/bedrock";
 import { BEDROCK_MODELS } from "@/types/bedrock";
 import { logger } from "@/lib/utils/logger";
-import { logAuditAsync } from "@/lib/utils/audit";
 import { MAX_PROMPT_LENGTH } from "./constants";
 
 export type PromptInjectionResult = {
@@ -337,24 +336,6 @@ class PromptInjectionDetector {
       logger.info("Prompt flagged for review", logData);
     }
 
-    // Audit log for compliance
-    if (context?.userId) {
-      logAuditAsync({
-        userId: context.userId,
-        action: "prompt_injection_detection",
-        resource: "ai_security",
-        resourceId: context.endpoint || "unknown",
-        details: {
-          isMalicious: result.isMalicious,
-          category: result.category,
-          confidence: result.confidence,
-          reason: result.reason,
-          promptLength: prompt.length,
-          analysisTimeMs,
-          ipAddress: context.ipAddress,
-        },
-      });
-    }
   }
 }
 

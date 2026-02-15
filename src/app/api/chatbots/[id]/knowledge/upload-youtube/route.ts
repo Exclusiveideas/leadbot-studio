@@ -4,7 +4,6 @@ import {
   validateYouTubeUrl,
   fetchYouTubeVideoTitle,
 } from "@/lib/services/chatbot/youtube-helper";
-import { createAuditLog } from "@/lib/utils/audit";
 import { LambdaClient, InvokeCommand } from "@aws-sdk/client-lambda";
 
 export const POST = withRLS(
@@ -123,19 +122,6 @@ export const POST = withRLS(
           "YOUTUBE_PROCESSOR_LAMBDA_ARN not configured - YouTube processing skipped",
         );
       }
-
-      // Log audit event
-      await createAuditLog({
-        userId: session.user.id,
-        action: "chatbot.knowledge.youtube_added",
-        resource: "ChatbotKnowledge",
-        resourceId: knowledgeSource.id,
-        details: {
-          chatbotId,
-          youtubeUrl: validation.normalizedUrl,
-          videoId: validation.videoId,
-        },
-      });
 
       return NextResponse.json({
         success: true,

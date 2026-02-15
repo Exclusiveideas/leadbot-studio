@@ -302,7 +302,7 @@ export default function MFASetup({ user, onUpdate }: MFASetupProps) {
               once.
             </p>
 
-            <div className="bg-gray-100 rounded-lg p-4 mb-4">
+            <div className="bg-brand-surface rounded-lg p-4 mb-4">
               <div className="grid grid-cols-2 gap-2 mb-4">
                 {regeneratedCodes.map((code, index) => (
                   <div
@@ -317,14 +317,14 @@ export default function MFASetup({ user, onUpdate }: MFASetupProps) {
               <div className="flex space-x-3">
                 <button
                   onClick={copyRegeneratedCodes}
-                  className="flex items-center px-3 py-2 text-sm font-medium text-brand-muted bg-white border border-brand-border rounded-lg hover:bg-gray-100 transition-colors"
+                  className="flex items-center px-3 py-2 text-sm font-medium text-brand-muted bg-white border border-brand-border rounded-lg hover:bg-brand-surface transition-colors"
                 >
                   <Copy className="h-4 w-4 mr-2" />
                   Copy Codes
                 </button>
                 <button
                   onClick={downloadRegeneratedCodes}
-                  className="flex items-center px-3 py-2 text-sm font-medium text-brand-muted bg-white border border-brand-border rounded-lg hover:bg-gray-100 transition-colors"
+                  className="flex items-center px-3 py-2 text-sm font-medium text-brand-muted bg-white border border-brand-border rounded-lg hover:bg-brand-surface transition-colors"
                 >
                   <Download className="h-4 w-4 mr-2" />
                   Download Codes
@@ -386,14 +386,14 @@ export default function MFASetup({ user, onUpdate }: MFASetupProps) {
               <button
                 type="submit"
                 disabled={isLoading || regenerateCode.length !== 6}
-                className="flex-1 px-4 py-2.5 btn-primary rounded-lg disabled:bg-gray-200 disabled:text-brand-muted disabled:cursor-not-allowed transition-colors"
+                className="flex-1 px-4 py-2.5 btn-primary rounded-lg disabled:bg-brand-surface disabled:text-brand-muted disabled:cursor-not-allowed transition-colors"
               >
                 {isLoading ? "Regenerating..." : "Regenerate Codes"}
               </button>
               <button
                 type="button"
                 onClick={finishRegenerate}
-                className="px-4 py-2.5 text-brand-muted bg-white border border-brand-border rounded-lg hover:bg-gray-100 transition-colors"
+                className="px-4 py-2.5 text-brand-muted bg-white border border-brand-border rounded-lg hover:bg-brand-surface transition-colors"
               >
                 Cancel
               </button>
@@ -428,7 +428,7 @@ export default function MFASetup({ user, onUpdate }: MFASetupProps) {
             your account if you lose your authenticator device.
           </p>
 
-          <div className="bg-gray-100 rounded-lg p-4 mb-4">
+          <div className="bg-brand-surface rounded-lg p-4 mb-4">
             <div className="grid grid-cols-2 gap-2 mb-4">
               {mfaData.backupCodes.map((code, index) => (
                 <div
@@ -443,14 +443,14 @@ export default function MFASetup({ user, onUpdate }: MFASetupProps) {
             <div className="flex space-x-3">
               <button
                 onClick={copyBackupCodes}
-                className="flex items-center px-3 py-2 text-sm font-medium text-brand-muted bg-white border border-brand-border rounded-lg hover:bg-gray-100 transition-colors"
+                className="flex items-center px-3 py-2 text-sm font-medium text-brand-muted bg-white border border-brand-border rounded-lg hover:bg-brand-surface transition-colors"
               >
                 <Copy className="h-4 w-4 mr-2" />
                 Copy Codes
               </button>
               <button
                 onClick={downloadBackupCodes}
-                className="flex items-center px-3 py-2 text-sm font-medium text-brand-muted bg-white border border-brand-border rounded-lg hover:bg-gray-100 transition-colors"
+                className="flex items-center px-3 py-2 text-sm font-medium text-brand-muted bg-white border border-brand-border rounded-lg hover:bg-brand-surface transition-colors"
               >
                 <Download className="h-4 w-4 mr-2" />
                 Download Codes
@@ -509,7 +509,7 @@ export default function MFASetup({ user, onUpdate }: MFASetupProps) {
                 />
               </div>
 
-              <div className="bg-gray-100 rounded-lg p-4">
+              <div className="bg-brand-surface rounded-lg p-4">
                 <p className="text-sm text-brand-muted mb-2">
                   Can't scan? Enter this code manually:
                 </p>
@@ -547,14 +547,14 @@ export default function MFASetup({ user, onUpdate }: MFASetupProps) {
                 <button
                   type="submit"
                   disabled={isLoading || verificationCode.length !== 6}
-                  className="flex-1 px-4 py-2.5 btn-primary rounded-lg disabled:bg-gray-200 disabled:text-brand-muted disabled:cursor-not-allowed transition-colors"
+                  className="flex-1 px-4 py-2.5 btn-primary rounded-lg disabled:bg-brand-surface disabled:text-brand-muted disabled:cursor-not-allowed transition-colors"
                 >
                   {isLoading ? "Verifying..." : "Verify and Enable MFA"}
                 </button>
                 <button
                   type="button"
                   onClick={() => setShowSetup(false)}
-                  className="px-4 py-2.5 text-brand-muted bg-white border border-brand-border rounded-lg hover:bg-gray-100 transition-colors"
+                  className="px-4 py-2.5 text-brand-muted bg-white border border-brand-border rounded-lg hover:bg-brand-surface transition-colors"
                 >
                   Cancel
                 </button>
@@ -659,7 +659,7 @@ export default function MFASetup({ user, onUpdate }: MFASetupProps) {
             <button
               onClick={generateMFASecret}
               disabled={isGenerating}
-              className="flex items-center px-4 py-2.5 btn-primary rounded-lg disabled:bg-gray-200 disabled:text-brand-muted disabled:cursor-not-allowed transition-colors"
+              className="flex items-center px-4 py-2.5 btn-primary rounded-lg disabled:bg-brand-surface disabled:text-brand-muted disabled:cursor-not-allowed transition-colors"
             >
               {isGenerating ? (
                 <>

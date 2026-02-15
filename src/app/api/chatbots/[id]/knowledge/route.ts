@@ -1,14 +1,10 @@
 import { withRLS } from "@/lib/middleware/rls-wrapper";
 import { listKnowledge } from "@/lib/services/chatbotService";
-import { createAuditLog } from "@/lib/utils/audit";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { LambdaClient, InvokeCommand } from "@aws-sdk/client-lambda";
 import { getKnowledgeProcessor } from "@/lib/services/knowledgeProcessors";
-import {
-  isKnowledgeContentSafe,
-  scanKnowledgeContent,
-} from "@/lib/security/knowledge-content-scanner";
+import { isKnowledgeContentSafe } from "@/lib/security/knowledge-content-scanner";
 
 /**
  * GET /api/chatbots/[id]/knowledge
@@ -126,23 +122,6 @@ export const POST = withRLS(
       type === "FAQ" ? "FAQ" : type === "URL" ? "URL" : "TEXT";
     const securityCheck = isKnowledgeContentSafe(content, contentType);
     if (!securityCheck.safe) {
-      // Log security event
-      await createAuditLog({
-        userId: session.user.id,
-        action: "knowledge.security_blocked",
-        resource: "ChatbotKnowledge",
-        resourceId: chatbotId,
-        details: {
-          chatbotId,
-          title,
-          type,
-          reason: securityCheck.reason,
-          contentPreview: content.substring(0, 200),
-        },
-        severity: "WARNING",
-        request: request as NextRequest,
-      });
-
       return NextResponse.json(
         {
           success: false,
@@ -151,32 +130,6 @@ export const POST = withRLS(
         },
         { status: 400 },
       );
-    }
-
-    // Get full scan result for audit logging (includes detailed threats)
-    const scanResult = scanKnowledgeContent(content, contentType);
-    if (scanResult.requiresReview) {
-      // Log for manual review even if not blocked
-      await createAuditLog({
-        userId: session.user.id,
-        action: "knowledge.flagged_for_review",
-        resource: "ChatbotKnowledge",
-        resourceId: chatbotId,
-        details: {
-          chatbotId,
-          title,
-          type,
-          risk: scanResult.risk,
-          threatCount: scanResult.threats.length,
-          threats: scanResult.threats.map((t) => ({
-            category: t.category,
-            severity: t.severity,
-            location: t.location,
-          })),
-        },
-        severity: "INFO",
-        request: request as NextRequest,
-      });
     }
 
     // Prepare knowledge data using processor
@@ -212,26 +165,6 @@ export const POST = withRLS(
 
     // Invoke appropriate Lambda
     await invokeLambda(processor.getLambdaEnvVar(), lambdaPayload);
-
-    // Audit log
-    await createAuditLog({
-      userId: session.user.id,
-      action: processor.getAuditAction(),
-      resource: "ChatbotKnowledge",
-      resourceId: knowledge.id,
-      details: {
-        chatbotId,
-        title,
-        type,
-        ...(type === "FAQ" && validation.data
-          ? { pairCount: validation.data.length }
-          : {}),
-        ...(type === "TEXT" ? { textLength: content.length } : {}),
-        ...(type === "URL" ? { url: content } : {}),
-      },
-      severity: "INFO",
-      request: request as NextRequest,
-    });
 
     return NextResponse.json({
       success: true,

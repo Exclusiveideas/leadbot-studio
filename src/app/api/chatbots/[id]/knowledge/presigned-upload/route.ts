@@ -5,8 +5,6 @@ import {
   validateFileUpload,
   generateChatbotKnowledgeS3Key,
 } from "@/lib/validation/file-validation";
-import { createAuditLog } from "@/lib/utils/audit";
-
 export const POST = withRLS(
   async (request, session, rlsContext, tx, { params }) => {
     try {
@@ -87,20 +85,6 @@ export const POST = withRLS(
           maxSizeBytes,
           300, // 5 minutes
         );
-
-        // Log audit event
-        await createAuditLog({
-          userId: session.user.id,
-          action: "chatbot.knowledge.upload_initiated",
-          resource: "ChatbotKnowledge",
-          resourceId: knowledgeSource.id,
-          details: {
-            chatbotId,
-            fileName,
-            fileSize,
-            fileType,
-          },
-        });
 
         return NextResponse.json({
           knowledgeSource: {

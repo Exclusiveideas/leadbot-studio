@@ -12,7 +12,6 @@ import {
   buildRateLimitHeaders,
   formatRateLimitError,
 } from "@/lib/middleware/authRateLimiter";
-import { logAuthEvent } from "@/lib/utils/audit";
 import { NextRequest, NextResponse } from "next/server";
 
 // Request password reset
@@ -46,17 +45,6 @@ export async function POST(request: NextRequest) {
       try {
         payload = verifyToken(token);
       } catch (error) {
-        // Log invalid token attempt
-        await logAuthEvent(
-          "INVALID_TOKEN",
-          undefined,
-          {
-            reason: "Password reset token invalid or expired",
-            token: token.substring(0, 10) + "...", // Log partial token for debugging
-          },
-          request,
-        );
-
         return NextResponse.json(
           { error: "Invalid or expired token" },
           { status: 400 },
@@ -95,9 +83,6 @@ export async function POST(request: NextRequest) {
         }),
       ]);
 
-      // Log password reset
-      await logAuthEvent("PASSWORD_RESET", user.id, undefined, request);
-
       return NextResponse.json({
         message: "Password reset successfully",
       });
@@ -120,14 +105,6 @@ export async function POST(request: NextRequest) {
       if (user && user.isActive) {
         // Generate reset token
         const resetToken = generateResetToken(user.id, user.email);
-
-        // Log password reset request
-        await logAuthEvent(
-          "PASSWORD_RESET_REQUEST",
-          user.id,
-          { email },
-          request,
-        );
 
         // Send password reset email
         try {

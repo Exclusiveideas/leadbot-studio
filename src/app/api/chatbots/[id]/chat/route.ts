@@ -3,7 +3,6 @@ import { getSession } from "@/lib/auth/session";
 import { bedrockService } from "@/lib/services/bedrock/service";
 import { getChatbotRAG, type ChatbotRAG } from "@/lib/services/chatbot/chatbot-rag";
 import { prisma } from "@/lib/db";
-import { createAuditLog } from "@/lib/utils/audit";
 import { prepareBase64FilesForAI } from "@/lib/chat/fileProcessor";
 import { buildLeadGenerationSystemPrompt } from "@/lib/services/chatbot/rag";
 import { getHotCache } from "@/lib/context/hot-cache";
@@ -441,21 +440,6 @@ async function handleStreamingRequest(
         controller.enqueue(
           encoder.encode(`data: ${JSON.stringify(completeEvent)}\n\n`),
         );
-
-        // 11. Log audit
-        await createAuditLog({
-          userId,
-          action: "chatbot_message",
-          resource: "chatbot_chat",
-          resourceId: chatbotId,
-          details: {
-            conversationId,
-            messageLength: message.length,
-            tokensUsed: totalTokens,
-            processingTime,
-            sourcesUsed: ragResult.sources.length,
-          },
-        });
 
         controller.close();
       } catch (error) {

@@ -19,11 +19,6 @@ vi.mock("../bedrock/client", () => ({
   },
 }));
 
-// Mock audit logging
-vi.mock("@/lib/utils/audit", () => ({
-  logAuditAsync: vi.fn(),
-}));
-
 // Mock logger
 vi.mock("@/lib/utils/logger", () => ({
   logger: {

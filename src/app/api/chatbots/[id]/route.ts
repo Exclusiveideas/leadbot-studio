@@ -5,7 +5,6 @@ import {
   deleteChatbot,
 } from "@/lib/services/chatbotService";
 import { updateChatbotSchema } from "@/lib/validation/chatbot";
-import { createAuditLog } from "@/lib/utils/audit";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import {
@@ -132,22 +131,6 @@ export const PATCH = withRLS(
       throw error;
     }
 
-    // Audit log
-    await createAuditLog({
-      userId: session.user.id,
-      action: "chatbot.update",
-      resource: "chatbot",
-      resourceId: chatbot.id,
-      details: {
-        name: chatbot.name,
-        changes: Object.keys(data),
-      },
-      oldValues: existingChatbot,
-      newValues: data,
-      severity: "INFO",
-      request: request as NextRequest,
-    });
-
     return NextResponse.json({
       success: true,
       data: chatbot,
@@ -195,20 +178,6 @@ export const DELETE = withRLS(
 
     // Delete chatbot
     await deleteChatbot(id, tx);
-
-    // Audit log
-    await createAuditLog({
-      userId: session.user.id,
-      action: "chatbot.delete",
-      resource: "chatbot",
-      resourceId: id,
-      details: {
-        name: existingChatbot.name,
-      },
-      oldValues: existingChatbot,
-      severity: "WARNING",
-      request: request as NextRequest,
-    });
 
     return NextResponse.json({
       success: true,
