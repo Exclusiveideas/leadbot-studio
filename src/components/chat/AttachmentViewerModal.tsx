@@ -21,7 +21,7 @@ const UniversalDocumentViewer = dynamic(
     loading: () => (
       <div className="flex-1 flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-blue mx-auto mb-4"></div>
           <p className="text-gray-600">Loading document viewer...</p>
         </div>
       </div>
@@ -256,7 +256,7 @@ export default function AttachmentViewerModal({
                 className={`inline-flex items-center px-3 py-1.5 text-sm rounded transition-colors ${
                   downloading
                     ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-emerald-600 hover:bg-emerald-700 text-white"
+                    : "bg-brand-blue hover:bg-brand-blue/90 text-white"
                 }`}
                 title={downloading ? "Downloading..." : "Download file"}
               >
@@ -280,7 +280,7 @@ export default function AttachmentViewerModal({
           {loading && (
             <div className="flex items-center justify-center h-full">
               <div className="text-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600 mx-auto mb-4"></div>
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-blue mx-auto mb-4"></div>
                 <p className="text-gray-600">Loading document...</p>
               </div>
             </div>

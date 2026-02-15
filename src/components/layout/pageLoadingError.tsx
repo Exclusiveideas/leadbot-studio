@@ -9,13 +9,13 @@ export default function PageLoadingError({
 }) {
   return (
     <div className="flex min-h-[400px] flex-col items-center justify-center">
-      <h2 className="text-lg font-semibold text-gray-900">
+      <h2 className="text-lg font-semibold text-brand-primary">
         Something went wrong
       </h2>
-      <p className="mt-2 text-sm text-gray-600">{error.message}</p>
+      <p className="mt-2 text-sm text-brand-muted">{error.message}</p>
       <button
         onClick={reset}
-        className="mt-4 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+        className="btn-primary mt-4 rounded-lg px-4 py-2 text-sm font-medium"
       >
         Try again
       </button>

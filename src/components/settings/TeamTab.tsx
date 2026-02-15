@@ -250,7 +250,7 @@ export default function TeamTab({ user }: { user: User }) {
       {/* Invite Form — owners only */}
       {isOwner && (
         <div>
-          <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-3">
+          <h3 className="text-sm font-semibold text-brand-primary uppercase tracking-wide mb-3">
             Invite a team member
           </h3>
           <form onSubmit={handleSendInvite} className="flex gap-3">
@@ -262,7 +262,7 @@ export default function TeamTab({ user }: { user: User }) {
                 onChange={(e) => setInviteEmail(e.target.value)}
                 placeholder="colleague@example.com"
                 required
-                className="w-full pl-10 pr-3 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                className="w-full pl-10 pr-3 py-2.5 border border-brand-border rounded-lg text-sm text-brand-primary placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-brand-blue"
               />
             </div>
             <select
@@ -270,7 +270,7 @@ export default function TeamTab({ user }: { user: User }) {
               onChange={(e) =>
                 setInviteRole(e.target.value as "OWNER" | "MEMBER")
               }
-              className="border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="border border-brand-border rounded-lg px-3 py-2.5 text-sm text-brand-muted focus:outline-none focus:ring-2 focus:ring-brand-blue"
             >
               <option value="MEMBER">Member</option>
               <option value="OWNER">Owner</option>
@@ -293,16 +293,16 @@ export default function TeamTab({ user }: { user: User }) {
 
       {/* Members List */}
       <div>
-        <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-3">
+        <h3 className="text-sm font-semibold text-brand-primary uppercase tracking-wide mb-3">
           Team members ({members.length})
         </h3>
-        <div className="border border-gray-200 rounded-lg divide-y divide-gray-100">
+        <div className="border border-brand-border rounded-lg divide-y divide-gray-100">
           {members.map((member) => {
             const isSelf = member.id === user.id;
             return (
               <div
                 key={member.id}
-                className="flex items-center justify-between px-4 py-3 hover:bg-gray-50/50 transition-colors"
+                className="flex items-center justify-between px-4 py-3 hover:bg-brand-surface/50 transition-colors"
               >
                 <div className="flex items-center gap-3 min-w-0">
                   {member.image ? (
@@ -312,20 +312,20 @@ export default function TeamTab({ user }: { user: User }) {
                       className="h-9 w-9 rounded-full object-cover"
                     />
                   ) : (
-                    <div className="h-9 w-9 rounded-full bg-gray-100 flex items-center justify-center text-sm font-medium text-gray-600">
+                    <div className="h-9 w-9 rounded-full bg-gray-100 flex items-center justify-center text-sm font-medium text-brand-muted">
                       {getInitials(member.name, member.email)}
                     </div>
                   )}
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-gray-900 truncate">
+                      <span className="text-sm font-medium text-brand-primary truncate">
                         {member.name || member.email}
                       </span>
                       {isSelf && (
                         <span className="text-xs text-gray-400">(you)</span>
                       )}
                     </div>
-                    <p className="text-xs text-gray-500 truncate">
+                    <p className="text-xs text-brand-muted truncate">
                       {member.email}
                     </p>
                   </div>
@@ -336,7 +336,7 @@ export default function TeamTab({ user }: { user: User }) {
                     className={`inline-flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full ${
                       member.organizationRole === "OWNER"
                         ? "bg-amber-50 text-amber-700"
-                        : "bg-gray-100 text-gray-600"
+                        : "bg-gray-100 text-brand-muted"
                     }`}
                   >
                     {member.organizationRole === "OWNER" && (
@@ -363,15 +363,15 @@ export default function TeamTab({ user }: { user: User }) {
                         aria-label={`Actions for ${member.name || member.email}`}
                         aria-expanded={actionMenuId === member.id}
                         aria-haspopup="menu"
-                        className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+                        className="p-1.5 rounded-lg text-gray-400 hover:text-brand-muted hover:bg-gray-100 transition-colors"
                       >
                         <MoreVertical className="h-4 w-4" />
                       </button>
                       {actionMenuId === member.id && (
-                        <div className="absolute right-0 top-full mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg py-1 z-10">
+                        <div className="absolute right-0 top-full mt-1 w-48 bg-white border border-brand-border rounded-lg shadow-lg py-1 z-10">
                           <button
                             onClick={() => handleToggleRole(member)}
-                            className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                            className="w-full flex items-center gap-2 px-3 py-2 text-sm text-brand-muted hover:bg-brand-surface transition-colors"
                           >
                             <Crown className="h-4 w-4" />
                             {member.organizationRole === "OWNER"
@@ -399,21 +399,21 @@ export default function TeamTab({ user }: { user: User }) {
       {/* Pending Invites — owners only */}
       {isOwner && invites.length > 0 && (
         <div>
-          <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-3">
+          <h3 className="text-sm font-semibold text-brand-primary uppercase tracking-wide mb-3">
             Pending invites ({invites.length})
           </h3>
-          <div className="border border-gray-200 rounded-lg divide-y divide-gray-100">
+          <div className="border border-brand-border rounded-lg divide-y divide-gray-100">
             {invites.map((invite) => (
               <div
                 key={invite.id}
                 className="flex items-center justify-between px-4 py-3"
               >
                 <div className="flex items-center gap-3 min-w-0">
-                  <div className="h-9 w-9 rounded-full bg-gray-50 border border-dashed border-gray-300 flex items-center justify-center">
+                  <div className="h-9 w-9 rounded-full bg-brand-surface border border-dashed border-gray-300 flex items-center justify-center">
                     <UserPlus className="h-4 w-4 text-gray-400" />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-sm text-gray-900 truncate">
+                    <p className="text-sm text-brand-primary truncate">
                       {invite.email}
                     </p>
                     <p className="text-xs text-gray-400">
@@ -423,13 +423,13 @@ export default function TeamTab({ user }: { user: User }) {
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+                  <span className="text-xs font-medium text-brand-muted bg-gray-100 px-2 py-1 rounded-full">
                     {invite.role === "OWNER" ? "Owner" : "Member"}
                   </span>
                   <button
                     onClick={() => handleResendInvite(invite.id)}
                     disabled={actionLoadingId === invite.id}
-                    className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors disabled:opacity-50"
+                    className="p-1.5 rounded-lg text-gray-400 hover:text-brand-muted hover:bg-gray-100 transition-colors disabled:opacity-50"
                     title="Resend invite"
                     aria-label={`Resend invite to ${invite.email}`}
                   >

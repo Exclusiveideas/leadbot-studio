@@ -22,6 +22,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import MarkdownContent from "@/components/chat/MarkdownContent";
+import EmptyState from "@/components/dashboard/EmptyState";
 import "@/app/(dashboard)/generate/components/chat/chat-markdown.css";
 
 type ConversationMessage = {
@@ -210,28 +211,28 @@ export default function LeadsPage() {
   const getUrgencyColor = (urgency: string | null) => {
     switch (urgency) {
       case "urgent":
-        return "bg-red-100 text-red-800";
+        return "bg-red-50 text-red-700";
       case "high":
-        return "bg-orange-100 text-orange-800";
+        return "bg-orange-50 text-orange-700";
       case "medium":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-yellow-50 text-yellow-700";
       case "low":
-        return "bg-blue-100 text-blue-800";
+        return "bg-blue-50 text-blue-700";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-gray-100 text-gray-700";
     }
   };
 
   const getTextRequestStatusColor = (status: TextRequest["status"]) => {
     switch (status) {
       case "PENDING":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-yellow-50 text-yellow-700";
       case "SEEN":
-        return "bg-blue-100 text-blue-800";
+        return "bg-blue-50 text-blue-700";
       case "RESPONDED":
-        return "bg-green-100 text-green-800";
+        return "bg-green-50 text-green-700";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-gray-100 text-gray-700";
     }
   };
 
@@ -327,14 +328,14 @@ export default function LeadsPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-blue"></div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+      <div className="bg-red-50 border border-red-200 rounded-xl p-4">
         <p className="text-red-800">{error}</p>
       </div>
     );
@@ -345,7 +346,7 @@ export default function LeadsPage() {
       {/* Header Actions */}
       <div className="flex justify-between items-center">
         <div>
-          <p className="text-gray-500">
+          <p className="text-brand-muted">
             {total} lead{total !== 1 ? "s" : ""}, {contactsTotal} contact
             {contactsTotal !== 1 ? "s" : ""}, {textRequestsTotal} text request
             {textRequestsTotal !== 1 ? "s" : ""} captured
@@ -354,7 +355,7 @@ export default function LeadsPage() {
         <button
           onClick={fetchData}
           disabled={isLoading}
-          className="inline-flex items-center px-4 py-2 border border-gray-200 rounded-md shadow-sm text-sm font-medium text-gray-900 bg-white hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="btn-secondary inline-flex items-center px-4 py-2 rounded-lg shadow-sm text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <RefreshCw
             className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`}
@@ -366,13 +367,13 @@ export default function LeadsPage() {
       {/* Leads Section */}
       <div className="space-y-4">
         <div className="flex justify-between items-center">
-          <h2 className="text-lg font-semibold text-gray-900">
+          <h2 className="text-lg font-semibold text-brand-primary">
             Leads ({total})
           </h2>
           {leads.length > 0 && (
             <button
               onClick={() => exportToCSV(leads, "chatbot-leads")}
-              className="inline-flex items-center px-3 py-1.5 border border-gray-200 rounded-md shadow-sm text-xs font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+              className="btn-secondary inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium"
             >
               <Download className="h-3 w-3 mr-1.5" />
               Export
@@ -380,53 +381,50 @@ export default function LeadsPage() {
           )}
         </div>
         {leads.length === 0 ? (
-          <div className="text-center py-12 bg-white rounded-lg border-2 border-dashed border-gray-200">
-            <User className="mx-auto h-12 w-12 text-gray-500" />
-            <h3 className="mt-2 text-sm font-medium text-gray-900">No leads</h3>
-            <p className="mt-1 text-sm text-gray-500">
-              Leads will appear here when visitors provide their contact
-              information.
-            </p>
-          </div>
+          <EmptyState
+            icon={User}
+            title="No leads"
+            description="Leads will appear here when visitors provide their contact information."
+          />
         ) : (
-          <div className="bg-white rounded-lg shadow overflow-hidden border border-gray-200">
+          <div className="bg-white rounded-xl elevation-1 overflow-hidden border border-brand-border">
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-brand-border">
+                <thead className="bg-brand-surface">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-brand-muted uppercase tracking-wider">
                       Contact
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-brand-muted uppercase tracking-wider">
                       Case Details
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-brand-muted uppercase tracking-wider">
                       Captured
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-white divide-y divide-brand-border">
                   {leads.map((lead) => (
                     <tr
                       key={lead.id}
                       onClick={() => setSelectedLead(lead)}
-                      className="hover:bg-gray-50 transition-colors cursor-pointer"
+                      className="hover:bg-brand-surface transition-colors cursor-pointer"
                     >
                       <td className="px-6 py-4">
                         <div className="flex flex-col gap-1">
                           {lead.name && (
-                            <div className="flex items-center gap-2 text-sm font-medium text-gray-900">
-                              <User className="h-4 w-4 text-gray-500" />
+                            <div className="flex items-center gap-2 text-sm font-medium text-brand-primary">
+                              <User className="h-4 w-4 text-brand-muted" />
                               {lead.name}
                             </div>
                           )}
-                          <div className="flex items-center gap-2 text-sm text-gray-500">
-                            <Mail className="h-4 w-4 text-gray-500" />
+                          <div className="flex items-center gap-2 text-sm text-brand-muted">
+                            <Mail className="h-4 w-4 text-brand-light" />
                             {lead.email}
                           </div>
                           {lead.phone && (
-                            <div className="flex items-center gap-2 text-sm text-gray-500">
-                              <Phone className="h-4 w-4 text-gray-500" />
+                            <div className="flex items-center gap-2 text-sm text-brand-muted">
+                              <Phone className="h-4 w-4 text-brand-light" />
                               {lead.phone}
                             </div>
                           )}
@@ -435,7 +433,7 @@ export default function LeadsPage() {
                       <td className="px-6 py-4">
                         <div className="space-y-1">
                           {lead.caseType && (
-                            <div className="text-sm text-gray-900">
+                            <div className="text-sm text-brand-primary">
                               <span className="font-medium">Type:</span>{" "}
                               {lead.caseType}
                             </div>
@@ -451,13 +449,13 @@ export default function LeadsPage() {
                             </div>
                           )}
                           {lead.budget && (
-                            <div className="text-sm text-gray-500">
+                            <div className="text-sm text-brand-muted">
                               <span className="font-medium">Budget:</span>{" "}
                               {lead.budget}
                             </div>
                           )}
                           {lead.notes && (
-                            <div className="text-sm text-gray-500 mt-2">
+                            <div className="text-sm text-brand-muted mt-2">
                               <span className="font-medium">Notes:</span>{" "}
                               {lead.notes}
                             </div>
@@ -465,7 +463,7 @@ export default function LeadsPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center gap-2 text-sm text-gray-500">
+                        <div className="flex items-center gap-2 text-sm text-brand-muted">
                           <Calendar className="h-4 w-4" />
                           {formatDate(lead.capturedAt)}
                         </div>
@@ -482,76 +480,72 @@ export default function LeadsPage() {
       {/* Contacts Section */}
       <div className="space-y-4">
         <div className="flex justify-between items-center">
-          <h2 className="text-lg font-semibold text-gray-900">
+          <h2 className="text-lg font-semibold text-brand-primary">
             Contacts ({contactsTotal})
           </h2>
           {contacts.length > 0 && (
             <button
               onClick={() => exportToCSV(contacts, "chatbot-contacts")}
-              className="inline-flex items-center px-3 py-1.5 border border-gray-200 rounded-md shadow-sm text-xs font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+              className="btn-secondary inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium"
             >
               <Download className="h-3 w-3 mr-1.5" />
               Export
             </button>
           )}
         </div>
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-brand-muted">
           Contacts captured from booking requests when no Calendly link is
           configured.
         </p>
         {contacts.length === 0 ? (
-          <div className="text-center py-8 bg-white rounded-lg border-2 border-dashed border-gray-200">
-            <Phone className="mx-auto h-10 w-10 text-gray-400" />
-            <h3 className="mt-2 text-sm font-medium text-gray-900">
-              No contacts
-            </h3>
-            <p className="mt-1 text-sm text-gray-500">
-              Contacts will appear here when visitors request to book a call.
-            </p>
-          </div>
+          <EmptyState
+            icon={Phone}
+            title="No contacts"
+            description="Contacts will appear here when visitors request to book a call."
+          />
         ) : (
-          <div className="bg-white rounded-lg shadow overflow-hidden border border-gray-200">
+          <div className="bg-white rounded-xl elevation-1 overflow-hidden border border-brand-border">
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-brand-border">
+                <thead className="bg-brand-surface">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-brand-muted uppercase tracking-wider">
                       Contact
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-brand-muted uppercase tracking-wider">
                       Captured
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-white divide-y divide-brand-border">
                   {contacts.map((contact) => (
                     <tr
                       key={contact.id}
                       onClick={() => setSelectedLead(contact)}
-                      className="hover:bg-gray-50 transition-colors cursor-pointer"
+                      className="hover:bg-brand-surface transition-colors cursor-pointer"
                     >
                       <td className="px-6 py-4">
                         <div className="flex flex-col gap-1">
                           {contact.name && (
-                            <div className="flex items-center gap-2 text-sm font-medium text-gray-900">
-                              <User className="h-4 w-4 text-gray-500" />
+                            <div className="flex items-center gap-2 text-sm font-medium text-brand-primary">
+                              <User className="h-4 w-4 text-brand-muted" />
                               {contact.name}
                             </div>
                           )}
-                          <div className="flex items-center gap-2 text-sm text-gray-500">
-                            <Mail className="h-4 w-4 text-gray-500" />
+                          <div className="flex items-center gap-2 text-sm text-brand-muted">
+                            <Mail className="h-4 w-4 text-brand-light" />
                             {contact.email}
                           </div>
                           {contact.phone && (
-                            <div className="flex items-center gap-2 text-sm text-gray-500">
-                              <Phone className="h-4 w-4 text-gray-500" />
+                            <div className="flex items-center gap-2 text-sm text-brand-muted">
+                              <Phone className="h-4 w-4 text-brand-light" />
                               {contact.phone}
                             </div>
                           )}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center gap-2 text-sm text-gray-500">
+                        <div className="flex items-center gap-2 text-sm text-brand-muted">
                           <Calendar className="h-4 w-4" />
                           {formatDate(contact.capturedAt)}
                         </div>
@@ -568,54 +562,50 @@ export default function LeadsPage() {
       {/* Text Requests Section */}
       <div className="space-y-4">
         <div className="flex justify-between items-center">
-          <h2 className="text-lg font-semibold text-gray-900">
+          <h2 className="text-lg font-semibold text-brand-primary">
             Text Requests ({textRequestsTotal})
           </h2>
           {textRequests.length > 0 && (
             <button
               onClick={exportTextRequestsToCSV}
-              className="inline-flex items-center px-3 py-1.5 border border-gray-200 rounded-md shadow-sm text-xs font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+              className="btn-secondary inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium"
             >
               <Download className="h-3 w-3 mr-1.5" />
               Export
             </button>
           )}
         </div>
-        <p className="text-sm text-gray-500">
-          Messages from visitors who used the "Send us a Text" feature.
+        <p className="text-sm text-brand-muted">
+          Messages from visitors who used the &quot;Send us a Text&quot;
+          feature.
         </p>
         {textRequests.length === 0 ? (
-          <div className="text-center py-8 bg-white rounded-lg border-2 border-dashed border-gray-200">
-            <MessageCircle className="mx-auto h-10 w-10 text-gray-400" />
-            <h3 className="mt-2 text-sm font-medium text-gray-900">
-              No text requests
-            </h3>
-            <p className="mt-1 text-sm text-gray-500">
-              Text requests will appear here when visitors use the "Send us a
-              Text" feature.
-            </p>
-          </div>
+          <EmptyState
+            icon={MessageCircle}
+            title="No text requests"
+            description='Text requests will appear here when visitors use the "Send us a Text" feature.'
+          />
         ) : (
-          <div className="bg-white rounded-lg shadow overflow-hidden border border-gray-200">
+          <div className="bg-white rounded-xl elevation-1 overflow-hidden border border-brand-border">
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-brand-border">
+                <thead className="bg-brand-surface">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-brand-muted uppercase tracking-wider">
                       Contact
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-brand-muted uppercase tracking-wider">
                       Message
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-brand-muted uppercase tracking-wider">
                       Status
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-brand-muted uppercase tracking-wider">
                       Submitted
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-white divide-y divide-brand-border">
                   {textRequests.map((textRequest) => (
                     <tr
                       key={textRequest.id}
@@ -625,28 +615,28 @@ export default function LeadsPage() {
                           updateTextRequestStatus(textRequest.id, "SEEN");
                         }
                       }}
-                      className="hover:bg-gray-50 transition-colors cursor-pointer"
+                      className="hover:bg-brand-surface transition-colors cursor-pointer"
                     >
                       <td className="px-6 py-4">
                         <div className="flex flex-col gap-1">
-                          <div className="flex items-center gap-2 text-sm font-medium text-gray-900">
-                            <User className="h-4 w-4 text-gray-500" />
+                          <div className="flex items-center gap-2 text-sm font-medium text-brand-primary">
+                            <User className="h-4 w-4 text-brand-muted" />
                             {textRequest.firstName} {textRequest.lastName}
                           </div>
-                          <div className="flex items-center gap-2 text-sm text-gray-500">
-                            <Phone className="h-4 w-4 text-gray-500" />
+                          <div className="flex items-center gap-2 text-sm text-brand-muted">
+                            <Phone className="h-4 w-4 text-brand-light" />
                             {textRequest.phone}
                           </div>
                           {textRequest.email && (
-                            <div className="flex items-center gap-2 text-sm text-gray-500">
-                              <Mail className="h-4 w-4 text-gray-500" />
+                            <div className="flex items-center gap-2 text-sm text-brand-muted">
+                              <Mail className="h-4 w-4 text-brand-light" />
                               {textRequest.email}
                             </div>
                           )}
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <p className="text-sm text-gray-900 max-w-xs truncate">
+                        <p className="text-sm text-brand-primary max-w-xs truncate">
                           {textRequest.message}
                         </p>
                       </td>
@@ -660,7 +650,7 @@ export default function LeadsPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center gap-2 text-sm text-gray-500">
+                        <div className="flex items-center gap-2 text-sm text-brand-muted">
                           <Calendar className="h-4 w-4" />
                           {formatDate(textRequest.createdAt)}
                         </div>
@@ -699,25 +689,25 @@ export default function LeadsPage() {
               <div className="space-y-6 py-4">
                 {/* Contact Info */}
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-900 mb-3">
+                  <h3 className="text-sm font-semibold text-brand-primary mb-3">
                     Contact Information
                   </h3>
                   <div className="space-y-3">
                     <div className="flex items-center gap-3">
-                      <Phone className="h-5 w-5 text-gray-400" />
+                      <Phone className="h-5 w-5 text-brand-light" />
                       <div>
-                        <p className="text-xs text-gray-500">Phone</p>
-                        <p className="text-sm font-medium text-gray-900">
+                        <p className="text-xs text-brand-muted">Phone</p>
+                        <p className="text-sm font-medium text-brand-primary">
                           {selectedTextRequest.phone}
                         </p>
                       </div>
                     </div>
                     {selectedTextRequest.email && (
                       <div className="flex items-center gap-3">
-                        <Mail className="h-5 w-5 text-gray-400" />
+                        <Mail className="h-5 w-5 text-brand-light" />
                         <div>
-                          <p className="text-xs text-gray-500">Email</p>
-                          <p className="text-sm font-medium text-gray-900">
+                          <p className="text-xs text-brand-muted">Email</p>
+                          <p className="text-sm font-medium text-brand-primary">
                             {selectedTextRequest.email}
                           </p>
                         </div>
@@ -727,18 +717,18 @@ export default function LeadsPage() {
                 </div>
 
                 {/* Message */}
-                <div className="pt-4 border-t">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-3">
+                <div className="pt-4 border-t border-brand-border">
+                  <h3 className="text-sm font-semibold text-brand-primary mb-3">
                     Message
                   </h3>
-                  <p className="text-sm text-gray-900 whitespace-pre-wrap bg-gray-50 p-4 rounded-lg">
+                  <p className="text-sm text-brand-primary whitespace-pre-wrap bg-brand-surface p-4 rounded-xl">
                     {selectedTextRequest.message}
                   </p>
                 </div>
 
                 {/* Status */}
-                <div className="pt-4 border-t">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-3">
+                <div className="pt-4 border-t border-brand-border">
+                  <h3 className="text-sm font-semibold text-brand-primary mb-3">
                     Status
                   </h3>
                   <div className="flex items-center gap-3">
@@ -757,7 +747,7 @@ export default function LeadsPage() {
                             "RESPONDED",
                           )
                         }
-                        className="text-xs text-blue-600 hover:text-blue-700 font-medium"
+                        className="text-xs text-brand-blue hover:text-brand-blue/80 font-medium"
                       >
                         Mark as Responded
                       </button>
@@ -791,38 +781,27 @@ export default function LeadsPage() {
               </DialogHeader>
 
               {/* Tabs */}
-              <div className="border-b border-gray-200">
+              <div className="border-b border-brand-border">
                 <nav className="flex gap-4">
-                  <button
-                    onClick={() => setActiveTab("overview")}
-                    className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
-                      activeTab === "overview"
-                        ? "border-gray-900 text-gray-900"
-                        : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                    }`}
-                  >
-                    Overview
-                  </button>
-                  <button
-                    onClick={() => setActiveTab("case")}
-                    className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
-                      activeTab === "case"
-                        ? "border-gray-900 text-gray-900"
-                        : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                    }`}
-                  >
-                    Case Details
-                  </button>
-                  <button
-                    onClick={() => setActiveTab("conversation")}
-                    className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
-                      activeTab === "conversation"
-                        ? "border-gray-900 text-gray-900"
-                        : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                    }`}
-                  >
-                    Conversation
-                  </button>
+                  {(
+                    [
+                      { id: "overview", label: "Overview" },
+                      { id: "case", label: "Case Details" },
+                      { id: "conversation", label: "Conversation" },
+                    ] as const
+                  ).map((tab) => (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id)}
+                      className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
+                        activeTab === tab.id
+                          ? "border-transparent text-brand-primary tab-active-border"
+                          : "border-transparent text-brand-muted hover:text-brand-primary hover:border-brand-border"
+                      }`}
+                    >
+                      {tab.label}
+                    </button>
+                  ))}
                 </nav>
               </div>
 
@@ -832,36 +811,36 @@ export default function LeadsPage() {
                 {activeTab === "overview" && (
                   <div className="space-y-6">
                     <div>
-                      <h3 className="text-sm font-semibold text-gray-900 mb-3">
+                      <h3 className="text-sm font-semibold text-brand-primary mb-3">
                         Contact Information
                       </h3>
                       <div className="space-y-3">
                         {selectedLead.name && (
                           <div className="flex items-center gap-3">
-                            <User className="h-5 w-5 text-gray-400" />
+                            <User className="h-5 w-5 text-brand-light" />
                             <div>
-                              <p className="text-xs text-gray-500">Name</p>
-                              <p className="text-sm font-medium text-gray-900">
+                              <p className="text-xs text-brand-muted">Name</p>
+                              <p className="text-sm font-medium text-brand-primary">
                                 {selectedLead.name}
                               </p>
                             </div>
                           </div>
                         )}
                         <div className="flex items-center gap-3">
-                          <Mail className="h-5 w-5 text-gray-400" />
+                          <Mail className="h-5 w-5 text-brand-light" />
                           <div>
-                            <p className="text-xs text-gray-500">Email</p>
-                            <p className="text-sm font-medium text-gray-900">
+                            <p className="text-xs text-brand-muted">Email</p>
+                            <p className="text-sm font-medium text-brand-primary">
                               {selectedLead.email}
                             </p>
                           </div>
                         </div>
                         {selectedLead.phone && (
                           <div className="flex items-center gap-3">
-                            <Phone className="h-5 w-5 text-gray-400" />
+                            <Phone className="h-5 w-5 text-brand-light" />
                             <div>
-                              <p className="text-xs text-gray-500">Phone</p>
-                              <p className="text-sm font-medium text-gray-900">
+                              <p className="text-xs text-brand-muted">Phone</p>
+                              <p className="text-sm font-medium text-brand-primary">
                                 {selectedLead.phone}
                               </p>
                             </div>
@@ -870,15 +849,15 @@ export default function LeadsPage() {
                       </div>
                     </div>
 
-                    <div className="pt-4 border-t">
-                      <h3 className="text-sm font-semibold text-gray-900 mb-3">
+                    <div className="pt-4 border-t border-brand-border">
+                      <h3 className="text-sm font-semibold text-brand-primary mb-3">
                         Quick Info
                       </h3>
                       <div className="flex items-center gap-3">
-                        <Calendar className="h-5 w-5 text-gray-400" />
+                        <Calendar className="h-5 w-5 text-brand-light" />
                         <div>
-                          <p className="text-xs text-gray-500">Captured</p>
-                          <p className="text-sm font-medium text-gray-900">
+                          <p className="text-xs text-brand-muted">Captured</p>
+                          <p className="text-sm font-medium text-brand-primary">
                             {formatDate(selectedLead.capturedAt)}
                           </p>
                         </div>
@@ -892,17 +871,19 @@ export default function LeadsPage() {
                   <div className="space-y-6">
                     {selectedLead.caseType && (
                       <div>
-                        <label className="text-xs text-gray-500">
+                        <label className="text-xs text-brand-muted">
                           Case Type
                         </label>
-                        <p className="text-sm font-medium text-gray-900 mt-1">
+                        <p className="text-sm font-medium text-brand-primary mt-1">
                           {selectedLead.caseType}
                         </p>
                       </div>
                     )}
                     {selectedLead.urgency && (
                       <div>
-                        <label className="text-xs text-gray-500">Urgency</label>
+                        <label className="text-xs text-brand-muted">
+                          Urgency
+                        </label>
                         <div className="mt-1">
                           <span
                             className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getUrgencyColor(selectedLead.urgency)}`}
@@ -915,16 +896,20 @@ export default function LeadsPage() {
                     )}
                     {selectedLead.budget && (
                       <div>
-                        <label className="text-xs text-gray-500">Budget</label>
-                        <p className="text-sm font-medium text-gray-900 mt-1">
+                        <label className="text-xs text-brand-muted">
+                          Budget
+                        </label>
+                        <p className="text-sm font-medium text-brand-primary mt-1">
                           {selectedLead.budget}
                         </p>
                       </div>
                     )}
                     {selectedLead.notes && (
                       <div>
-                        <label className="text-xs text-gray-500">Notes</label>
-                        <p className="text-sm text-gray-900 mt-1 whitespace-pre-wrap leading-relaxed">
+                        <label className="text-xs text-brand-muted">
+                          Notes
+                        </label>
+                        <p className="text-sm text-brand-primary mt-1 whitespace-pre-wrap leading-relaxed">
                           {selectedLead.notes}
                         </p>
                       </div>
@@ -933,7 +918,7 @@ export default function LeadsPage() {
                       !selectedLead.urgency &&
                       !selectedLead.budget &&
                       !selectedLead.notes && (
-                        <p className="text-sm text-gray-500 text-center py-8">
+                        <p className="text-sm text-brand-muted text-center py-8">
                           No case details available
                         </p>
                       )}
@@ -944,19 +929,21 @@ export default function LeadsPage() {
                 {activeTab === "conversation" && (
                   <div className="space-y-6">
                     <div className="grid grid-cols-2 gap-4">
-                      <div className="bg-gray-50 rounded-lg p-4">
-                        <p className="text-xs text-gray-500 mb-1">
+                      <div className="bg-brand-surface rounded-xl p-4">
+                        <p className="text-xs text-brand-muted mb-1">
                           Total Messages
                         </p>
-                        <p className="text-2xl font-semibold text-gray-900">
+                        <p className="text-2xl font-semibold text-brand-primary">
                           {selectedLead.conversationSnapshot?.messages.length ??
                             selectedLead.conversation?._count?.messages ??
                             0}
                         </p>
                       </div>
-                      <div className="bg-gray-50 rounded-lg p-4">
-                        <p className="text-xs text-gray-500 mb-1">Captured</p>
-                        <p className="text-sm font-medium text-gray-900">
+                      <div className="bg-brand-surface rounded-xl p-4">
+                        <p className="text-xs text-brand-muted mb-1">
+                          Captured
+                        </p>
+                        <p className="text-sm font-medium text-brand-primary">
                           {formatDate(selectedLead.capturedAt)}
                         </p>
                       </div>
@@ -964,7 +951,7 @@ export default function LeadsPage() {
 
                     {selectedLead.conversationSnapshot ? (
                       <div className="space-y-3">
-                        <h3 className="text-sm font-semibold text-gray-900">
+                        <h3 className="text-sm font-semibold text-brand-primary">
                           Conversation History (
                           {selectedLead.conversationSnapshot.messages.length}{" "}
                           messages)
@@ -974,17 +961,17 @@ export default function LeadsPage() {
                             (msg, idx) => (
                               <div
                                 key={msg.localId || idx}
-                                className={`p-3 rounded-lg ${
+                                className={`p-3 rounded-xl ${
                                   msg.role === "USER"
-                                    ? "bg-gray-100 ml-8"
-                                    : "bg-blue-50 mr-8"
+                                    ? "bg-brand-surface ml-8"
+                                    : "bg-brand-blue/5 mr-8"
                                 }`}
                               >
                                 <div className="flex justify-between items-start gap-2 mb-1">
-                                  <span className="text-xs font-medium text-gray-600">
+                                  <span className="text-xs font-medium text-brand-muted">
                                     {msg.role === "USER" ? "User" : "Assistant"}
                                   </span>
-                                  <span className="text-xs text-gray-500">
+                                  <span className="text-xs text-brand-light">
                                     {formatMessageTime(msg.createdAt)}
                                   </span>
                                 </div>
@@ -993,7 +980,7 @@ export default function LeadsPage() {
                                     <MarkdownContent content={msg.content} />
                                   </div>
                                 ) : (
-                                  <p className="text-sm text-gray-900 whitespace-pre-wrap">
+                                  <p className="text-sm text-brand-primary whitespace-pre-wrap">
                                     {msg.content}
                                   </p>
                                 )}
@@ -1003,19 +990,19 @@ export default function LeadsPage() {
                         </div>
                       </div>
                     ) : selectedLead.conversation ? (
-                      <div className="border border-dashed border-gray-300 rounded-lg p-8 text-center">
-                        <MessageSquare className="h-10 w-10 text-gray-400 mx-auto mb-3" />
-                        <p className="text-sm font-medium text-gray-700">
+                      <div className="border border-dashed border-brand-border rounded-xl p-8 text-center">
+                        <MessageSquare className="h-10 w-10 text-brand-light mx-auto mb-3" />
+                        <p className="text-sm font-medium text-brand-secondary">
                           Internal Chat Conversation
                         </p>
-                        <p className="text-xs text-gray-500 mt-1">
+                        <p className="text-xs text-brand-muted mt-1">
                           This lead was captured from the internal chat tab.
                           Message history is available in the database but not
                           displayed here yet.
                         </p>
                       </div>
                     ) : (
-                      <p className="text-sm text-gray-500 text-center py-8">
+                      <p className="text-sm text-brand-muted text-center py-8">
                         No conversation data available
                       </p>
                     )}

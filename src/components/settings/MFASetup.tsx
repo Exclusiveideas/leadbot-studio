@@ -247,10 +247,10 @@ export default function MFASetup({ user, onUpdate }: MFASetupProps) {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-medium text-gray-900">
+            <h3 className="text-lg font-medium text-brand-primary">
               Two-Factor Authentication
             </h3>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-brand-muted">
               Add an extra layer of security to your account
             </p>
           </div>
@@ -294,10 +294,10 @@ export default function MFASetup({ user, onUpdate }: MFASetupProps) {
           </div>
 
           <div>
-            <h3 className="text-lg font-medium text-gray-900 mb-4">
+            <h3 className="text-lg font-medium text-brand-primary mb-4">
               Your New Backup Codes
             </h3>
-            <p className="text-sm text-gray-500 mb-4">
+            <p className="text-sm text-brand-muted mb-4">
               Store these codes in a secure location. Each code can only be used
               once.
             </p>
@@ -307,7 +307,7 @@ export default function MFASetup({ user, onUpdate }: MFASetupProps) {
                 {regeneratedCodes.map((code, index) => (
                   <div
                     key={index}
-                    className="font-mono text-sm text-gray-900 bg-white p-2 rounded-lg border border-gray-200 text-center"
+                    className="font-mono text-sm text-brand-primary bg-white p-2 rounded-lg border border-brand-border text-center"
                   >
                     {code}
                   </div>
@@ -317,14 +317,14 @@ export default function MFASetup({ user, onUpdate }: MFASetupProps) {
               <div className="flex space-x-3">
                 <button
                   onClick={copyRegeneratedCodes}
-                  className="flex items-center px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors"
+                  className="flex items-center px-3 py-2 text-sm font-medium text-brand-muted bg-white border border-brand-border rounded-lg hover:bg-gray-100 transition-colors"
                 >
                   <Copy className="h-4 w-4 mr-2" />
                   Copy Codes
                 </button>
                 <button
                   onClick={downloadRegeneratedCodes}
-                  className="flex items-center px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors"
+                  className="flex items-center px-3 py-2 text-sm font-medium text-brand-muted bg-white border border-brand-border rounded-lg hover:bg-gray-100 transition-colors"
                 >
                   <Download className="h-4 w-4 mr-2" />
                   Download Codes
@@ -334,7 +334,7 @@ export default function MFASetup({ user, onUpdate }: MFASetupProps) {
 
             <button
               onClick={finishRegenerate}
-              className="w-full px-4 py-2.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-600/90 transition-colors"
+              className="w-full px-4 py-2.5 btn-primary rounded-lg transition-colors"
             >
               Done
             </button>
@@ -347,10 +347,10 @@ export default function MFASetup({ user, onUpdate }: MFASetupProps) {
     return (
       <div className="space-y-6">
         <div>
-          <h3 className="text-lg font-medium text-gray-900 mb-4">
+          <h3 className="text-lg font-medium text-brand-primary mb-4">
             Regenerate Backup Codes
           </h3>
-          <p className="text-sm text-gray-500 mb-4">
+          <p className="text-sm text-brand-muted mb-4">
             Enter your authenticator code to verify your identity and generate
             new backup codes. Your old codes will be invalidated.
           </p>
@@ -363,7 +363,7 @@ export default function MFASetup({ user, onUpdate }: MFASetupProps) {
 
           <form onSubmit={handleRegenerateSubmit}>
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-900 mb-2">
+              <label className="block text-sm font-medium text-brand-primary mb-2">
                 Authenticator Code
               </label>
               <input
@@ -374,7 +374,7 @@ export default function MFASetup({ user, onUpdate }: MFASetupProps) {
                     e.target.value.replace(/\D/g, "").slice(0, 6),
                   )
                 }
-                className="w-full text-gray-900 px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                className="w-full text-brand-primary px-3 py-2.5 border border-brand-border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-brand-blue"
                 placeholder="000000"
                 maxLength={6}
                 autoComplete="off"
@@ -386,14 +386,14 @@ export default function MFASetup({ user, onUpdate }: MFASetupProps) {
               <button
                 type="submit"
                 disabled={isLoading || regenerateCode.length !== 6}
-                className="flex-1 px-4 py-2.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-600/90 disabled:bg-gray-200 disabled:text-gray-500 disabled:cursor-not-allowed transition-colors"
+                className="flex-1 px-4 py-2.5 btn-primary rounded-lg disabled:bg-gray-200 disabled:text-brand-muted disabled:cursor-not-allowed transition-colors"
               >
                 {isLoading ? "Regenerating..." : "Regenerate Codes"}
               </button>
               <button
                 type="button"
                 onClick={finishRegenerate}
-                className="px-4 py-2.5 text-gray-500 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors"
+                className="px-4 py-2.5 text-brand-muted bg-white border border-brand-border rounded-lg hover:bg-gray-100 transition-colors"
               >
                 Cancel
               </button>
@@ -420,10 +420,10 @@ export default function MFASetup({ user, onUpdate }: MFASetupProps) {
         </div>
 
         <div>
-          <h3 className="text-lg font-medium text-gray-900 mb-4">
+          <h3 className="text-lg font-medium text-brand-primary mb-4">
             Save Your Backup Codes
           </h3>
-          <p className="text-sm text-gray-500 mb-4">
+          <p className="text-sm text-brand-muted mb-4">
             Store these codes in a secure location. You can use them to access
             your account if you lose your authenticator device.
           </p>
@@ -433,7 +433,7 @@ export default function MFASetup({ user, onUpdate }: MFASetupProps) {
               {mfaData.backupCodes.map((code, index) => (
                 <div
                   key={index}
-                  className="font-mono text-sm text-gray-900 bg-white p-2 rounded-lg border border-gray-200 text-center"
+                  className="font-mono text-sm text-brand-primary bg-white p-2 rounded-lg border border-brand-border text-center"
                 >
                   {code}
                 </div>
@@ -443,14 +443,14 @@ export default function MFASetup({ user, onUpdate }: MFASetupProps) {
             <div className="flex space-x-3">
               <button
                 onClick={copyBackupCodes}
-                className="flex items-center px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors"
+                className="flex items-center px-3 py-2 text-sm font-medium text-brand-muted bg-white border border-brand-border rounded-lg hover:bg-gray-100 transition-colors"
               >
                 <Copy className="h-4 w-4 mr-2" />
                 Copy Codes
               </button>
               <button
                 onClick={downloadBackupCodes}
-                className="flex items-center px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors"
+                className="flex items-center px-3 py-2 text-sm font-medium text-brand-muted bg-white border border-brand-border rounded-lg hover:bg-gray-100 transition-colors"
               >
                 <Download className="h-4 w-4 mr-2" />
                 Download Codes
@@ -468,7 +468,7 @@ export default function MFASetup({ user, onUpdate }: MFASetupProps) {
 
           <button
             onClick={finishSetup}
-            className="w-full px-4 py-2.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-600/90 transition-colors"
+            className="w-full px-4 py-2.5 btn-primary rounded-lg transition-colors"
           >
             Continue
           </button>
@@ -481,7 +481,7 @@ export default function MFASetup({ user, onUpdate }: MFASetupProps) {
     return (
       <div className="space-y-6">
         <div>
-          <h3 className="text-lg font-medium text-gray-900 mb-4">
+          <h3 className="text-lg font-medium text-brand-primary mb-4">
             Set Up Two-Factor Authentication
           </h3>
 
@@ -493,10 +493,10 @@ export default function MFASetup({ user, onUpdate }: MFASetupProps) {
 
           <div className="space-y-6">
             <div>
-              <h4 className="text-sm font-medium text-gray-900 mb-2">
+              <h4 className="text-sm font-medium text-brand-primary mb-2">
                 Step 1: Scan QR Code
               </h4>
-              <p className="text-sm text-gray-500 mb-4">
+              <p className="text-sm text-brand-muted mb-4">
                 Use your authenticator app (Google Authenticator, Authy, etc.)
                 to scan this QR code:
               </p>
@@ -505,25 +505,25 @@ export default function MFASetup({ user, onUpdate }: MFASetupProps) {
                 <img
                   src={mfaData.qrCode}
                   alt="MFA QR Code"
-                  className="border border-gray-200 rounded-lg"
+                  className="border border-brand-border rounded-lg"
                 />
               </div>
 
               <div className="bg-gray-100 rounded-lg p-4">
-                <p className="text-sm text-gray-500 mb-2">
+                <p className="text-sm text-brand-muted mb-2">
                   Can't scan? Enter this code manually:
                 </p>
-                <code className="text-sm font-mono text-gray-900 bg-white px-2 py-1 rounded-lg border border-gray-200">
+                <code className="text-sm font-mono text-brand-primary bg-white px-2 py-1 rounded-lg border border-brand-border">
                   {mfaData.secret}
                 </code>
               </div>
             </div>
 
             <form onSubmit={handleVerificationSubmit}>
-              <h4 className="text-sm font-medium text-gray-900 mb-2">
+              <h4 className="text-sm font-medium text-brand-primary mb-2">
                 Step 2: Enter Verification Code
               </h4>
-              <p className="text-sm text-gray-500 mb-4">
+              <p className="text-sm text-brand-muted mb-4">
                 Enter the 6-digit code from your authenticator app:
               </p>
 
@@ -532,7 +532,7 @@ export default function MFASetup({ user, onUpdate }: MFASetupProps) {
                   type="text"
                   value={verificationCode}
                   onChange={handleCodeChange}
-                  className="w-full text-gray-900 px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                  className="w-full text-brand-primary px-3 py-2.5 border border-brand-border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-brand-blue"
                   placeholder="000000"
                   maxLength={6}
                   autoComplete="off"
@@ -547,14 +547,14 @@ export default function MFASetup({ user, onUpdate }: MFASetupProps) {
                 <button
                   type="submit"
                   disabled={isLoading || verificationCode.length !== 6}
-                  className="flex-1 px-4 py-2.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-600/90 disabled:bg-gray-200 disabled:text-gray-500 disabled:cursor-not-allowed transition-colors"
+                  className="flex-1 px-4 py-2.5 btn-primary rounded-lg disabled:bg-gray-200 disabled:text-brand-muted disabled:cursor-not-allowed transition-colors"
                 >
                   {isLoading ? "Verifying..." : "Verify and Enable MFA"}
                 </button>
                 <button
                   type="button"
                   onClick={() => setShowSetup(false)}
-                  className="px-4 py-2.5 text-gray-500 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors"
+                  className="px-4 py-2.5 text-brand-muted bg-white border border-brand-border rounded-lg hover:bg-gray-100 transition-colors"
                 >
                   Cancel
                 </button>
@@ -584,10 +584,10 @@ export default function MFASetup({ user, onUpdate }: MFASetupProps) {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-medium text-gray-900">
+            <h3 className="text-lg font-medium text-brand-primary">
               Two-Factor Authentication
             </h3>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-brand-muted">
               Add an extra layer of security to your account
             </p>
           </div>
@@ -629,7 +629,7 @@ export default function MFASetup({ user, onUpdate }: MFASetupProps) {
               <button
                 onClick={() => setShowRegenerateFlow(true)}
                 disabled={isLoading}
-                className="flex items-center text-sm text-emerald-600 hover:text-emerald-700 font-medium cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="flex items-center text-sm text-brand-blue hover:text-brand-blue font-medium cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 <RefreshCw className="h-4 w-4 mr-1" />
                 Regenerate Backup Codes
@@ -659,7 +659,7 @@ export default function MFASetup({ user, onUpdate }: MFASetupProps) {
             <button
               onClick={generateMFASecret}
               disabled={isGenerating}
-              className="flex items-center px-4 py-2.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-600/90 disabled:bg-gray-200 disabled:text-gray-500 disabled:cursor-not-allowed transition-colors"
+              className="flex items-center px-4 py-2.5 btn-primary rounded-lg disabled:bg-gray-200 disabled:text-brand-muted disabled:cursor-not-allowed transition-colors"
             >
               {isGenerating ? (
                 <>

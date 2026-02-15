@@ -518,7 +518,7 @@ export function ChatbotChatTabbed({ chatbot, userId }: ChatbotChatTabbedProps) {
               onClick={() =>
                 setShowConversationDropdown(!showConversationDropdown)
               }
-              className="flex items-center justify-between w-full max-w-xs px-3 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors"
+              className="flex items-center justify-between w-full max-w-xs px-3 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-brand-blue transition-colors"
             >
               <span className="truncate">
                 {currentConversation?.title || "Select or start a conversation"}
@@ -588,7 +588,7 @@ export function ChatbotChatTabbed({ chatbot, userId }: ChatbotChatTabbedProps) {
 
         <button
           onClick={handleNewChat}
-          className="px-4 py-2 bg-emerald-600 text-white text-sm font-medium rounded-lg hover:bg-emerald-700 flex items-center gap-2 transition-colors"
+          className="px-4 py-2 btn-primary text-sm font-medium rounded-lg flex items-center gap-2 transition-colors"
         >
           <Plus className="w-4 h-4" />
           New Chat
@@ -772,14 +772,14 @@ export function ChatbotChatTabbed({ chatbot, userId }: ChatbotChatTabbedProps) {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Type your message..."
-              className="flex-1 px-4 text-gray-900 py-3 border border-gray-200 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white placeholder:text-gray-500"
+              className="flex-1 px-4 text-gray-900 py-3 border border-gray-200 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-brand-blue bg-white placeholder:text-gray-500"
               style={{ minHeight: MIN_HEIGHT, maxHeight: MAX_HEIGHT }}
               disabled={isSending}
             />
             <button
               onClick={handleSendMessage}
               disabled={!input.trim() || isSending}
-              className="px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-colors"
+              className="px-6 py-3 btn-primary rounded-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-colors"
             >
               {isSending ? (
                 <Loader2 className="w-5 h-5 animate-spin" />

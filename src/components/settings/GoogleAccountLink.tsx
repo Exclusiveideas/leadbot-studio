@@ -95,7 +95,7 @@ export default function GoogleAccountLink({
 
   if (isLoading) {
     return (
-      <div className="border-t border-gray-200 pt-6 mt-6">
+      <div className="border-t border-brand-border pt-6 mt-6">
         <div className="flex items-center space-x-3 animate-pulse">
           <div className="w-10 h-10 bg-gray-200 rounded-lg"></div>
           <div className="flex-1">
@@ -114,10 +114,10 @@ export default function GoogleAccountLink({
   // User signed up with Google (no password) - show info only
   if (!linkStatus.hasPassword) {
     return (
-      <div className="border-t border-gray-200 pt-6 mt-6">
+      <div className="border-t border-brand-border pt-6 mt-6">
         <div className="flex items-start space-x-3">
-          <div className="flex-shrink-0 w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
-            <svg className="w-5 h-5 text-gray-500" viewBox="0 0 24 24">
+          <div className="flex-shrink-0 w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center">
+            <svg className="w-5 h-5 text-brand-muted" viewBox="0 0 24 24">
               <path
                 fill="currentColor"
                 d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -137,10 +137,10 @@ export default function GoogleAccountLink({
             </svg>
           </div>
           <div className="flex-1">
-            <h3 className="text-sm font-medium text-gray-900">
+            <h3 className="text-sm font-medium text-brand-primary">
               Google Account Connected
             </h3>
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="mt-1 text-sm text-brand-muted">
               Your account uses Google Sign-In. You can log in using your Google
               account.
             </p>
@@ -154,16 +154,16 @@ export default function GoogleAccountLink({
   // User has Google linked already
   if (linkStatus.hasGoogleLinked) {
     return (
-      <div className="border-t border-gray-200 pt-6 mt-6">
+      <div className="border-t border-brand-border pt-6 mt-6">
         <div className="flex items-start space-x-3">
           <div className="flex-shrink-0 w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
             <Link2 className="w-5 h-5 text-green-600" />
           </div>
           <div className="flex-1">
-            <h3 className="text-sm font-medium text-gray-900">
+            <h3 className="text-sm font-medium text-brand-primary">
               Google Account Linked
             </h3>
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="mt-1 text-sm text-brand-muted">
               You can sign in with either your password or Google account.
             </p>
           </div>
@@ -175,16 +175,16 @@ export default function GoogleAccountLink({
 
   // User can link Google (has password, no Google linked yet)
   return (
-    <div className="border-t border-gray-200 pt-6 mt-6">
+    <div className="border-t border-brand-border pt-6 mt-6">
       <div className="flex items-start space-x-3 mb-4">
         <div className="flex-shrink-0 w-10 h-10 bg-gray-200/50 rounded-lg flex items-center justify-center">
-          <Link2 className="w-5 h-5 text-gray-500" />
+          <Link2 className="w-5 h-5 text-brand-muted" />
         </div>
         <div className="flex-1">
-          <h3 className="text-sm font-medium text-gray-900">
+          <h3 className="text-sm font-medium text-brand-primary">
             Link Google Account
           </h3>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-sm text-brand-muted">
             Link your Google account for faster sign-in. You'll still be able to
             use your password.
           </p>
@@ -201,7 +201,7 @@ export default function GoogleAccountLink({
         <div>
           <label
             htmlFor="link-password"
-            className="block text-sm font-medium text-gray-900 mb-1"
+            className="block text-sm font-medium text-brand-primary mb-1"
           >
             Confirm your password
           </label>
@@ -212,7 +212,7 @@ export default function GoogleAccountLink({
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Enter your password"
             required
-            className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+            className="w-full px-3 py-2.5 border border-brand-border rounded-lg text-brand-primary placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-brand-blue"
           />
         </div>
 
@@ -220,7 +220,7 @@ export default function GoogleAccountLink({
           <div>
             <label
               htmlFor="link-mfa"
-              className="block text-sm font-medium text-gray-900 mb-1"
+              className="block text-sm font-medium text-brand-primary mb-1"
             >
               MFA Code
             </label>
@@ -232,9 +232,9 @@ export default function GoogleAccountLink({
               placeholder="123456 or XXXX-XXXX"
               required
               maxLength={9}
-              className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              className="w-full px-3 py-2.5 border border-brand-border rounded-lg text-brand-primary placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-brand-blue"
             />
-            <p className="mt-1 text-xs text-gray-500">
+            <p className="mt-1 text-xs text-brand-muted">
               Enter the code from your authenticator app or a backup code
             </p>
           </div>
@@ -245,7 +245,7 @@ export default function GoogleAccountLink({
           disabled={
             isLinking || !password || (mfaRequired && mfaToken.length < 6)
           }
-          className="inline-flex items-center px-4 py-2.5 border border-transparent text-sm font-medium rounded-lg text-white bg-emerald-600 hover:bg-emerald-600/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="inline-flex items-center px-4 py-2.5 border border-transparent text-sm font-medium rounded-lg btn-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-blue disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           {isLinking ? (
             <>

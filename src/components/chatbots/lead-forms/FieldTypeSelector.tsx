@@ -76,9 +76,9 @@ export function FieldTypeSelector({ onSelectType }: FieldTypeSelectorProps) {
           key={fieldType.type}
           type="button"
           onClick={() => onSelectType(fieldType.type)}
-          className="flex flex-col items-center gap-2 p-4 bg-white border-2 border-gray-200 rounded-lg hover:border-emerald-500 hover:bg-emerald-50 transition-colors text-left group"
+          className="flex flex-col items-center gap-2 p-4 bg-white border-2 border-gray-200 rounded-lg hover:border-brand-blue hover:bg-blue-50 transition-colors text-left group"
         >
-          <div className="text-2xl text-gray-400 group-hover:text-emerald-600">
+          <div className="text-2xl text-gray-400 group-hover:text-brand-blue">
             {fieldType.icon}
           </div>
           <div className="w-full">

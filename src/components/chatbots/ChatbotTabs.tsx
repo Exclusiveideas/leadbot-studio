@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { motion } from "framer-motion";
 
 type Tab = {
   id: string;
@@ -46,7 +47,7 @@ export default function ChatbotTabs({ chatbotId }: ChatbotTabsProps) {
   };
 
   return (
-    <div className="border-b border-gray-200 mb-6">
+    <div className="border-b border-brand-border mb-6">
       <nav className="-mb-px flex space-x-8">
         {tabs.map((tab) => {
           const active = isActiveTab(tab.href);
@@ -54,13 +55,24 @@ export default function ChatbotTabs({ chatbotId }: ChatbotTabsProps) {
             <Link
               key={tab.id}
               href={tab.href}
-              className={`border-b-2 py-4 px-1 text-sm font-medium transition-colors duration-150 ${
+              className={`relative border-b-2 py-4 px-1 text-sm font-medium transition-colors duration-150 ${
                 active
-                  ? "border-emerald-600 text-gray-900"
-                  : "border-transparent text-gray-500 hover:text-gray-900 hover:border-gray-200"
+                  ? "border-transparent text-brand-primary"
+                  : "border-transparent text-brand-muted hover:text-brand-primary hover:border-brand-border"
               }`}
             >
               {tab.name}
+              {active && (
+                <motion.div
+                  layoutId="chatbot-tab-indicator"
+                  className="absolute bottom-[-1px] left-0 right-0 h-0.5 bg-gradient-accent rounded-full"
+                  transition={{
+                    type: "spring",
+                    stiffness: 380,
+                    damping: 30,
+                  }}
+                />
+              )}
             </Link>
           );
         })}

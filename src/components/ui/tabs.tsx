@@ -60,7 +60,7 @@ export function TabsList({ children, className = "" }: TabsListProps) {
   return (
     <div
       role="tablist"
-      className={`flex border-b border-gray-200 ${className}`}
+      className={`flex border-b border-brand-border ${className}`}
     >
       {children}
     </div>
@@ -91,10 +91,10 @@ export function TabsTrigger({
       aria-controls={`tabpanel-${value}`}
       disabled={disabled}
       onClick={() => setActiveTab(value)}
-      className={`px-4 py-3 text-sm font-medium transition-colors border-b-2 -mb-px focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 ${
+      className={`px-4 py-3 text-sm font-medium transition-colors border-b-2 -mb-px focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2 ${
         isActive
-          ? "border-emerald-600 text-emerald-600"
-          : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+          ? "tab-active-border text-brand-primary"
+          : "border-transparent text-brand-muted hover:text-brand-primary hover:border-brand-border"
       } ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"} ${className}`}
     >
       {children}

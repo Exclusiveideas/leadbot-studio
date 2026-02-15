@@ -7,7 +7,7 @@ interface SkeletonProps extends ComponentPropsWithoutRef<"div"> {
 export function Skeleton({ className = "", ...props }: SkeletonProps) {
   return (
     <div
-      className={`animate-pulse bg-gray-200 rounded ${className}`}
+      className={`animate-pulse bg-brand-border/40 rounded ${className}`}
       {...props}
     />
   );

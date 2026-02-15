@@ -20,7 +20,6 @@ export default async function ChatbotLeadFormsPage({
     redirect("/chatbots");
   }
 
-  // Check ownership
   if (
     chatbot.createdBy !== sessionData.user.id &&
     chatbot.organizationId !== sessionData.user.organization?.id
@@ -34,14 +33,14 @@ export default async function ChatbotLeadFormsPage({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Lead Forms</h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <h1 className="text-2xl font-bold text-brand-primary">Lead Forms</h1>
+          <p className="text-sm text-brand-muted mt-1">
             Create and manage custom lead capture forms for your chatbot
           </p>
         </div>
         <Link
           href={`/chatbots/${params.id}/lead-forms/new`}
-          className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
+          className="btn-primary flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium"
         >
           <Plus className="w-4 h-4" />
           Create Form
@@ -49,10 +48,10 @@ export default async function ChatbotLeadFormsPage({
       </div>
 
       {forms.length === 0 ? (
-        <div className="bg-white rounded-lg border-2 border-dashed border-gray-200 p-12 text-center">
-          <div className="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+        <div className="bg-white rounded-xl border-2 border-dashed border-brand-border p-12 text-center">
+          <div className="mx-auto w-24 h-24 bg-brand-surface rounded-full flex items-center justify-center mb-4">
             <svg
-              className="w-12 h-12 text-gray-400"
+              className="w-12 h-12 text-brand-light"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -65,16 +64,16 @@ export default async function ChatbotLeadFormsPage({
               />
             </svg>
           </div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+          <h3 className="text-lg font-semibold text-brand-primary mb-2">
             No forms created yet
           </h3>
-          <p className="text-gray-500 mb-6 max-w-md mx-auto">
+          <p className="text-brand-muted mb-6 max-w-md mx-auto">
             Create custom lead capture forms with drag-and-drop field builder.
             Choose from pre-built templates or start from scratch.
           </p>
           <Link
             href={`/chatbots/${params.id}/lead-forms/new`}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-medium"
+            className="btn-primary inline-flex items-center gap-2 px-6 py-3 rounded-lg font-medium"
           >
             <Plus className="w-5 h-5" />
             Create Your First Form
@@ -85,36 +84,36 @@ export default async function ChatbotLeadFormsPage({
           {forms.map((form) => (
             <div
               key={form.id}
-              className="bg-white rounded-lg border border-gray-200 p-6 hover:border-emerald-500 transition-colors"
+              className="bg-white rounded-xl border border-brand-border elevation-1 p-6 hover:border-brand-blue/30 transition-colors"
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <div className="flex items-center gap-3">
-                    <h3 className="text-lg font-semibold text-gray-900">
+                    <h3 className="text-lg font-semibold text-brand-primary">
                       {form.name}
                     </h3>
                     {form.isDefault && (
-                      <span className="px-2 py-1 text-xs font-medium bg-emerald-100 text-emerald-800 rounded">
+                      <span className="px-2 py-1 text-xs font-medium bg-green-50 text-green-700 rounded-full">
                         Default
                       </span>
                     )}
                     {!form.isActive && (
-                      <span className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded">
+                      <span className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded-full">
                         Inactive
                       </span>
                     )}
                   </div>
                   {form.description && (
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="text-sm text-brand-muted mt-1">
                       {form.description}
                     </p>
                   )}
-                  <div className="flex items-center gap-4 mt-3 text-sm text-gray-600">
+                  <div className="flex items-center gap-4 mt-3 text-sm text-brand-muted">
                     <span>
                       {(form.fields as any[]).length} field
                       {(form.fields as any[]).length !== 1 ? "s" : ""}
                     </span>
-                    <span>•</span>
+                    <span>&#8226;</span>
                     <span>
                       {form._count.leads} lead
                       {form._count.leads !== 1 ? "s" : ""} captured
@@ -124,7 +123,7 @@ export default async function ChatbotLeadFormsPage({
 
                 <Link
                   href={`/chatbots/${params.id}/lead-forms/${form.id}/edit`}
-                  className="px-4 py-2 text-sm text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                  className="btn-secondary px-4 py-2 text-sm rounded-lg"
                 >
                   Edit
                 </Link>

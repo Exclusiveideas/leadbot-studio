@@ -60,21 +60,21 @@ export default function ChatbotSettingsPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
+        <Loader2 className="h-8 w-8 animate-spin text-brand-muted" />
       </div>
     );
   }
 
   if (error || !chatbot) {
     return (
-      <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+      <div className="bg-red-50 border border-red-200 rounded-xl p-4">
         <p className="text-red-800">{error || "Chatbot not found"}</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-lg shadow p-6">
+    <div className="bg-white rounded-xl elevation-1 border border-brand-border p-6">
       <ChatbotForm initialData={chatbot} isEditing={true} />
     </div>
   );

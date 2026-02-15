@@ -46,39 +46,39 @@ const STAGE_LABELS: Record<string, string> = {
   COMPLETED: "Completed",
 };
 
-// Status color mapping using emerald palette
+// Status color mapping
 function getStatusColor(status: string): string {
   switch (status) {
     case "COMPLETED":
-      return "text-emerald-800 bg-emerald-100 border-emerald-200";
+      return "text-green-700 bg-green-50 border-green-200";
     case "PROCESSING":
-      return "text-gray-600 bg-gray-100 border-gray-300";
+      return "text-brand-muted bg-brand-surface border-brand-border";
     case "FAILED":
       return "text-red-700 bg-red-50 border-red-200";
     case "PENDING":
-      return "text-gray-500 bg-gray-50 border-gray-200";
+      return "text-brand-muted bg-brand-surface border-brand-border";
     case "QUEUED":
-      return "text-gray-500 bg-gray-50 border-gray-200";
+      return "text-brand-muted bg-brand-surface border-brand-border";
     default:
-      return "text-gray-500 bg-gray-50 border-gray-200";
+      return "text-brand-muted bg-brand-surface border-brand-border";
   }
 }
 
-// Type badge color mapping using emerald palette
+// Type badge color mapping
 function getTypeColor(type: string): string {
   switch (type) {
     case "FAQ":
-      return "bg-emerald-100 text-emerald-800";
+      return "bg-green-50 text-green-700";
     case "DOCUMENT":
-      return "bg-gray-100 text-gray-900";
+      return "bg-brand-surface text-brand-primary";
     case "TEXT":
-      return "bg-emerald-50 text-emerald-800";
+      return "bg-green-50 text-green-700";
     case "URL":
-      return "bg-gray-100 text-gray-500";
+      return "bg-brand-surface text-brand-muted";
     case "YOUTUBE":
       return "bg-red-100 text-red-800";
     default:
-      return "bg-gray-100 text-gray-500";
+      return "bg-brand-surface text-brand-muted";
   }
 }
 
@@ -132,12 +132,12 @@ export default function KnowledgeList({
 
   if (knowledge.length === 0) {
     return (
-      <div className="text-center py-12 bg-white rounded-lg border-2 border-dashed border-gray-200">
-        <FileText className="mx-auto h-12 w-12 text-gray-500" />
-        <h3 className="mt-2 text-sm font-medium text-gray-900">
+      <div className="text-center py-12 bg-white rounded-xl border-2 border-dashed border-brand-border">
+        <FileText className="mx-auto h-12 w-12 text-brand-muted" />
+        <h3 className="mt-2 text-sm font-medium text-brand-primary">
           No knowledge items
         </h3>
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="mt-1 text-sm text-brand-muted">
           Upload documents to provide context for your chatbot.
         </p>
       </div>
@@ -166,15 +166,15 @@ export default function KnowledgeList({
           return (
             <div
               key={item.id}
-              className="bg-white rounded-lg shadow p-6 hover:shadow-md transition-shadow border border-gray-200"
+              className="bg-white rounded-xl elevation-1 p-6 card-hover-lift border border-brand-border"
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-start gap-3 flex-1">
-                  <FileText className="h-5 w-5 text-gray-500 mt-1 flex-shrink-0" />
+                  <FileText className="h-5 w-5 text-brand-muted mt-1 flex-shrink-0" />
                   <div className="flex-1 min-w-0">
                     {/* Title and badges */}
                     <div className="flex items-center gap-2 mb-2 flex-wrap">
-                      <h3 className="text-lg font-semibold text-gray-900 truncate">
+                      <h3 className="text-lg font-semibold text-brand-primary truncate">
                         {item.title}
                       </h3>
                       <span
@@ -202,7 +202,7 @@ export default function KnowledgeList({
 
                     {/* Content preview (only for non-document types) */}
                     {item.type !== "DOCUMENT" && item.content && (
-                      <p className="text-sm text-gray-500 whitespace-pre-wrap mb-3 line-clamp-3">
+                      <p className="text-sm text-brand-muted whitespace-pre-wrap mb-3 line-clamp-3">
                         {item.content}
                       </p>
                     )}
@@ -210,18 +210,18 @@ export default function KnowledgeList({
                     {/* Processing progress */}
                     {isProcessing && item.stage && (
                       <div className="mt-3 mb-2">
-                        <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
+                        <div className="flex items-center justify-between text-xs text-brand-muted mb-1">
                           <span>{STAGE_LABELS[item.stage] || item.stage}</span>
                           <span>{item.progress || 0}%</span>
                         </div>
-                        <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div className="w-full bg-brand-border/40 rounded-full h-2">
                           <div
-                            className="bg-emerald-600 h-2 rounded-full transition-all duration-300"
+                            className="bg-brand-blue h-2 rounded-full transition-all duration-300"
                             style={{ width: `${item.progress || 0}%` }}
                           />
                         </div>
                         {(item.totalChunks || 0) > 0 && (
-                          <div className="text-xs text-gray-500 mt-1">
+                          <div className="text-xs text-brand-muted mt-1">
                             {item.processedChunks || 0} / {item.totalChunks}{" "}
                             chunks processed
                             {(item.failedChunks || 0) > 0 &&
@@ -244,9 +244,9 @@ export default function KnowledgeList({
 
                     {/* Completed info */}
                     {item.status === "COMPLETED" && item.chunkCount > 0 && (
-                      <div className="mt-2 flex items-center gap-4 text-xs text-gray-500">
+                      <div className="mt-2 flex items-center gap-4 text-xs text-brand-muted">
                         <span className="flex items-center gap-1">
-                          <CheckCircle2 className="h-3 w-3 text-emerald-600" />
+                          <CheckCircle2 className="h-3 w-3 text-brand-blue" />
                           {item.chunkCount} chunks indexed
                         </span>
                         {item.processedAt && (
@@ -258,7 +258,7 @@ export default function KnowledgeList({
                     )}
 
                     {/* Created date */}
-                    <div className="mt-2 text-xs text-gray-500">
+                    <div className="mt-2 text-xs text-brand-muted">
                       Added {formatSafeDateTime(item.createdAt)}
                     </div>
                   </div>

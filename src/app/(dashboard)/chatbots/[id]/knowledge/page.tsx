@@ -52,20 +52,17 @@ export default function KnowledgeBasePage() {
 
   const [faqPairs, setFaqPairs] = useState([{ question: "", answer: "" }]);
 
-  // Initialize real-time knowledge updates via SSE
   const { isConnected, refresh: refreshRealtime } = useChatbotKnowledge({
     chatbotId,
     enabled: true,
-    includeCompleted: true, // Show all knowledge items including completed ones
+    includeCompleted: true,
     onKnowledgeUpdate: (updatedKnowledge) => {
-      // Auto-merge real-time updates into main knowledge list
       setKnowledge((prev) => {
         const existingIndex = prev.findIndex(
           (item) => item.id === updatedKnowledge.id,
         );
 
         if (existingIndex === -1) {
-          // New knowledge item (INSERT) - add it to the beginning of the list
           return [
             {
               id: updatedKnowledge.id,
@@ -92,7 +89,6 @@ export default function KnowledgeBasePage() {
             ...prev,
           ];
         } else {
-          // Existing knowledge item (UPDATE) - update it
           return prev.map((item) =>
             item.id === updatedKnowledge.id
               ? {
@@ -110,7 +106,6 @@ export default function KnowledgeBasePage() {
         }
       });
 
-      // Show toast notifications on completion/failure
       if (updatedKnowledge.status === "COMPLETED") {
         toast.success("Processing Complete", {
           description: `${updatedKnowledge.title} has been processed successfully`,
@@ -122,7 +117,6 @@ export default function KnowledgeBasePage() {
       }
     },
     onAllCompleted: async () => {
-      // Refresh knowledge base when all processing completes
       await refreshKnowledgeBase();
     },
   });
@@ -173,7 +167,6 @@ export default function KnowledgeBasePage() {
   }, [chatbotId]);
 
   const handleUploadComplete = useCallback((newSources: any[]) => {
-    // Optimistically add new sources to the list
     setKnowledge((prev) => {
       const existingIds = new Set(prev.map((s) => s.id));
       const uniqueNewSources = newSources.filter((s) => !existingIds.has(s.id));
@@ -182,9 +175,6 @@ export default function KnowledgeBasePage() {
       return updated;
     });
 
-    // Note: No manual polling needed - SSE will provide real-time updates automatically
-
-    // Close upload section
     setShowUpload(false);
   }, []);
 
@@ -197,9 +187,7 @@ export default function KnowledgeBasePage() {
       setIsSubmitting(true);
       let content = formData.content;
 
-      // For FAQ type, convert faqPairs array to JSON string
       if (formData.type === "FAQ") {
-        // Validate FAQ pairs
         const validPairs = faqPairs.filter(
           (p) => p.question.trim() && p.answer.trim(),
         );
@@ -262,7 +250,6 @@ export default function KnowledgeBasePage() {
         throw new Error("Failed to delete knowledge");
       }
 
-      // Remove from state optimistically
       setKnowledge((prev) => prev.filter((item) => item.id !== id));
     } catch (err) {
       console.error("Delete error:", err);
@@ -277,27 +264,26 @@ export default function KnowledgeBasePage() {
         <div className="flex gap-3 items-center">
           <button
             onClick={() => setShowUpload(!showUpload)}
-            className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 transition-colors"
+            className="btn-primary inline-flex items-center px-4 py-2 rounded-lg shadow-sm text-sm font-medium"
           >
             <Plus className="h-5 w-5 mr-2" />
             Upload Documents
           </button>
           <button
             onClick={() => setShowAddForm(!showAddForm)}
-            className="inline-flex items-center px-4 py-2 border border-gray-200 rounded-md shadow-sm text-sm font-medium text-gray-900 bg-white hover:bg-gray-50 transition-colors"
+            className="btn-secondary inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium"
           >
             <Plus className="h-5 w-5 mr-2" />
             Add Text/FAQ/Website
           </button>
 
-          {/* Real-time Reconnect Button (only shows when disconnected) */}
           {!isConnected && (
             <button
               onClick={async () => {
                 await refreshRealtime();
                 toast.info("Reconnecting to realtime updates...");
               }}
-              className="text-xs px-3 py-1.5 border border-amber-300 text-amber-700 bg-amber-50 rounded-md hover:bg-amber-100 hover:border-amber-400 transition-colors font-medium"
+              className="text-xs px-3 py-1.5 border border-amber-300 text-amber-700 bg-amber-50 rounded-lg hover:bg-amber-100 hover:border-amber-400 transition-colors font-medium"
             >
               Click to reconnect realtime
             </button>
@@ -307,7 +293,7 @@ export default function KnowledgeBasePage() {
 
       {/* Error */}
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+        <div className="bg-red-50 border border-red-200 rounded-xl p-4">
           <p className="text-red-800">{error}</p>
         </div>
       )}
@@ -324,13 +310,13 @@ export default function KnowledgeBasePage() {
 
       {/* Add Text/FAQ/URL Form */}
       {showAddForm && (
-        <div className="bg-white rounded-lg shadow p-6 mb-6 border border-gray-200">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">
+        <div className="bg-white rounded-xl elevation-1 p-6 mb-6 border border-brand-border">
+          <h3 className="text-lg font-medium text-brand-primary mb-4">
             Add Knowledge Item
           </h3>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-500 mb-2">
+              <label className="block text-sm font-medium text-brand-muted mb-2">
                 Type
               </label>
               <Select
@@ -359,7 +345,7 @@ export default function KnowledgeBasePage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-500 mb-2">
+              <label className="block text-sm font-medium text-brand-muted mb-2">
                 Title *
               </label>
               <input
@@ -369,7 +355,7 @@ export default function KnowledgeBasePage() {
                 onChange={(e) =>
                   setFormData({ ...formData, title: e.target.value })
                 }
-                className="w-full px-3 text-gray-900 py-2 border border-gray-200 rounded-md focus:ring-emerald-500 focus:border-emerald-500"
+                className="w-full px-3 text-brand-primary py-2 border border-brand-border rounded-lg focus:ring-1 focus:ring-brand-blue focus:border-brand-blue transition-colors"
                 placeholder={
                   formData.type === "FAQ"
                     ? "e.g., Frequently Asked Questions"
@@ -383,16 +369,16 @@ export default function KnowledgeBasePage() {
             {/* FAQ Form */}
             {formData.type === "FAQ" && (
               <div className="space-y-4">
-                <label className="block text-sm font-medium text-gray-500">
+                <label className="block text-sm font-medium text-brand-muted">
                   Question & Answer Pairs *
                 </label>
                 {faqPairs.map((pair, index) => (
                   <div
                     key={index}
-                    className="border text-gray-900 border-gray-200 rounded-md p-4 space-y-3"
+                    className="border text-brand-primary border-brand-border rounded-xl p-4 space-y-3"
                   >
                     <div className="flex justify-between items-center">
-                      <span className="text-sm font-medium text-gray-500">
+                      <span className="text-sm font-medium text-brand-muted">
                         Pair {index + 1}
                       </span>
                       {faqPairs.length > 1 && (
@@ -417,7 +403,7 @@ export default function KnowledgeBasePage() {
                           newPairs[index].question = e.target.value;
                           setFaqPairs(newPairs);
                         }}
-                        className="w-full px-3 py-2 border border-gray-200 rounded-md focus:ring-emerald-500 focus:border-emerald-500"
+                        className="w-full px-3 py-2 border border-brand-border rounded-lg focus:ring-1 focus:ring-brand-blue focus:border-brand-blue transition-colors"
                         placeholder="Question (e.g., What are your fees?)"
                         maxLength={1000}
                       />
@@ -432,7 +418,7 @@ export default function KnowledgeBasePage() {
                           setFaqPairs(newPairs);
                         }}
                         rows={3}
-                        className="w-full px-3 py-2 border border-gray-200 rounded-md focus:ring-emerald-500 focus:border-emerald-500"
+                        className="w-full px-3 py-2 border border-brand-border rounded-lg focus:ring-1 focus:ring-brand-blue focus:border-brand-blue transition-colors"
                         placeholder="Answer"
                         maxLength={5000}
                       />
@@ -445,7 +431,7 @@ export default function KnowledgeBasePage() {
                     onClick={() => {
                       setFaqPairs([...faqPairs, { question: "", answer: "" }]);
                     }}
-                    className="w-full px-4 py-2 border-2 border-dashed border-gray-200 rounded-md text-sm font-medium text-gray-500 hover:border-gray-400 hover:text-gray-900 transition-colors"
+                    className="w-full px-4 py-2 border-2 border-dashed border-brand-border rounded-xl text-sm font-medium text-brand-muted hover:border-brand-muted hover:text-brand-primary transition-colors"
                   >
                     <Plus className="h-4 w-4 inline mr-2" />
                     Add Another Q&A Pair
@@ -457,7 +443,7 @@ export default function KnowledgeBasePage() {
             {/* TEXT Form */}
             {formData.type === "TEXT" && (
               <div>
-                <label className="block text-sm font-medium text-gray-500 mb-2">
+                <label className="block text-sm font-medium text-brand-muted mb-2">
                   Content *
                 </label>
                 <textarea
@@ -467,12 +453,12 @@ export default function KnowledgeBasePage() {
                     setFormData({ ...formData, content: e.target.value })
                   }
                   rows={10}
-                  className="w-full text-gray-900 px-3 py-2 border border-gray-200 rounded-md focus:ring-emerald-500 focus:border-emerald-500 font-mono text-sm"
+                  className="w-full text-brand-primary px-3 py-2 border border-brand-border rounded-lg focus:ring-1 focus:ring-brand-blue focus:border-brand-blue font-mono text-sm transition-colors"
                   placeholder="Enter the text content your chatbot should know..."
                   minLength={10}
                   maxLength={50000}
                 />
-                <p className="mt-1 text-xs text-gray-500">
+                <p className="mt-1 text-xs text-brand-muted">
                   {formData.content.length} / 50,000 characters (min: 10)
                 </p>
               </div>
@@ -481,7 +467,7 @@ export default function KnowledgeBasePage() {
             {/* URL Form */}
             {formData.type === "URL" && (
               <div>
-                <label className="block text-sm font-medium text-gray-500 mb-2">
+                <label className="block text-sm font-medium text-brand-muted mb-2">
                   Website *
                 </label>
                 <input
@@ -491,7 +477,7 @@ export default function KnowledgeBasePage() {
                   onChange={(e) =>
                     setFormData({ ...formData, content: e.target.value })
                   }
-                  className="w-full text-gray-900 px-3 py-2 border border-gray-200 rounded-md focus:ring-emerald-500 focus:border-emerald-500"
+                  className="w-full text-brand-primary px-3 py-2 border border-brand-border rounded-lg focus:ring-1 focus:ring-brand-blue focus:border-brand-blue transition-colors"
                   placeholder="https://example.com/page"
                 />
               </div>
@@ -501,7 +487,7 @@ export default function KnowledgeBasePage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex-1 inline-flex justify-center items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="flex-1 btn-primary inline-flex justify-center items-center px-4 py-2 rounded-lg shadow-sm text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? (
                   <>
@@ -519,7 +505,7 @@ export default function KnowledgeBasePage() {
                   setFormData({ type: "FAQ", title: "", content: "" });
                   setFaqPairs([{ question: "", answer: "" }]);
                 }}
-                className="px-4 py-2 border border-gray-200 rounded-md text-sm font-medium text-gray-900 bg-white hover:bg-gray-50 transition-colors"
+                className="btn-secondary px-4 py-2 rounded-lg text-sm font-medium"
               >
                 Cancel
               </button>
@@ -531,7 +517,7 @@ export default function KnowledgeBasePage() {
       {/* Knowledge List */}
       {isLoading ? (
         <div className="text-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-500 mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-blue mx-auto"></div>
         </div>
       ) : (
         <KnowledgeList knowledge={knowledge} onDelete={handleDelete} />

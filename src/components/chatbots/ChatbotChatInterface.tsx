@@ -294,7 +294,7 @@ export function ChatbotChatInterface({
 
         <button
           onClick={handleNewChat}
-          className="m-4 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors flex items-center justify-center gap-2"
+          className="m-4 px-4 py-2 btn-primary rounded-lg transition-colors flex items-center justify-center gap-2"
         >
           <Plus className="w-4 h-4" />
           New Chat
@@ -352,14 +352,14 @@ export function ChatbotChatInterface({
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder="Type your message..."
-                  className="flex-1 px-4 py-3 border border-gray-200 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-emerald-500 text-gray-900 placeholder:text-gray-500"
+                  className="flex-1 px-4 py-3 border border-gray-200 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-brand-blue text-gray-900 placeholder:text-gray-500"
                   style={{ minHeight: MIN_HEIGHT, maxHeight: MAX_HEIGHT }}
                   disabled={isSending}
                 />
                 <button
                   onClick={handleSendMessage}
                   disabled={!input.trim() || isSending}
-                  className="px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-colors"
+                  className="px-6 py-3 btn-primary rounded-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-colors"
                 >
                   {isSending ? (
                     <Loader2 className="w-5 h-5 animate-spin" />
@@ -433,8 +433,8 @@ export function ChatbotChatInterface({
                   )}
 
                   {leadCaptureState === "captured" && (
-                    <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4 my-4">
-                      <p className="text-sm text-emerald-800 font-medium">
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-4 my-4">
+                      <p className="text-sm text-green-700 font-medium">
                         ✓ Thank you! We've received your information and will be
                         in touch soon.
                       </p>
@@ -455,14 +455,14 @@ export function ChatbotChatInterface({
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder="Type your message..."
-                  className="flex-1 px-4 py-3 border border-gray-200 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-emerald-500 text-gray-900 placeholder:text-gray-500"
+                  className="flex-1 px-4 py-3 border border-gray-200 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-brand-blue text-gray-900 placeholder:text-gray-500"
                   style={{ minHeight: MIN_HEIGHT, maxHeight: MAX_HEIGHT }}
                   disabled={isSending}
                 />
                 <button
                   onClick={handleSendMessage}
                   disabled={!input.trim() || isSending}
-                  className="px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-colors"
+                  className="px-6 py-3 btn-primary rounded-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-colors"
                 >
                   {isSending ? (
                     <Loader2 className="w-5 h-5 animate-spin" />

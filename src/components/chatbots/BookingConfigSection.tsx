@@ -238,7 +238,7 @@ export default function BookingConfigSection({
             disabled={disabled}
             className="sr-only peer"
           />
-          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-blue"></div>
           <span className="ml-3 text-sm font-medium text-gray-700">
             {config.enabled ? "Enabled" : "Disabled"}
           </span>
@@ -295,7 +295,7 @@ export default function BookingConfigSection({
                           }
                           placeholder="Category name (e.g., Bankruptcy)"
                           disabled={disabled}
-                          className="w-full text-gray-900 px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent disabled:opacity-50 text-sm"
+                          className="w-full text-gray-900 px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent disabled:opacity-50 text-sm"
                         />
 
                         {/* Sub-categories */}
@@ -320,7 +320,7 @@ export default function BookingConfigSection({
                                 }
                                 placeholder="Sub-category name"
                                 disabled={disabled}
-                                className="flex-1 text-gray-900 px-3 py-1.5 border border-gray-200 rounded-md focus:ring-2 focus:ring-emerald-500 focus:border-transparent disabled:opacity-50 text-sm"
+                                className="flex-1 text-gray-900 px-3 py-1.5 border border-gray-200 rounded-md focus:ring-2 focus:ring-brand-blue focus:border-transparent disabled:opacity-50 text-sm"
                               />
                               <button
                                 type="button"
@@ -338,7 +338,7 @@ export default function BookingConfigSection({
                             type="button"
                             onClick={() => addSubCategory(category.id)}
                             disabled={disabled}
-                            className="inline-flex items-center gap-1 text-sm text-emerald-600 hover:text-emerald-700 disabled:opacity-50"
+                            className="inline-flex items-center gap-1 text-sm text-brand-blue hover:text-brand-blue disabled:opacity-50"
                           >
                             <Plus className="h-4 w-4" />
                             Add sub-category
@@ -420,7 +420,7 @@ export default function BookingConfigSection({
                           }
                           placeholder="Location name (e.g., Downtown Office)"
                           disabled={disabled}
-                          className="w-full text-gray-900 px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent disabled:opacity-50 text-sm"
+                          className="w-full text-gray-900 px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent disabled:opacity-50 text-sm"
                         />
                         <input
                           type="text"
@@ -432,7 +432,7 @@ export default function BookingConfigSection({
                           }
                           placeholder="Full address"
                           disabled={disabled}
-                          className="w-full text-gray-900 px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent disabled:opacity-50 text-sm"
+                          className="w-full text-gray-900 px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent disabled:opacity-50 text-sm"
                         />
                       </div>
                       <button
@@ -459,7 +459,7 @@ export default function BookingConfigSection({
                             disabled={disabled}
                             className={`px-3 py-1 text-xs font-medium rounded-full transition-colors ${
                               location.availableDays.includes(day)
-                                ? "bg-emerald-100 text-emerald-800"
+                                ? "bg-green-50 text-green-700"
                                 : "bg-gray-100 text-gray-500"
                             } disabled:opacity-50`}
                           >
@@ -521,7 +521,7 @@ export default function BookingConfigSection({
                         type="button"
                         onClick={() => addTimeSlot(location.id)}
                         disabled={disabled}
-                        className="inline-flex items-center gap-1 text-xs text-emerald-600 hover:text-emerald-700 disabled:opacity-50 mt-2"
+                        className="inline-flex items-center gap-1 text-xs text-brand-blue hover:text-brand-blue disabled:opacity-50 mt-2"
                       >
                         <Plus className="h-3 w-3" />
                         Add time slot
@@ -563,7 +563,7 @@ export default function BookingConfigSection({
                 disabled={disabled}
                 className="sr-only peer"
               />
-              <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-600"></div>
+              <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-blue"></div>
             </label>
           </div>
 

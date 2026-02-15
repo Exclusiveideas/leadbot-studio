@@ -126,7 +126,7 @@ export default function MarkdownContent({ content }: MarkdownContentProps) {
             href={href}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-emerald-600 hover:text-emerald-700 hover:underline font-medium transition-colors"
+            className="text-brand-blue hover:text-brand-blue/80 hover:underline font-medium transition-colors"
             aria-label={`${childText} (opens in new tab)`}
           >
             {children}
@@ -136,7 +136,7 @@ export default function MarkdownContent({ content }: MarkdownContentProps) {
 
       // Blockquotes with background
       blockquote: ({ children }) => (
-        <blockquote className="border-l-4 border-emerald-500 pl-4 py-1 mb-4 italic text-gray-700 bg-emerald-50/30 rounded-r">
+        <blockquote className="border-l-4 border-brand-blue pl-4 py-1 mb-4 italic text-brand-secondary bg-brand-blue/5 rounded-r">
           {children}
         </blockquote>
       ),

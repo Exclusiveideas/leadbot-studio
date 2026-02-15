@@ -39,14 +39,14 @@ export default function WorkspaceTab({ user }: { user: User }) {
   return (
     <div className="p-6 space-y-6">
       <div>
-        <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-4">
+        <h3 className="text-sm font-semibold text-brand-primary uppercase tracking-wide mb-4">
           Workspace settings
         </h3>
         <form onSubmit={handleSave} className="space-y-4 max-w-md">
           <div>
             <label
               htmlFor="org-name"
-              className="block text-sm font-medium text-gray-900 mb-2"
+              className="block text-sm font-medium text-brand-primary mb-2"
             >
               Workspace name
             </label>
@@ -58,12 +58,12 @@ export default function WorkspaceTab({ user }: { user: User }) {
                 value={orgName}
                 onChange={(e) => setOrgName(e.target.value)}
                 disabled={!isOwner}
-                className="w-full pl-10 pr-3 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 disabled:bg-gray-200/30 disabled:text-gray-500"
+                className="w-full pl-10 pr-3 py-2.5 border border-brand-border rounded-lg text-sm text-brand-primary placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-brand-blue disabled:bg-gray-200/30 disabled:text-brand-muted"
                 placeholder="My Workspace"
               />
             </div>
             {!isOwner && (
-              <p className="mt-1.5 text-xs text-gray-500">
+              <p className="mt-1.5 text-xs text-brand-muted">
                 Only workspace owners can change the name.
               </p>
             )}
@@ -85,21 +85,21 @@ export default function WorkspaceTab({ user }: { user: User }) {
         </form>
       </div>
 
-      <div className="border-t border-gray-200 pt-6">
-        <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-2">
+      <div className="border-t border-brand-border pt-6">
+        <h3 className="text-sm font-semibold text-brand-primary uppercase tracking-wide mb-2">
           Workspace info
         </h3>
         <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
           <div>
-            <dt className="text-gray-500">Workspace ID</dt>
-            <dd className="mt-0.5 font-mono text-gray-700 text-xs">
+            <dt className="text-brand-muted">Workspace ID</dt>
+            <dd className="mt-0.5 font-mono text-brand-muted text-xs">
               {user.organization.id}
             </dd>
           </div>
           {user.organization.createdAt && (
             <div>
-              <dt className="text-gray-500">Created</dt>
-              <dd className="mt-0.5 text-gray-700">
+              <dt className="text-brand-muted">Created</dt>
+              <dd className="mt-0.5 text-brand-muted">
                 {new Date(user.organization.createdAt).toLocaleDateString(
                   "en-US",
                   { month: "long", day: "numeric", year: "numeric" },

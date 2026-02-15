@@ -416,12 +416,12 @@ export default function ChatbotForm({
         <TabsContent value="general" className="space-y-6">
           {/* Thumbnail Upload */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-brand-secondary mb-2">
               Thumbnail (Optional)
             </label>
             <div className="flex items-center gap-4">
               {thumbnailPreview && !imageLoadError ? (
-                <div className="w-32 h-32 rounded-lg overflow-hidden border-2 border-gray-200 bg-gray-100 flex items-center justify-center">
+                <div className="w-32 h-32 rounded-lg overflow-hidden border-2 border-brand-border bg-brand-surface flex items-center justify-center">
                   <img
                     src={thumbnailPreview}
                     alt="Thumbnail preview"
@@ -430,14 +430,14 @@ export default function ChatbotForm({
                   />
                 </div>
               ) : (
-                <div className="w-32 h-32 rounded-lg bg-gray-100 flex items-center justify-center text-gray-400 border-2 border-gray-200">
+                <div className="w-32 h-32 rounded-lg bg-brand-surface flex items-center justify-center text-brand-light border-2 border-brand-border">
                   <ImageIcon className="w-12 h-12" />
                 </div>
               )}
               <div>
                 <label
                   htmlFor="thumbnail"
-                  className={`inline-flex text-black items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors ${
+                  className={`inline-flex text-black items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-brand-surface transition-colors ${
                     isSubmitting
                       ? "opacity-50 cursor-not-allowed"
                       : "cursor-pointer"
@@ -454,7 +454,7 @@ export default function ChatbotForm({
                   disabled={isSubmitting}
                   className="hidden"
                 />
-                <p className="text-xs text-gray-500 mt-2">
+                <p className="text-xs text-brand-muted mt-2">
                   JPG, PNG or GIF. Max{" "}
                   {CHATBOT_FILE_UPLOAD.MAX_THUMBNAIL_SIZE_MB}
                   MB.
@@ -470,7 +470,7 @@ export default function ChatbotForm({
           <div>
             <label
               htmlFor="name"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="block text-sm font-medium text-brand-secondary mb-2"
             >
               Chatbot Name *
             </label>
@@ -480,7 +480,7 @@ export default function ChatbotForm({
               id="name"
               placeholder="e.g., Client Intake Bot"
               disabled={isSubmitting}
-              className="w-full text-gray-900 px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full text-gray-900 px-4 py-2 border border-brand-border rounded-lg focus:ring-1 focus:ring-brand-blue focus:border-brand-blue disabled:opacity-50 disabled:cursor-not-allowed"
             />
             {errors.name && (
               <p className="text-red-600 text-sm mt-1">{errors.name.message}</p>
@@ -491,7 +491,7 @@ export default function ChatbotForm({
           <div>
             <label
               htmlFor="description"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="block text-sm font-medium text-brand-secondary mb-2"
             >
               Description *
             </label>
@@ -501,7 +501,7 @@ export default function ChatbotForm({
               rows={6}
               placeholder="Description of what this chatbot helps with..."
               disabled={isSubmitting}
-              className="w-full text-gray-900 px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed resize-y"
+              className="w-full text-gray-900 px-4 py-2 border border-brand-border rounded-lg focus:ring-1 focus:ring-brand-blue focus:border-brand-blue disabled:opacity-50 disabled:cursor-not-allowed resize-y"
             />
             <div className="flex justify-between items-center mt-1">
               <div>
@@ -516,7 +516,7 @@ export default function ChatbotForm({
                   descriptionWordCount >
                   CHATBOT_FORM_VALIDATION.DESCRIPTION_MAX_WORDS
                     ? "text-red-600 font-semibold"
-                    : "text-gray-500"
+                    : "text-brand-muted"
                 }`}
               >
                 {descriptionWordCount} /{" "}
@@ -527,8 +527,8 @@ export default function ChatbotForm({
 
           {/* Publishing Status (Edit Mode Only) */}
           {isEditing && (
-            <div className="border-t border-gray-200 pt-6">
-              <h4 className="text-sm font-medium text-gray-700 mb-3">
+            <div className="border-t border-brand-border pt-6">
+              <h4 className="text-sm font-medium text-brand-secondary mb-3">
                 Publishing Status
               </h4>
               <div className="flex gap-4">
@@ -539,9 +539,9 @@ export default function ChatbotForm({
                     checked={chatbotStatus === "DRAFT"}
                     onChange={() => setChatbotStatus("DRAFT")}
                     disabled={isSubmitting}
-                    className="w-4 h-4 text-emerald-600 focus:ring-emerald-500"
+                    className="w-4 h-4 text-brand-blue focus:ring-brand-blue"
                   />
-                  <span className="text-sm text-gray-700">
+                  <span className="text-sm text-brand-secondary">
                     Draft (Not visible to public)
                   </span>
                 </label>
@@ -552,9 +552,9 @@ export default function ChatbotForm({
                     checked={chatbotStatus === "PUBLISHED"}
                     onChange={() => setChatbotStatus("PUBLISHED")}
                     disabled={isSubmitting}
-                    className="w-4 h-4 text-emerald-600 focus:ring-emerald-500"
+                    className="w-4 h-4 text-brand-blue focus:ring-brand-blue"
                   />
-                  <span className="text-sm text-gray-700">
+                  <span className="text-sm text-brand-secondary">
                     Published (Live and visible)
                   </span>
                 </label>
@@ -569,7 +569,7 @@ export default function ChatbotForm({
           <div>
             <label
               htmlFor="persona"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="block text-sm font-medium text-brand-secondary mb-2"
             >
               AI Personality/Persona *
             </label>
@@ -579,14 +579,14 @@ export default function ChatbotForm({
               rows={4}
               placeholder="Describe the AI's personality, tone, and communication style. e.g., 'You are a friendly and knowledgeable legal assistant who explains concepts clearly...'"
               disabled={isSubmitting}
-              className="w-full text-gray-900 px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full text-gray-900 px-4 py-2 border border-brand-border rounded-lg focus:ring-1 focus:ring-brand-blue focus:border-brand-blue disabled:opacity-50 disabled:cursor-not-allowed"
             />
             {errors.persona && (
               <p className="text-red-600 text-sm mt-1">
                 {errors.persona.message}
               </p>
             )}
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-brand-muted mt-1">
               This defines how the AI will interact with users
             </p>
           </div>
@@ -595,7 +595,7 @@ export default function ChatbotForm({
           <div>
             <label
               htmlFor="customInstructions"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="block text-sm font-medium text-brand-secondary mb-2"
             >
               Custom Instructions *
             </label>
@@ -605,7 +605,7 @@ export default function ChatbotForm({
               rows={4}
               placeholder="Additional instructions for the AI chatbot. What should it focus on? What should it avoid? Any specific guidelines?"
               disabled={isSubmitting}
-              className="w-full text-gray-900 px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full text-gray-900 px-4 py-2 border border-brand-border rounded-lg focus:ring-1 focus:ring-brand-blue focus:border-brand-blue disabled:opacity-50 disabled:cursor-not-allowed"
             />
             {errors.customInstructions && (
               <p className="text-red-600 text-sm mt-1">
@@ -618,7 +618,7 @@ export default function ChatbotForm({
           <div>
             <label
               htmlFor="chatGreeting"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="block text-sm font-medium text-brand-secondary mb-2"
             >
               Chat Opener (Optional)
             </label>
@@ -630,20 +630,20 @@ export default function ChatbotForm({
               placeholder="Hey, Let's get started! What's your goal? How can I help?"
               disabled={isSubmitting}
               maxLength={200}
-              className="w-full text-gray-900 px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full text-gray-900 px-4 py-2 border border-brand-border rounded-lg focus:ring-1 focus:ring-brand-blue focus:border-brand-blue disabled:opacity-50 disabled:cursor-not-allowed"
             />
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-brand-muted mt-1">
               First message shown when user starts a chat
             </p>
           </div>
 
           {/* Suggested Questions */}
-          <div className="border-t border-gray-200 pt-6 space-y-4">
+          <div className="border-t border-brand-border pt-6 space-y-4">
             <div>
-              <h4 className="text-sm font-medium text-gray-700">
+              <h4 className="text-sm font-medium text-brand-secondary">
                 Suggested Questions
               </h4>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-brand-muted mt-1">
                 Add up to 10 suggested questions that users can click to start a
                 conversation
               </p>
@@ -654,7 +654,7 @@ export default function ChatbotForm({
                 {suggestedQuestions.map((question, index) => (
                   <div
                     key={index}
-                    className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg border border-gray-200"
+                    className="flex items-center gap-2 p-3 bg-brand-surface rounded-lg border border-brand-border"
                   >
                     <svg
                       width="16"
@@ -663,11 +663,11 @@ export default function ChatbotForm({
                       fill="none"
                       stroke="currentColor"
                       strokeWidth="2"
-                      className="text-gray-400 flex-shrink-0"
+                      className="text-brand-light flex-shrink-0"
                     >
                       <path d="M12 3v18m0 0l-6-6m6 6l6-6"></path>
                     </svg>
-                    <span className="flex-1 text-sm text-gray-700">
+                    <span className="flex-1 text-sm text-brand-secondary">
                       {question}
                     </span>
                     <button
@@ -722,7 +722,7 @@ export default function ChatbotForm({
                       }
                     }
                   }}
-                  className="flex-1 text-gray-900 px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent disabled:opacity-50"
+                  className="flex-1 text-gray-900 px-4 py-2 border border-brand-border rounded-lg focus:ring-1 focus:ring-brand-blue focus:border-brand-blue disabled:opacity-50"
                 />
                 <button
                   type="button"
@@ -736,7 +736,7 @@ export default function ChatbotForm({
                     }
                   }}
                   disabled={isSubmitting || !newQuestion.trim()}
-                  className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+                  className="btn-primary px-4 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed font-medium"
                 >
                   Add
                 </button>
@@ -754,7 +754,7 @@ export default function ChatbotForm({
         {/* Appearance Tab */}
         <TabsContent value="appearance" className="space-y-6">
           <div>
-            <h4 className="text-sm font-medium text-gray-700 mb-4">
+            <h4 className="text-sm font-medium text-brand-secondary mb-4">
               Widget Colors
             </h4>
             <div className="grid grid-cols-2 gap-4">
@@ -762,7 +762,7 @@ export default function ChatbotForm({
               <div>
                 <label
                   htmlFor="primaryColor"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-sm font-medium text-brand-secondary mb-2"
                 >
                   Primary Color
                 </label>
@@ -773,7 +773,7 @@ export default function ChatbotForm({
                     value={primaryColor}
                     onChange={(e) => setPrimaryColor(e.target.value)}
                     disabled={isSubmitting}
-                    className="h-10 w-20 border border-gray-200 rounded cursor-pointer disabled:opacity-50"
+                    className="h-10 w-20 border border-brand-border rounded cursor-pointer disabled:opacity-50"
                   />
                   <input
                     type="text"
@@ -783,10 +783,10 @@ export default function ChatbotForm({
                     disabled={isSubmitting}
                     maxLength={7}
                     pattern="^#[0-9A-Fa-f]{6}$"
-                    className="flex-1 text-gray-900 px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent disabled:opacity-50 font-mono text-sm"
+                    className="flex-1 text-gray-900 px-3 py-2 border border-brand-border rounded-lg focus:ring-1 focus:ring-brand-blue focus:border-brand-blue disabled:opacity-50 font-mono text-sm"
                   />
                 </div>
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-brand-muted mt-1">
                   Chat button color (navy blue by default)
                 </p>
               </div>
@@ -795,7 +795,7 @@ export default function ChatbotForm({
               <div>
                 <label
                   htmlFor="accentColor"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-sm font-medium text-brand-secondary mb-2"
                 >
                   Accent Color
                 </label>
@@ -806,7 +806,7 @@ export default function ChatbotForm({
                     value={accentColor}
                     onChange={(e) => setAccentColor(e.target.value)}
                     disabled={isSubmitting}
-                    className="h-10 w-20 border border-gray-200 rounded cursor-pointer disabled:opacity-50"
+                    className="h-10 w-20 border border-brand-border rounded cursor-pointer disabled:opacity-50"
                   />
                   <input
                     type="text"
@@ -816,10 +816,10 @@ export default function ChatbotForm({
                     disabled={isSubmitting}
                     maxLength={7}
                     pattern="^#[0-9A-Fa-f]{6}$"
-                    className="flex-1 text-gray-900 px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent disabled:opacity-50 font-mono text-sm"
+                    className="flex-1 text-gray-900 px-3 py-2 border border-brand-border rounded-lg focus:ring-1 focus:ring-brand-blue focus:border-brand-blue disabled:opacity-50 font-mono text-sm"
                   />
                 </div>
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-brand-muted mt-1">
                   Action buttons color (light blue by default)
                 </p>
               </div>
@@ -827,8 +827,10 @@ export default function ChatbotForm({
           </div>
 
           {/* Color Preview */}
-          <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-            <p className="text-xs font-medium text-gray-700 mb-3">Preview</p>
+          <div className="bg-brand-surface rounded-lg p-4 border border-brand-border">
+            <p className="text-xs font-medium text-brand-secondary mb-3">
+              Preview
+            </p>
             <div className="flex items-center gap-3">
               <div
                 className="w-12 h-12 rounded-full flex items-center justify-center text-white shadow-md"
@@ -856,13 +858,13 @@ export default function ChatbotForm({
           </div>
 
           {/* Animation Settings */}
-          <div className="border-t border-gray-200 pt-6">
+          <div className="border-t border-brand-border pt-6">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-brand-secondary">
                   Action Bar Animation
                 </label>
-                <p className="text-xs text-gray-500 mt-0.5">
+                <p className="text-xs text-brand-muted mt-0.5">
                   Icons bounce to draw attention when widget loads
                 </p>
               </div>
@@ -870,8 +872,8 @@ export default function ChatbotForm({
                 type="button"
                 onClick={() => setAnimationEnabled(!animationEnabled)}
                 disabled={isSubmitting}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 disabled:opacity-50 ${
-                  animationEnabled ? "bg-emerald-500" : "bg-gray-200"
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-blue focus:ring-offset-2 disabled:opacity-50 ${
+                  animationEnabled ? "bg-brand-blue" : "bg-gray-200"
                 }`}
               >
                 <span
@@ -886,7 +888,7 @@ export default function ChatbotForm({
               <div className="flex items-center gap-4">
                 <label
                   htmlFor="animationCycles"
-                  className="text-sm font-medium text-gray-700 whitespace-nowrap"
+                  className="text-sm font-medium text-brand-secondary whitespace-nowrap"
                 >
                   Animation Cycles
                 </label>
@@ -902,9 +904,9 @@ export default function ChatbotForm({
                     )
                   }
                   disabled={isSubmitting}
-                  className="w-20 text-gray-900 px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent disabled:opacity-50 text-sm"
+                  className="w-20 text-gray-900 px-3 py-2 border border-brand-border rounded-lg focus:ring-1 focus:ring-brand-blue focus:border-brand-blue disabled:opacity-50 text-sm"
                 />
-                <span className="text-xs text-gray-500">
+                <span className="text-xs text-brand-muted">
                   Times the animation repeats (1-20)
                 </span>
               </div>
@@ -938,7 +940,7 @@ export default function ChatbotForm({
           <div>
             <label
               htmlFor="allowedDomains"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="block text-sm font-medium text-brand-secondary mb-2"
             >
               Allowed Domains *
             </label>
@@ -949,9 +951,9 @@ export default function ChatbotForm({
               onChange={(e) => setDomainsInput(e.target.value)}
               placeholder="example.com, *.example.com, or * for all domains"
               disabled={isSubmitting}
-              className="w-full text-gray-900 px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full text-gray-900 px-4 py-2 border border-brand-border rounded-lg focus:ring-1 focus:ring-brand-blue focus:border-brand-blue disabled:opacity-50 disabled:cursor-not-allowed"
             />
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-brand-muted mt-1">
               Comma-separated list of domains where this chatbot can be
               embedded. Use * to allow all domains.
             </p>
@@ -970,11 +972,11 @@ export default function ChatbotForm({
       </Tabs>
 
       {/* Submit Buttons */}
-      <div className="flex items-center gap-4 pt-4 border-t border-gray-200">
+      <div className="flex items-center gap-4 pt-4 border-t border-brand-border">
         <button
           type="submit"
           disabled={isSubmitting}
-          className="flex items-center gap-2 px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+          className="btn-primary flex items-center gap-2 px-6 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed font-medium"
         >
           {isSubmitting && <Loader2 className="w-4 h-4 animate-spin" />}
           {isSubmitting
@@ -989,7 +991,7 @@ export default function ChatbotForm({
           type="button"
           onClick={() => router.back()}
           disabled={isSubmitting}
-          className="px-6 py-2 bg-white border border-gray-200 text-gray-900 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+          className="px-6 py-2 bg-white border border-brand-border text-gray-900 rounded-lg hover:bg-brand-surface disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
         >
           Cancel
         </button>

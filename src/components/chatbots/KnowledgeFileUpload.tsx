@@ -337,11 +337,11 @@ export default function KnowledgeFileUpload({
       )}
 
       {/* Upload Notice */}
-      <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4">
+      <div className="bg-green-50 border border-green-200 rounded-lg p-4">
         <div className="flex items-start">
-          <CheckCircle2 className="h-5 w-5 text-emerald-400 mr-2 flex-shrink-0 mt-0.5" />
+          <CheckCircle2 className="h-5 w-5 text-green-400 mr-2 flex-shrink-0 mt-0.5" />
           <div className="flex-1">
-            <p className="text-sm text-emerald-700">
+            <p className="text-sm text-green-700">
               <strong>Real-time</strong> updates will show processing progress.
             </p>
           </div>
@@ -359,8 +359,8 @@ export default function KnowledgeFileUpload({
           transition-colors cursor-pointer
           ${
             isDragging
-              ? "border-emerald-500 bg-emerald-50"
-              : "border-gray-300 bg-white hover:border-emerald-400 hover:bg-emerald-50"
+              ? "border-brand-blue bg-blue-50"
+              : "border-gray-300 bg-white hover:border-blue-400 hover:bg-blue-50"
           }
           ${isDisabled ? "opacity-50 cursor-not-allowed" : ""}
         `}
@@ -375,7 +375,7 @@ export default function KnowledgeFileUpload({
         />
         <Upload
           className={`mx-auto h-12 w-12 mb-4 ${
-            isDragging ? "text-emerald-600" : "text-gray-400"
+            isDragging ? "text-brand-blue" : "text-gray-400"
           }`}
         />
         <p className="text-lg font-medium text-gray-900 mb-2">
@@ -434,8 +434,8 @@ export default function KnowledgeFileUpload({
           <button
             onClick={startUpload}
             disabled={isDisabled}
-            className="w-full bg-emerald-600 text-white py-3 px-4 rounded-lg font-medium
-              hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2
+            className="w-full btn-primary py-3 px-4 rounded-lg font-medium
+              focus:outline-none focus:ring-2 focus:ring-brand-blue focus:ring-offset-2
               disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             Upload {selectedFiles.length}{" "}
@@ -477,7 +477,7 @@ export default function KnowledgeFileUpload({
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2">
                         <div
-                          className="bg-emerald-600 h-2 rounded-full transition-all duration-300"
+                          className="bg-brand-blue h-2 rounded-full transition-all duration-300"
                           style={{ width: `${uploadingFile.progress}%` }}
                         />
                       </div>

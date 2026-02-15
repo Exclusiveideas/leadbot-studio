@@ -157,7 +157,7 @@ export function FieldEditor({
               type="text"
               value={field.label}
               onChange={(e) => onUpdate({ ...field, label: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-gray-900"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent text-gray-900"
               placeholder="e.g., Full Name"
             />
           </div>
@@ -173,7 +173,7 @@ export function FieldEditor({
               onChange={(e) =>
                 onUpdate({ ...field, placeholder: e.target.value })
               }
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-gray-900"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent text-gray-900"
               placeholder="e.g., John Doe"
             />
           </div>
@@ -187,7 +187,7 @@ export function FieldEditor({
               onChange={(e) =>
                 onUpdate({ ...field, required: e.target.checked })
               }
-              className="w-4 h-4 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500"
+              className="w-4 h-4 text-brand-blue border-gray-300 rounded focus:ring-brand-blue"
             />
             <label
               htmlFor={`required-${field.id}`}
@@ -208,7 +208,7 @@ export function FieldEditor({
                 onChange={(e) =>
                   onUpdate({ ...field, step: parseInt(e.target.value) })
                 }
-                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-gray-900"
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent text-gray-900"
               >
                 {steps.map((step, index) => (
                   <option key={index} value={index + 1}>
@@ -231,7 +231,7 @@ export function FieldEditor({
               onChange={(e) =>
                 onUpdate({ ...field, aiExtractable: e.target.checked })
               }
-              className="w-4 h-4 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500"
+              className="w-4 h-4 text-brand-blue border-gray-300 rounded focus:ring-brand-blue"
             />
             <label htmlFor={`ai-${field.id}`} className="text-sm text-gray-700">
               AI can pre-fill this field
@@ -250,7 +250,7 @@ export function FieldEditor({
                 onChange={(e) =>
                   onUpdate({ ...field, aiExtractionKey: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-gray-900"
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent text-gray-900"
                 placeholder="e.g., name, email, phone"
               />
               <p className="text-xs text-gray-500 mt-1">
@@ -269,7 +269,7 @@ export function FieldEditor({
                 <button
                   type="button"
                   onClick={handleAddOption}
-                  className="flex items-center gap-1 text-sm text-emerald-600 hover:text-emerald-700"
+                  className="flex items-center gap-1 text-sm text-brand-blue hover:text-brand-blue"
                 >
                   <Plus className="w-4 h-4" />
                   Add Option
@@ -285,7 +285,7 @@ export function FieldEditor({
                       onChange={(e) =>
                         handleUpdateOption(index, "label", e.target.value)
                       }
-                      className="flex-1 px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 text-gray-900"
+                      className="flex-1 px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-blue text-gray-900"
                       placeholder="Option label"
                     />
                     <input
@@ -294,7 +294,7 @@ export function FieldEditor({
                       onChange={(e) =>
                         handleUpdateOption(index, "value", e.target.value)
                       }
-                      className="flex-1 px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 text-gray-900"
+                      className="flex-1 px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-blue text-gray-900"
                       placeholder="Option value"
                     />
                     <button

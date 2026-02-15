@@ -332,6 +332,93 @@ h6,
   );
 }
 
+/* ── Dashboard Utilities ── */
+
+/* Main content area background */
+.dashboard-bg {
+  background: var(--brand-surface);
+  background-image:
+    radial-gradient(
+      ellipse at 80% 0%,
+      rgba(255, 215, 140, 0.04) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at 0% 100%,
+      rgba(55, 132, 255, 0.03) 0%,
+      transparent 40%
+    );
+}
+
+/* Sidebar active indicator — accent gradient left bar */
+.sidebar-active-indicator {
+  position: relative;
+}
+.sidebar-active-indicator::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 4px;
+  bottom: 4px;
+  width: 3px;
+  border-radius: 0 2px 2px 0;
+  background: linear-gradient(
+    180deg,
+    var(--brand-accent-from),
+    var(--brand-accent-to)
+  );
+}
+
+/* Card with hover lift */
+.card-hover-lift {
+  transition:
+    transform 0.2s cubic-bezier(0.25, 0.1, 0.25, 1),
+    box-shadow 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+.card-hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 25px rgba(15, 23, 42, 0.08),
+    0 2px 6px rgba(15, 23, 42, 0.04);
+}
+
+/* Dashboard primary button */
+.btn-primary {
+  background: var(--brand-blue);
+  color: white;
+  transition:
+    background 0.15s,
+    box-shadow 0.15s;
+}
+.btn-primary:hover {
+  background: #2a6de0;
+  box-shadow: 0 2px 8px rgba(55, 132, 255, 0.3);
+}
+
+/* Dashboard secondary button */
+.btn-secondary {
+  background: white;
+  color: var(--brand-primary);
+  border: 1px solid var(--brand-border);
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+.btn-secondary:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.06);
+}
+
+/* Tab active state — accent gradient bottom border */
+.tab-active-border {
+  border-image: linear-gradient(
+      90deg,
+      var(--brand-accent-from),
+      var(--brand-accent-to)
+    )
+    1;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .marquee-track,
   .marquee-track-reverse {
@@ -339,6 +426,10 @@ h6,
   }
 
   .bento-card:hover {
+    transform: none;
+  }
+
+  .card-hover-lift:hover {
     transform: none;
   }
 }

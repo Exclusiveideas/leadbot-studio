@@ -295,7 +295,7 @@ export function LeadFormBuilder({
             type="text"
             value={formName}
             onChange={(e) => setFormName(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-gray-900"
+            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent text-gray-900"
             placeholder="e.g., Personal Injury Intake"
             disabled={isSubmitting}
             required
@@ -310,7 +310,7 @@ export function LeadFormBuilder({
             value={formDescription}
             onChange={(e) => setFormDescription(e.target.value)}
             rows={3}
-            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-gray-900"
+            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent text-gray-900"
             placeholder="Brief description of this form..."
             disabled={isSubmitting}
           />
@@ -323,7 +323,7 @@ export function LeadFormBuilder({
               checked={isDefault}
               onChange={(e) => setIsDefault(e.target.checked)}
               disabled={isSubmitting}
-              className="w-4 h-4 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500"
+              className="w-4 h-4 text-brand-blue border-gray-300 rounded focus:ring-brand-blue"
             />
             <span className="text-sm text-gray-700">
               Set as default form for this chatbot
@@ -336,7 +336,7 @@ export function LeadFormBuilder({
               checked={isActive}
               onChange={(e) => setIsActive(e.target.checked)}
               disabled={isSubmitting}
-              className="w-4 h-4 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500"
+              className="w-4 h-4 text-brand-blue border-gray-300 rounded focus:ring-brand-blue"
             />
             <span className="text-sm text-gray-700">Active</span>
           </label>
@@ -361,7 +361,7 @@ export function LeadFormBuilder({
             <button
               type="button"
               onClick={() => setShowFieldSelector(!showFieldSelector)}
-              className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 btn-primary rounded-lg transition-colors"
               disabled={isSubmitting}
               data-tour="add-field-button"
             >
@@ -429,7 +429,7 @@ export function LeadFormBuilder({
               checked={multiStepEnabled}
               onChange={(e) => setMultiStepEnabled(e.target.checked)}
               disabled={isSubmitting}
-              className="w-4 h-4 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500"
+              className="w-4 h-4 text-brand-blue border-gray-300 rounded focus:ring-brand-blue"
             />
             <span className="text-sm text-gray-700">
               Enable multi-step form
@@ -462,7 +462,7 @@ export function LeadFormBuilder({
                         };
                         setSteps(newSteps);
                       }}
-                      className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 text-gray-900 font-medium"
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-blue text-gray-900 font-medium"
                       placeholder={`Step ${index + 1} title`}
                       disabled={isSubmitting}
                     />
@@ -477,7 +477,7 @@ export function LeadFormBuilder({
                         };
                         setSteps(newSteps);
                       }}
-                      className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 text-gray-900 text-sm"
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-blue text-gray-900 text-sm"
                       placeholder="Optional description"
                       disabled={isSubmitting}
                     />
@@ -519,7 +519,7 @@ export function LeadFormBuilder({
                   ]);
                 }}
                 disabled={isSubmitting}
-                className="flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-700 rounded-lg hover:bg-emerald-100 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-brand-blue rounded-lg hover:bg-blue-100 transition-colors"
               >
                 <Plus className="w-4 h-4" />
                 Add Step
@@ -592,7 +592,7 @@ export function LeadFormBuilder({
             type="text"
             value={buttonText}
             onChange={(e) => setButtonText(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 text-gray-900"
+            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-blue text-gray-900"
             placeholder="Submit"
             disabled={isSubmitting}
             maxLength={50}
@@ -610,7 +610,7 @@ export function LeadFormBuilder({
             checked={showSuccessMessage}
             onChange={(e) => setShowSuccessMessage(e.target.checked)}
             disabled={isSubmitting}
-            className="w-4 h-4 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500"
+            className="w-4 h-4 text-brand-blue border-gray-300 rounded focus:ring-brand-blue"
           />
           <span className="text-sm text-gray-700">
             Show success message after submission
@@ -626,7 +626,7 @@ export function LeadFormBuilder({
               value={successMessage}
               onChange={(e) => setSuccessMessage(e.target.value)}
               rows={3}
-              className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 text-gray-900"
+              className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-blue text-gray-900"
               placeholder="Thank you! An attorney will contact you shortly."
               disabled={isSubmitting}
               maxLength={500}
@@ -640,7 +640,7 @@ export function LeadFormBuilder({
         <button
           type="submit"
           disabled={isSubmitting}
-          className="flex items-center gap-2 px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+          className="flex items-center gap-2 px-6 py-2 btn-primary rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
           data-tour="save-button"
         >
           {isSubmitting && <Loader2 className="w-4 h-4 animate-spin" />}

@@ -163,7 +163,7 @@ export function DynamicLeadCaptureForm({
     const inputClasses = `w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 text-gray-900 ${
       hasError
         ? "border-red-500 focus:ring-red-500"
-        : "border-gray-200 focus:ring-emerald-500"
+        : "border-gray-200 focus:ring-brand-blue"
     }`;
 
     switch (field.type) {
@@ -232,7 +232,7 @@ export function DynamicLeadCaptureForm({
                   onChange={(e) => handleChange(field.id, e.target.value)}
                   required={field.required}
                   disabled={isSubmitting}
-                  className="w-4 h-4 text-emerald-600 border-gray-300 focus:ring-emerald-500"
+                  className="w-4 h-4 text-brand-blue border-gray-300 focus:ring-brand-blue"
                 />
                 <span className="text-sm text-gray-700">{option.label}</span>
               </label>
@@ -250,7 +250,7 @@ export function DynamicLeadCaptureForm({
               onChange={(e) => handleChange(field.id, e.target.checked)}
               required={field.required}
               disabled={isSubmitting}
-              className="w-4 h-4 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500"
+              className="w-4 h-4 text-brand-blue border-gray-300 rounded focus:ring-brand-blue"
             />
             <span className="text-sm text-gray-700">{field.label}</span>
           </label>
@@ -289,7 +289,7 @@ export function DynamicLeadCaptureForm({
                     handleChange(field.id, newValues);
                   }}
                   disabled={isSubmitting}
-                  className="w-4 h-4 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500"
+                  className="w-4 h-4 text-brand-blue border-gray-300 rounded focus:ring-brand-blue"
                 />
                 <span className="text-sm text-gray-700">{option.label}</span>
               </label>
