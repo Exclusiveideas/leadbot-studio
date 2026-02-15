@@ -51,9 +51,10 @@ export default function MarketingLayout({
             </Link>
             <Link
               href="/signup"
-              className="bg-gradient-accent rounded-full px-5 py-2 text-sm font-semibold text-brand-primary shadow-sm transition-all hover:shadow-md hover:brightness-105"
+              className="bg-gradient-accent rounded-full px-4 py-2 text-xs font-semibold text-brand-primary shadow-sm transition-all hover:shadow-md hover:brightness-105 sm:px-5 sm:text-sm"
             >
-              Get Started Free
+              <span className="sm:hidden">Start Free</span>
+              <span className="hidden sm:inline">Get Started Free</span>
             </Link>
 
             {/* Mobile menu button */}
@@ -99,8 +100,8 @@ export default function MarketingLayout({
 
       {/* Footer */}
       <footer className="bg-brand-primary text-white">
-        <div className="mx-auto max-w-6xl px-6 py-16">
-          <div className="grid grid-cols-2 gap-10 md:grid-cols-4">
+        <div className="mx-auto max-w-6xl px-6 py-10 sm:py-16">
+          <div className="grid grid-cols-2 gap-8 sm:gap-10 md:grid-cols-4">
             <div className="col-span-2 md:col-span-1">
               <Link
                 href="/"
