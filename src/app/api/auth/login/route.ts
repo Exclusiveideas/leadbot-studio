@@ -405,8 +405,8 @@ export async function POST(request: NextRequest) {
     const sessionId = nanoid();
     const sessionToken = nanoid(32);
 
-    // Step 3: Parallelize session creation, user update, session cleanup, and audit logging
-    const [session] = await Promise.all([
+    // Step 3: Parallelize session creation, user update, session cleanup, audit logging, and chatbot count
+    const [session, , , chatbotCount] = await Promise.all([
       // Create session in database
       prisma.session.create({
         data: {
@@ -432,6 +432,12 @@ export async function POST(request: NextRequest) {
       }),
       // Log successful login
       logAuthEvent("LOGIN", user.id, undefined, request),
+      // Count chatbots to determine post-login redirect
+      user.organization
+        ? prisma.chatbot.count({
+            where: { organizationId: user.organization.id },
+          })
+        : Promise.resolve(0),
     ]);
 
     // Create iron-session (must be done after database operations)
@@ -456,6 +462,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       message: "Login successful",
+      redirectTo: chatbotCount > 0 ? "/chatbots" : "/onboarding",
       users: {
         id: user.id,
         email: user.email,

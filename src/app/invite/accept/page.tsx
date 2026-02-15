@@ -77,7 +77,7 @@ function AcceptInviteContent() {
               shared chatbots and collaborate with your teammates.
             </p>
             <Link
-              href="/dashboard"
+              href="/chatbots"
               className="inline-flex items-center justify-center w-full px-5 py-2.5 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors"
             >
               Go to Dashboard
@@ -95,7 +95,7 @@ function AcceptInviteContent() {
             </h1>
             <p className="text-gray-500 text-sm">{errorMessage}</p>
             <Link
-              href="/dashboard"
+              href="/chatbots"
               className="inline-flex items-center justify-center w-full px-5 py-2.5 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors"
             >
               Go to Dashboard
@@ -116,7 +116,7 @@ function AcceptInviteContent() {
               invitation email, please use the link from that email.
             </p>
             <Link
-              href="/dashboard"
+              href="/chatbots"
               className="inline-flex items-center justify-center w-full px-5 py-2.5 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors"
             >
               Go to Dashboard

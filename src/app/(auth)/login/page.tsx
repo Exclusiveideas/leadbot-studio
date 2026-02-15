@@ -19,7 +19,7 @@ function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { addToast } = useToast();
-  const redirectUrl = searchParams.get("redirect") || "/dashboard";
+  const explicitRedirect = searchParams.get("redirect");
 
   const [formData, setFormData] = useState<LoginFormData>({
     email: "",
@@ -122,7 +122,7 @@ function LoginContent() {
       }
 
       addToast("Login successful!", "success");
-      router.push(redirectUrl);
+      router.push(explicitRedirect || data.redirectTo || "/chatbots");
     } catch (error) {
       addToast("An error occurred. Please try again.", "error");
     } finally {
@@ -197,7 +197,7 @@ function LoginContent() {
                 <>
                   {" "}
                   <Link
-                    href={`/signup${redirectUrl !== "/dashboard" ? `?redirect=${encodeURIComponent(redirectUrl)}` : ""}`}
+                    href={`/signup${explicitRedirect ? `?redirect=${encodeURIComponent(explicitRedirect)}` : ""}`}
                     className="auth-link"
                   >
                     Sign up

@@ -19,7 +19,7 @@ interface SignupFormData {
 function SignupContent() {
   const { addToast } = useToast();
   const searchParams = useSearchParams();
-  const redirectUrl = searchParams.get("redirect") || "/dashboard";
+  const redirectUrl = searchParams.get("redirect") || "/chatbots";
 
   const [formData, setFormData] = useState<SignupFormData>({
     name: "",
@@ -198,7 +198,7 @@ function SignupContent() {
             )}
 
             <Link
-              href={`/login${redirectUrl !== "/dashboard" ? `?redirect=${encodeURIComponent(redirectUrl)}` : ""}`}
+              href={`/login${redirectUrl !== "/chatbots" ? `?redirect=${encodeURIComponent(redirectUrl)}` : ""}`}
               className="auth-btn auth-btn-spaced"
             >
               <span>Go to Login</span>
