@@ -10,8 +10,6 @@ import {
   formatRateLimitError,
 } from "@/lib/middleware/authRateLimiter";
 import { logAuthEvent } from "@/lib/utils/audit";
-import { AuthEvents } from "@/lib/utils/audit-types";
-import { validateSignupCodeForUse } from "@/lib/utils/signup-code";
 import { nanoid } from "nanoid";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -21,7 +19,7 @@ export async function POST(request: NextRequest) {
 
     // Validate input
     const validatedData = signupSchema.parse(body);
-    const { email, password, name, signupCode } = validatedData;
+    const { email, password, name } = validatedData;
 
     // Check rate limit
     const clientIp = getClientIp(request.headers);
@@ -38,20 +36,6 @@ export async function POST(request: NextRequest) {
         { error: formatRateLimitError(rateLimitResult) },
         { status: 429, headers: buildRateLimitHeaders(rateLimitResult) },
       );
-    }
-
-    // Find signup code that matches both code and email
-    const codeRecord = await prisma.signupCode.findFirst({
-      where: {
-        code: signupCode,
-        email: email.toLowerCase(),
-      },
-    });
-
-    // Validate the signup code (email match already verified by query)
-    const validation = validateSignupCodeForUse(codeRecord, email);
-    if (!validation.valid) {
-      return NextResponse.json({ error: validation.error }, { status: 400 });
     }
 
     // Check if user already exists
@@ -80,29 +64,6 @@ export async function POST(request: NextRequest) {
         isVerified: false,
       },
     });
-
-    // User created successfully - no role assignment needed
-
-    // Mark signup code as used
-    await prisma.signupCode.update({
-      where: { code: signupCode },
-      data: {
-        usedAt: new Date(),
-        usedById: user.id,
-      },
-    });
-
-    // Log signup code usage
-    await logAuthEvent(
-      AuthEvents.SIGNUP_CODE_USED,
-      user.id,
-      {
-        code: signupCode,
-        email,
-        name,
-      },
-      request,
-    );
 
     // Generate email verification token
     const verificationToken = generateEmailVerificationToken(

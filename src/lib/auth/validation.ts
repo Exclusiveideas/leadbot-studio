@@ -22,7 +22,6 @@ export const signupSchema = z.object({
     .string()
     .min(1, "Name is required")
     .max(100, "Name must be less than 100 characters"),
-  signupCode: z.string().min(1, "Signup code is required"),
 });
 
 export const resetPasswordRequestSchema = z.object({

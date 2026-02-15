@@ -13,7 +13,6 @@ interface SignupFormData {
   name: string;
   email: string;
   password: string;
-  signupCode: string;
   agreedToTerms: boolean;
 }
 
@@ -26,7 +25,6 @@ function SignupContent() {
     name: "",
     email: "",
     password: "",
-    signupCode: "",
     agreedToTerms: false,
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -49,8 +47,7 @@ function SignupContent() {
       !formData.email ||
       !/\S+@\S+\.\S+/.test(formData.email) ||
       !formData.password ||
-      !formData.agreedToTerms ||
-      !formData.signupCode
+      !formData.agreedToTerms
     ) {
       setBtnActive(false);
     } else {
@@ -97,11 +94,6 @@ function SignupContent() {
 
     if (!formData.agreedToTerms) {
       addToast("You must agree to the terms and conditions", "error");
-      return false;
-    }
-
-    if (!formData.signupCode) {
-      addToast("Signup code is required", "error");
       return false;
     }
 
@@ -281,25 +273,6 @@ function SignupContent() {
                 autoComplete="email"
                 disabled={isLoading}
               />
-            </div>
-
-            <div className="auth-form-field">
-              <label htmlFor="signupCode" className="auth-form-label">
-                Signup Code
-              </label>
-              <input
-                type="text"
-                id="signupCode"
-                name="signupCode"
-                value={formData.signupCode}
-                onChange={handleChange}
-                className="auth-input"
-                placeholder="ACME-2024-XXXX"
-                disabled={isLoading}
-              />
-              <p className="auth-helper-text">
-                Enter the signup code provided by your administrator
-              </p>
             </div>
 
             <div className="auth-form-field">

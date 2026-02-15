@@ -3,10 +3,6 @@
  * These codes are passed via URL params and mapped to user-friendly messages
  */
 export const OAUTH_ERROR_CODES = {
-  SIGNUP_CODE_EXPIRED: "signup_code_expired",
-  SIGNUP_CODE_USED: "signup_code_used",
-  SIGNUP_CODE_REVOKED: "signup_code_revoked",
-  SIGNUP_CODE_INVALID: "signup_code_invalid",
   EMAIL_MISMATCH: "email_mismatch",
   ACCOUNT_INACTIVE: "account_inactive",
   AUTH_METHOD_MISMATCH: "auth_method_mismatch",
@@ -24,14 +20,6 @@ export type OAuthErrorCode =
  * User-friendly error messages for each OAuth error code
  */
 export const OAUTH_ERROR_MESSAGES: Record<OAuthErrorCode, string> = {
-  [OAUTH_ERROR_CODES.SIGNUP_CODE_EXPIRED]:
-    "Your signup code has expired. Please request a new one from your administrator.",
-  [OAUTH_ERROR_CODES.SIGNUP_CODE_USED]:
-    "This signup code has already been used.",
-  [OAUTH_ERROR_CODES.SIGNUP_CODE_REVOKED]:
-    "This signup code has been revoked. Please contact your administrator.",
-  [OAUTH_ERROR_CODES.SIGNUP_CODE_INVALID]:
-    "Invalid signup code. Please check your code and try again.",
   [OAUTH_ERROR_CODES.EMAIL_MISMATCH]:
     "The Google account email doesn't match your signup email. Please use the correct Google account.",
   [OAUTH_ERROR_CODES.ACCOUNT_INACTIVE]:
