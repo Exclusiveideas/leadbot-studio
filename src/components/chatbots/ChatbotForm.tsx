@@ -225,7 +225,7 @@ export default function ChatbotForm({
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
     watch,
   } = useForm<ChatbotFormData>({
     resolver: zodResolver(chatbotSchema),
@@ -236,7 +236,7 @@ export default function ChatbotForm({
       customInstructions: initialData?.customInstructions || "",
       allowedDomains: initialData?.allowedDomains || ["*"],
     },
-    mode: "onBlur",
+    mode: "onChange",
   });
 
   const description = watch("description");
@@ -975,7 +975,7 @@ export default function ChatbotForm({
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 pt-4 border-t border-brand-border">
         <button
           type="submit"
-          disabled={isSubmitting}
+          disabled={isSubmitting || !isValid}
           className="btn-primary flex items-center justify-center gap-2 px-6 py-2.5 sm:py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed font-medium"
         >
           {isSubmitting && <Loader2 className="w-4 h-4 animate-spin" />}
