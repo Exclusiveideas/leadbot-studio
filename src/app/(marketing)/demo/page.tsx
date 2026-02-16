@@ -71,7 +71,7 @@ export default function DemoPage() {
             custom={0.1}
           >
             <h1 className="text-[clamp(2rem,4vw+0.5rem,3.5rem)] font-extrabold leading-[1.1] tracking-[-0.03em] text-brand-primary">
-              See LeadBotStudio <span className="text-gradient">in action</span>
+              See Leadbot Partners <span className="text-gradient">in action</span>
             </h1>
           </motion.div>
           <motion.div
@@ -106,7 +106,7 @@ export default function DemoPage() {
                 <div className="h-2.5 w-2.5 rounded-full bg-green-300" />
               </div>
               <div className="mx-auto rounded-md bg-white px-8 py-1 text-[11px] text-brand-light">
-                leadbotstudio.com/demo
+                leadbotpartners.com/demo
               </div>
             </div>
 
@@ -114,7 +114,7 @@ export default function DemoPage() {
               <iframe
                 src={`${APP_URL}/chatbot/${DEMO_EMBED_CODE}`}
                 className="h-[600px] w-full border-0"
-                title="LeadBotStudio Demo Chatbot"
+                title="Leadbot Partners Demo Chatbot"
                 allow="clipboard-write"
               />
             ) : (
@@ -186,7 +186,7 @@ export default function DemoPage() {
             <div className="mb-12 max-w-xl sm:mb-16">
               <div className="accent-line mb-5" />
               <h2 className="text-[clamp(1.5rem,3vw,2.5rem)] font-bold tracking-[-0.02em] text-brand-primary">
-                Why service professionals choose LeadBotStudio
+                Why service professionals choose Leadbot Partners
               </h2>
             </div>
           </ScrollReveal>

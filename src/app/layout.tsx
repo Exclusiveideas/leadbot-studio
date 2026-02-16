@@ -17,7 +17,7 @@ const plusJakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "LeadBotStudio - AI Chatbot Builder for Lead Generation",
+  title: "Leadbot Partners - AI Chatbot Builder for Lead Generation",
   description:
     "Build AI-powered chatbots that convert website visitors into leads. Purpose-built for law firms, coaches, therapists, real estate agents, and financial advisors.",
 };

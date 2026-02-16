@@ -18,7 +18,7 @@ const SALT_ROUNDS = 10;
 
 export function generateMFASecret(
   email: string,
-  appName: string = "LeadBotStudio",
+  appName: string = "Leadbot Partners",
 ): MFASecret {
   const secret = speakeasy.generateSecret({
     name: `${appName} (${email})`,

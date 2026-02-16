@@ -127,12 +127,12 @@ export default function MFASetup({ user, onUpdate }: MFASetupProps) {
 
   const downloadBackupCodes = () => {
     if (mfaData?.backupCodes) {
-      const content = `LeadBotStudio - Backup Codes\n\nSave these codes in a secure location. Each code can only be used once.\n\n${mfaData.backupCodes.join("\n")}`;
+      const content = `Leadbot Partners - Backup Codes\n\nSave these codes in a secure location. Each code can only be used once.\n\n${mfaData.backupCodes.join("\n")}`;
       const blob = new Blob([content], { type: "text/plain" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = "leadbotstudio-backup-codes.txt";
+      a.download = "leadbot-partners-backup-codes.txt";
       a.click();
       URL.revokeObjectURL(url);
     }
@@ -230,12 +230,12 @@ export default function MFASetup({ user, onUpdate }: MFASetupProps) {
 
   const downloadRegeneratedCodes = () => {
     if (regeneratedCodes) {
-      const content = `LeadBotStudio - Backup Codes\n\nSave these codes in a secure location. Each code can only be used once.\n\n${regeneratedCodes.join("\n")}`;
+      const content = `Leadbot Partners - Backup Codes\n\nSave these codes in a secure location. Each code can only be used once.\n\n${regeneratedCodes.join("\n")}`;
       const blob = new Blob([content], { type: "text/plain" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = "leadbotstudio-backup-codes.txt";
+      a.download = "leadbot-partners-backup-codes.txt";
       a.click();
       URL.revokeObjectURL(url);
     }

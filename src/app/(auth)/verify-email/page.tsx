@@ -84,7 +84,7 @@ function VerifyEmailContent() {
   return (
     <div className="auth-page">
       <AuthBrandPanel
-        headline="Welcome to LeadBotStudio"
+        headline="Welcome to Leadbot Partners"
         subtext="AI chatbots that convert visitors into leads for your business."
         testimonial={{
           quote:

@@ -19,7 +19,7 @@ export default function AuthBrandPanel({
   return (
     <div className="auth-brand-panel">
       <Link href="/" className="auth-brand-logo">
-        LeadBot<span style={{ color: "var(--auth-accent)" }}>Studio</span>
+        Leadbot<span style={{ color: "var(--auth-accent)" }}>Partners</span>
       </Link>
 
       <div className="auth-brand-content">

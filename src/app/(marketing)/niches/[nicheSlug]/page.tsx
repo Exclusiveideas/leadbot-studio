@@ -370,7 +370,7 @@ export default function NicheLandingPage() {
             <div className="mb-12 max-w-xl sm:mb-16">
               <div className="accent-line mb-5" />
               <h2 className="text-[clamp(1.5rem,3vw,2.5rem)] font-bold tracking-[-0.02em] text-brand-primary">
-                How LeadBotStudio helps
+                How Leadbot Partners helps
               </h2>
             </div>
           </ScrollReveal>
@@ -451,7 +451,7 @@ export default function NicheLandingPage() {
                   <span className="text-gradient">end to end</span>
                 </h2>
                 <p className="mt-4 max-w-2xl text-base leading-[1.7] text-white/45">
-                  LeadBotStudio captures your clients. Seira AI helps you serve
+                  Leadbot Partners captures your clients. Seira AI helps you serve
                   them — with AI document processing, intelligent case
                   management, and e-discovery that&apos;s 10x faster.
                 </p>

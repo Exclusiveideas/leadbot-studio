@@ -328,7 +328,7 @@ export default function PricingPage() {
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </Link>
             <p className="mt-6 text-xs text-white/25">
-              LeadBotStudio is built by the team behind{" "}
+              Leadbot Partners is built by the team behind{" "}
               <a
                 href="https://seira.ai"
                 target="_blank"

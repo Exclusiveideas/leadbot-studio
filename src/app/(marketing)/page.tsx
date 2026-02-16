@@ -941,7 +941,7 @@ export default function HomePage() {
                 <span className="text-gradient">Then manage the cases.</span>
               </h2>
               <p className="mx-auto mt-5 max-w-2xl text-base leading-[1.7] text-white/45 sm:text-lg">
-                LeadBotStudio brings clients to your door. Seira AI helps you
+                Leadbot Partners brings clients to your door. Seira AI helps you
                 serve them — with AI-powered document processing, case
                 management, and e-discovery built for legal professionals.
               </p>
@@ -952,13 +952,13 @@ export default function HomePage() {
             className="grid gap-5 sm:gap-6 md:grid-cols-2"
             childSelector=".stagger-item"
           >
-            {/* LeadBotStudio card */}
+            {/* Leadbot Partners card */}
             <div className="stagger-item rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm sm:p-8">
               <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-accent">
                 <MessageSquare className="h-5 w-5 text-brand-primary" />
               </div>
               <p className="text-xs font-semibold uppercase tracking-[0.1em] text-brand-accent-from">
-                LeadBotStudio
+                Leadbot Partners
               </p>
               <h3 className="mt-2 text-xl font-bold tracking-tight text-white">
                 Get clients

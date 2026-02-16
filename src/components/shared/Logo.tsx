@@ -15,8 +15,8 @@ const Logo: React.FC<LogoProps> = ({ size = "normal" }) => {
         href="/"
         className={`flex items-center ${textSize} font-semibold tracking-tight`}
       >
-        <span className="text-brand-primary">LeadBot</span>
-        <span className="text-gradient">Studio</span>
+        <span className="text-brand-primary">Leadbot</span>
+        <span className="text-gradient">Partners</span>
       </Link>
     </div>
   );

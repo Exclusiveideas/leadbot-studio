@@ -78,7 +78,7 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
               <Bot className="h-4 w-4 text-brand-primary" />
             </div>
             <span className="text-lg font-bold text-white tracking-tight">
-              LeadBot<span className="text-gradient">Studio</span>
+              Leadbot<span className="text-gradient">Partners</span>
             </span>
           </div>
           <button

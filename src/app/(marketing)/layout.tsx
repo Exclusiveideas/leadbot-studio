@@ -32,7 +32,7 @@ export default function MarketingLayout({
             href="/"
             className="text-xl font-bold tracking-tight text-brand-primary"
           >
-            LeadBot<span className="text-gradient">Studio</span>
+            Leadbot<span className="text-gradient">Partners</span>
           </Link>
 
           {/* Desktop Nav */}
@@ -121,7 +121,7 @@ export default function MarketingLayout({
           <div className="grid grid-cols-2 gap-8 sm:gap-10 md:grid-cols-4">
             <div className="col-span-2 md:col-span-1">
               <Link href="/" className="text-lg font-bold tracking-tight">
-                LeadBot<span className="text-gradient">Studio</span>
+                Leadbot<span className="text-gradient">Partners</span>
               </Link>
               <p className="mt-3 max-w-xs text-sm leading-relaxed text-white/40">
                 AI chatbots that convert visitors into leads. Built by the team
@@ -216,7 +216,7 @@ export default function MarketingLayout({
           </div>
 
           <div className="mt-12 border-t border-white/10 pt-8 text-center text-xs text-white/25">
-            &copy; {new Date().getFullYear()} LeadBotStudio. All rights
+            &copy; {new Date().getFullYear()} Leadbot Partners. All rights
             reserved.
           </div>
         </div>

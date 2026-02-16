@@ -11,7 +11,7 @@ export default function NotFound() {
             href="/"
             className="text-xl font-semibold tracking-tight text-brand-primary"
           >
-            LeadBot<span className="text-gradient">Studio</span>
+            Leadbot<span className="text-gradient">Partners</span>
           </Link>
           <div className="flex items-center gap-3">
             <Link
@@ -71,7 +71,7 @@ export default function NotFound() {
       {/* Footer */}
       <footer className="border-t border-brand-border/50 bg-brand-surface">
         <div className="mx-auto max-w-6xl px-6 py-6 text-center text-xs text-brand-light">
-          &copy; {new Date().getFullYear()} LeadBotStudio. All rights reserved.
+          &copy; {new Date().getFullYear()} Leadbot Partners. All rights reserved.
         </div>
       </footer>
     </div>
