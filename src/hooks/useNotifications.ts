@@ -21,6 +21,10 @@ export function useNotifications() {
         : "/api/notifications";
 
       const res = await fetch(url, { credentials: "include" });
+      if (res.status === 401) {
+        window.location.href = "/login";
+        return;
+      }
       if (!res.ok) return;
 
       const data = await res.json();
@@ -44,6 +48,10 @@ export function useNotifications() {
       const res = await fetch("/api/notifications?limit=1", {
         credentials: "include",
       });
+      if (res.status === 401) {
+        window.location.href = "/login";
+        return;
+      }
       if (!res.ok) return;
       const data = await res.json();
       if (data.success) {
