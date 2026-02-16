@@ -68,6 +68,17 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: "Invalid token" }, { status: 400 });
       }
 
+      // Reject token if password was already changed after token was issued
+      if (user.passwordChangedAt && payload.iat) {
+        const tokenIssuedAt = new Date(payload.iat * 1000);
+        if (tokenIssuedAt <= user.passwordChangedAt) {
+          return NextResponse.json(
+            { error: "This reset link has already been used" },
+            { status: 400 },
+          );
+        }
+      }
+
       // Hash new password
       const hashedPassword = await hashPassword(password);
 
@@ -75,7 +86,7 @@ export async function POST(request: NextRequest) {
       await Promise.all([
         prisma.user.update({
           where: { id: user.id },
-          data: { password: hashedPassword },
+          data: { password: hashedPassword, passwordChangedAt: new Date() },
         }),
         prisma.session.updateMany({
           where: { userId: user.id, isActive: true },

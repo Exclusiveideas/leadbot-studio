@@ -15,9 +15,15 @@ export interface JWTPayload {
 }
 
 export interface TokenPayload extends JWTPayload {
-  type: "access" | "reset" | "email_verification" | "mfa_setup" | "organization_invite";
+  type:
+    | "access"
+    | "reset"
+    | "email_verification"
+    | "mfa_setup"
+    | "organization_invite";
   organizationId?: string;
   invitedBy?: string;
+  iat?: number;
 }
 
 export function generateAccessToken(payload: JWTPayload): string {
@@ -57,7 +63,13 @@ export function generateInviteToken(
   invitedBy: string,
 ): string {
   return jwt.sign(
-    { organizationId, email, invitedBy, type: "organization_invite", userId: "" },
+    {
+      organizationId,
+      email,
+      invitedBy,
+      type: "organization_invite",
+      userId: "",
+    },
     getJwtSecret(),
     { expiresIn: INVITE_TOKEN_EXPIRES_IN },
   );

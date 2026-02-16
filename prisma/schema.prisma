@@ -36,6 +36,7 @@ model User {
   failedLoginAttempts           Int       @default(0)
   lockoutUntil                  DateTime?
   lastFailedLoginAt             DateTime?
+  passwordChangedAt             DateTime?
 
   sessions             Session[]
   notifications        Notification[]
