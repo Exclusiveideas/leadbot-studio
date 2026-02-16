@@ -18,6 +18,15 @@ function buildCorsHeaders(origin: string | null): HeadersInit {
   };
 }
 
+function isSameOrigin(request: NextRequest): boolean {
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  const origin = request.headers.get("origin");
+  if (origin === appUrl) return true;
+  const referer = request.headers.get("referer");
+  if (referer?.startsWith(appUrl)) return true;
+  return false;
+}
+
 /**
  * OPTIONS /api/public/chatbots/[id]/text-requests
  * Handle CORS preflight requests
@@ -67,6 +76,7 @@ export async function POST(
     }
 
     if (
+      !isSameOrigin(request) &&
       !chatbot.allowedDomains.includes("*") &&
       !chatbot.allowedDomains.includes(origin || "")
     ) {

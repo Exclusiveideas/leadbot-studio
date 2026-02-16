@@ -47,6 +47,7 @@ interface PublicChatbotInterfaceProps {
     name: string;
     welcomeMessage?: string | null;
   };
+  initialMessage?: string;
 }
 
 interface Message {
@@ -185,6 +186,7 @@ function saveSession(
 
 export function PublicChatbotInterface({
   chatbot,
+  initialMessage,
 }: PublicChatbotInterfaceProps) {
   const [input, setInput] = useState("");
   const [isSending, setIsSending] = useState(false);
@@ -211,6 +213,7 @@ export function PublicChatbotInterface({
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const initialMessageSentRef = useRef(false);
 
   // Fetch default lead form on mount
   useEffect(() => {
@@ -331,6 +334,14 @@ export function PublicChatbotInterface({
     }
   }, [chatbot.id]);
 
+  // Auto-send initial message (e.g., from suggested question click)
+  useEffect(() => {
+    if (initialMessage && sessionId && !initialMessageSentRef.current) {
+      initialMessageSentRef.current = true;
+      handleSendMessage(initialMessage);
+    }
+  }, [initialMessage, sessionId]); // eslint-disable-line react-hooks/exhaustive-deps
+
   // Auto-scroll to bottom when messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -387,11 +398,12 @@ export function PublicChatbotInterface({
     saveSession(chatbot.id, newSessionId, []);
   }, [chatbot.id]);
 
-  const handleSendMessage = async () => {
-    if ((!input.trim() && pendingFiles.length === 0) || isSending) return;
+  const handleSendMessage = async (messageOverride?: string) => {
+    const messageText = messageOverride ?? input;
+    if ((!messageText.trim() && pendingFiles.length === 0) || isSending) return;
 
     setIsSending(true);
-    const userMessage = input.trim();
+    const userMessage = messageText.trim();
     const filesToSend = [...pendingFiles];
     setInput("");
     setPendingFiles([]);
@@ -706,7 +718,7 @@ export function PublicChatbotInterface({
   };
 
   return (
-    <div className="flex flex-col h-screen bg-white relative">
+    <div className="flex flex-col h-full bg-white relative">
       {/* Drag and Drop Overlay */}
       {isDragging && (
         <div className="absolute inset-0 z-50 bg-blue-600/95 backdrop-blur-sm flex items-center justify-center border-4 border-dashed border-white rounded-lg">
@@ -906,7 +918,7 @@ export function PublicChatbotInterface({
           {/* Show either Send button (when message ready) or Microphone (when empty) */}
           {input.trim() || pendingFiles.length > 0 ? (
             <button
-              onClick={handleSendMessage}
+              onClick={() => handleSendMessage()}
               disabled={isSending}
               className="p-2 text-blue-600 hover:bg-blue-50 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
               title="Send message"

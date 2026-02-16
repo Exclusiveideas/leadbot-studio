@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { PublicChatbotWidget } from "@/components/chatbots/widget";
+import { DraftChatbotNotice } from "@/components/chatbots/DraftChatbotNotice";
 import type { BookingConfig } from "@/lib/validation/chatbot-booking";
 import type { TextConfig } from "@/lib/validation/chatbot-text";
 
@@ -11,15 +12,18 @@ interface PublicChatbotPageProps {
   params: Promise<{
     embedCode: string;
   }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
 export default async function PublicChatbotPage({
   params,
+  searchParams,
 }: PublicChatbotPageProps) {
   const { embedCode } = await params;
+  const resolvedSearchParams = await searchParams;
+  const isPreview = resolvedSearchParams.preview === "true";
 
   // Fetch chatbot by embedCode (server-side)
-  // Allow both PUBLISHED and DRAFT for preview purposes
   const chatbot = await prisma.chatbot.findUnique({
     where: { embedCode },
     select: {
@@ -38,6 +42,22 @@ export default async function PublicChatbotPage({
 
   if (!chatbot) {
     notFound();
+  }
+
+  // Block DRAFT chatbots unless accessed via dashboard preview
+  if (chatbot.status === "DRAFT" && !isPreview) {
+    return (
+      <html lang="en">
+        <head>
+          <meta charSet="utf-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <title>{chatbot.name}</title>
+        </head>
+        <body style={{ margin: 0, padding: 0 }}>
+          <DraftChatbotNotice chatbotName={chatbot.name} />
+        </body>
+      </html>
+    );
   }
 
   // Parse appearance, bookingConfig, and textConfig from JSON

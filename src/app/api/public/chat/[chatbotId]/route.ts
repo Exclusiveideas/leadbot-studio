@@ -91,6 +91,18 @@ function buildCorsHeaders(origin: string | null): HeadersInit {
 }
 
 /**
+ * Check if the request origin is the app's own domain (dashboard preview).
+ */
+function isSameOrigin(request: NextRequest): boolean {
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  const origin = request.headers.get("origin");
+  if (origin === appUrl) return true;
+  const referer = request.headers.get("referer");
+  if (referer?.startsWith(appUrl)) return true;
+  return false;
+}
+
+/**
  * Get client IP for rate limiting
  */
 function getClientIp(request: NextRequest): string {
@@ -154,8 +166,9 @@ export async function GET(
       );
     }
 
-    // Check CORS
+    // Check CORS — skip for dashboard preview (same origin)
     if (
+      !isSameOrigin(request) &&
       !chatbot.allowedDomains.includes("*") &&
       !chatbot.allowedDomains.includes(origin || "")
     ) {
@@ -251,9 +264,13 @@ async function handleStreamingRequest(
         }
 
         // 3. Perform RAG retrieval using Pinecone vector search
-        const ragResult = await getChatbotRAG().performRAG(message, chatbot.id, {
-          topK: 10,
-        });
+        const ragResult = await getChatbotRAG().performRAG(
+          message,
+          chatbot.id,
+          {
+            topK: 10,
+          },
+        );
 
         console.log("[PublicChat] RAG result:", {
           chatbotId: chatbot.id,
@@ -651,8 +668,9 @@ export async function POST(
       );
     }
 
-    // Check CORS
+    // Check CORS — skip for dashboard preview (same origin)
     if (
+      !isSameOrigin(request) &&
       !chatbot.allowedDomains.includes("*") &&
       !chatbot.allowedDomains.includes(origin || "")
     ) {

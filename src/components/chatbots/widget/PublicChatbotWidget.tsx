@@ -151,7 +151,8 @@ export default function PublicChatbotWidget({
 
   // Animation effect for single chat button (when no action bar)
   useEffect(() => {
-    if (!isEmbedded || hasMultipleActions || !animationEnabled || isOpen) return;
+    if (!isEmbedded || hasMultipleActions || !animationEnabled || isOpen)
+      return;
     if (animationPlayedRef.current) return;
 
     const CYCLE_PAUSE = 500;
@@ -186,7 +187,13 @@ export default function PublicChatbotWidget({
     }, INITIAL_DELAY);
 
     return () => clearTimeout(timer);
-  }, [isEmbedded, hasMultipleActions, animationEnabled, animationCycles, isOpen]);
+  }, [
+    isEmbedded,
+    hasMultipleActions,
+    animationEnabled,
+    animationCycles,
+    isOpen,
+  ]);
 
   const handleStartChat = (message?: string) => {
     setInitialChatMessage(message);
@@ -269,6 +276,7 @@ export default function PublicChatbotWidget({
                 name: chatbot.name,
                 welcomeMessage: chatbot.welcomeMessage,
               }}
+              initialMessage={initialChatMessage}
             />
           </div>
         )}
