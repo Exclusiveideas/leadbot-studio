@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from "react";
-import { validateChatFile } from "@/lib/chat/fileProcessor";
+import { validateChatFile } from "@/lib/chat/fileUtils";
 
 export interface DragAndDropResult {
   validFiles: File[];

@@ -30,7 +30,7 @@ import {
   getRandomThinkingText,
   isThinkingMessage,
 } from "@/lib/utils/thinkingMessages";
-import { fileToBase64 } from "@/lib/chat/fileProcessor";
+import { fileToBase64 } from "@/lib/chat/fileUtils";
 import {
   DynamicLeadCaptureForm,
   type DynamicLeadFormData,

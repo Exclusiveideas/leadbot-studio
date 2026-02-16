@@ -24,7 +24,7 @@ import {
 } from "@/lib/utils/thinkingMessages";
 import "@/app/(dashboard)/generate/components/chat/chat-markdown.css";
 import { useDragAndDrop } from "@/hooks/useDragAndDrop";
-import { validateChatFile, fileToBase64 } from "@/lib/chat/fileProcessor";
+import { validateChatFile, fileToBase64 } from "@/lib/chat/fileUtils";
 import ChatFileUpload from "@/components/chat/ChatFileUpload";
 import {
   getFileIconFromMimeType,
