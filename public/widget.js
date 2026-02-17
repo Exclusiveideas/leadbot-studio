@@ -436,13 +436,23 @@
     if (!text) return "";
 
     let html = text
+      // Escape HTML entities
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(
-        /```(\w*)\n?([\s\S]*?)```/g,
-        '<pre class="widget-code-block"><code>$2</code></pre>',
-      )
+      .replace(/>/g, "&gt;");
+
+    // Extract code blocks first to protect them from further processing
+    const codeBlocks = [];
+    html = html.replace(/```(\w*)\n?([\s\S]*?)```/g, (match, lang, code) => {
+      const index = codeBlocks.length;
+      codeBlocks.push(
+        '<pre class="widget-code-block"><code>' + code + "</code></pre>",
+      );
+      return "\n%%CODEBLOCK_" + index + "%%\n";
+    });
+
+    // Inline formatting
+    html = html
       .replace(/`([^`]+)`/g, '<code class="widget-inline-code">$1</code>')
       .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
       .replace(/__([^_]+)__/g, "<strong>$1</strong>")
@@ -452,37 +462,124 @@
       .replace(
         /\[([^\]]+)\]\(([^)]+)\)/g,
         '<a href="$2" target="_blank" rel="noopener noreferrer" class="widget-link">$1</a>',
-      )
-      .replace(/^[\s]*[-*]\s+(.+)$/gm, '<li class="widget-list-item">$1</li>')
-      .replace(
-        /^[\s]*\d+\.\s+(.+)$/gm,
-        '<li class="widget-list-item-ordered">$1</li>',
-      )
-      .replace(
-        /^>\s*(.+)$/gm,
-        '<blockquote class="widget-blockquote">$1</blockquote>',
-      )
-      .replace(/^######\s+(.+)$/gm, '<h6 class="widget-heading">$1</h6>')
-      .replace(/^#####\s+(.+)$/gm, '<h5 class="widget-heading">$1</h5>')
-      .replace(/^####\s+(.+)$/gm, '<h4 class="widget-heading">$1</h4>')
-      .replace(/^###\s+(.+)$/gm, '<h3 class="widget-heading">$1</h3>')
-      .replace(/^##\s+(.+)$/gm, '<h2 class="widget-heading">$1</h2>')
-      .replace(/^#\s+(.+)$/gm, '<h1 class="widget-heading">$1</h1>')
-      .replace(/\n\n/g, "</p><p>")
-      .replace(/\n/g, "<br>");
+      );
 
-    html = html.replace(
-      /(<li class="widget-list-item">.*?<\/li>)+/g,
-      '<ul class="widget-list">$&</ul>',
-    );
-    html = html.replace(
-      /(<li class="widget-list-item-ordered">.*?<\/li>)+/g,
-      '<ol class="widget-list-ordered">$&</ol>',
-    );
+    // Process line-by-line for block elements
+    const lines = html.split("\n");
+    const result = [];
+    let inList = false;
+    let listType = "";
 
-    if (!/^<(h[1-6]|ul|ol|pre|blockquote)/.test(html)) {
-      html = "<p>" + html + "</p>";
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      const trimmed = line.trim();
+
+      // Code block placeholder
+      if (/^%%CODEBLOCK_\d+%%$/.test(trimmed)) {
+        if (inList) {
+          result.push(listType === "ul" ? "</ul>" : "</ol>");
+          inList = false;
+        }
+        const idx = parseInt(trimmed.match(/\d+/)[0]);
+        result.push(codeBlocks[idx]);
+        continue;
+      }
+
+      // Horizontal rule
+      if (/^[-*_]{3,}\s*$/.test(trimmed)) {
+        if (inList) {
+          result.push(listType === "ul" ? "</ul>" : "</ol>");
+          inList = false;
+        }
+        result.push('<hr class="widget-hr">');
+        continue;
+      }
+
+      // Headings
+      const headingMatch = trimmed.match(/^(#{1,6})\s+(.+)$/);
+      if (headingMatch) {
+        if (inList) {
+          result.push(listType === "ul" ? "</ul>" : "</ol>");
+          inList = false;
+        }
+        const level = headingMatch[1].length;
+        result.push(
+          "<h" +
+            level +
+            ' class="widget-heading">' +
+            headingMatch[2] +
+            "</h" +
+            level +
+            ">",
+        );
+        continue;
+      }
+
+      // Blockquote
+      const quoteMatch = trimmed.match(/^>\s*(.+)$/);
+      if (quoteMatch) {
+        if (inList) {
+          result.push(listType === "ul" ? "</ul>" : "</ol>");
+          inList = false;
+        }
+        result.push(
+          '<blockquote class="widget-blockquote">' +
+            quoteMatch[1] +
+            "</blockquote>",
+        );
+        continue;
+      }
+
+      // Unordered list item
+      const ulMatch = trimmed.match(/^[-*+]\s+(.+)$/);
+      if (ulMatch) {
+        if (!inList || listType !== "ul") {
+          if (inList) result.push(listType === "ul" ? "</ul>" : "</ol>");
+          result.push('<ul class="widget-list">');
+          inList = true;
+          listType = "ul";
+        }
+        result.push(
+          '<li class="widget-list-item">' + ulMatch[1] + "</li>",
+        );
+        continue;
+      }
+
+      // Ordered list item
+      const olMatch = trimmed.match(/^\d+\.\s+(.+)$/);
+      if (olMatch) {
+        if (!inList || listType !== "ol") {
+          if (inList) result.push(listType === "ul" ? "</ul>" : "</ol>");
+          result.push('<ol class="widget-list-ordered">');
+          inList = true;
+          listType = "ol";
+        }
+        result.push(
+          '<li class="widget-list-item-ordered">' + olMatch[1] + "</li>",
+        );
+        continue;
+      }
+
+      // Empty line — close list if open, otherwise skip
+      if (trimmed === "") {
+        // Don't close list on blank lines — allows spaced list items
+        continue;
+      }
+
+      // Regular text — close list if open, wrap in <p>
+      if (inList) {
+        result.push(listType === "ul" ? "</ul>" : "</ol>");
+        inList = false;
+      }
+      result.push("<p>" + trimmed + "</p>");
     }
+
+    // Close any remaining open list
+    if (inList) {
+      result.push(listType === "ul" ? "</ul>" : "</ol>");
+    }
+
+    html = result.join("");
 
     return html;
   }
@@ -5413,16 +5510,26 @@ ${additionalFields}
     }
 
     /* Markdown styles */
+    .widget-bubble {
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .widget-bubble > *:first-child {
+      margin-top: 0 !important;
+    }
+    .widget-bubble > *:last-child {
+      margin-bottom: 0 !important;
+    }
     .widget-bubble p {
       margin: 0 0 0.5rem 0;
+      line-height: 1.5;
     }
     .widget-bubble p:last-child {
       margin-bottom: 0;
     }
-    /* Reduce gap between paragraph and following list */
     .widget-bubble p + .widget-list,
     .widget-bubble p + .widget-list-ordered {
-      margin-top: 0.25rem;
+      margin-top: 0.125rem;
     }
     .widget-bubble strong {
       font-weight: 700;
@@ -5430,41 +5537,125 @@ ${additionalFields}
     .widget-bubble em {
       font-style: italic;
     }
-    .widget-inline-code {
-      font-family: ui-monospace, 'Courier New', monospace;
-      font-size: 0.875em;
-      padding: 0.125rem 0.375rem;
-      border-radius: 0.25rem;
-      background-color: rgba(0, 0, 0, 0.05);
+    .widget-bubble del {
+      text-decoration: line-through;
+      opacity: 0.7;
     }
+
+    /* Headings */
+    .widget-heading {
+      font-weight: 700;
+      line-height: 1.3;
+    }
+    h1.widget-heading { font-size: 1.125rem; margin: 0.75rem 0 0.375rem; }
+    h2.widget-heading { font-size: 1.0625rem; margin: 0.625rem 0 0.3125rem; }
+    h3.widget-heading { font-size: 1rem; margin: 0.5rem 0 0.25rem; font-weight: 600; }
+    h4.widget-heading,
+    h5.widget-heading,
+    h6.widget-heading { font-size: 0.9375rem; margin: 0.375rem 0 0.1875rem; font-weight: 600; }
+
+    /* Inline code */
+    .widget-inline-code {
+      font-family: ui-monospace, 'Cascadia Code', 'Fira Code', 'Courier New', monospace;
+      font-size: 0.8125em;
+      padding: 0.1rem 0.3rem;
+      border-radius: 0.25rem;
+      background-color: #f1f5f9;
+      color: #0f172a;
+      border: 1px solid #e2e8f0;
+      font-weight: 500;
+    }
+
+    /* Code blocks */
     .widget-code-block {
-      margin: 0.75rem 0;
-      padding: 0.75rem;
+      margin: 0.5rem 0;
+      padding: 0.625rem 0.75rem;
       border-radius: 0.375rem;
       overflow-x: auto;
-      background-color: #f9fafb;
-      border: 1px solid #e5e7eb;
-      font-family: ui-monospace, 'Courier New', monospace;
+      background-color: #f8fafc;
+      border: 1px solid #e2e8f0;
+      font-family: ui-monospace, 'Cascadia Code', 'Fira Code', 'Courier New', monospace;
       font-size: 0.8125rem;
-      line-height: 1.4;
+      line-height: 1.45;
     }
+    .widget-code-block code {
+      font-family: inherit;
+      font-size: inherit;
+      background: none;
+      border: none;
+      padding: 0;
+    }
+
+    /* Links */
     .widget-link {
-      color: #3B82F6;
+      color: #2563eb;
       text-decoration: underline;
+      text-underline-offset: 2px;
+      text-decoration-thickness: 1px;
+      text-decoration-color: rgba(37, 99, 235, 0.3);
+      font-weight: 500;
     }
-    .widget-list,
+    .widget-link:hover {
+      color: #1d4ed8;
+      text-decoration-color: rgba(29, 78, 216, 0.6);
+    }
+
+    /* Unordered lists */
+    .widget-list {
+      margin: 0.25rem 0 0.375rem;
+      padding-left: 1.25rem;
+      list-style-type: disc;
+    }
+    .widget-list .widget-list {
+      list-style-type: circle;
+      margin: 0.0625rem 0;
+      padding-left: 1.125rem;
+    }
+    .widget-list .widget-list .widget-list {
+      list-style-type: square;
+    }
+
+    /* Ordered lists */
     .widget-list-ordered {
-      margin: 0.5rem 0;
-      padding-left: 1.5rem;
+      margin: 0.25rem 0 0.375rem;
+      padding-left: 1.25rem;
+      list-style-type: decimal;
     }
+    .widget-list-ordered .widget-list-ordered {
+      list-style-type: lower-alpha;
+      margin: 0.0625rem 0;
+      padding-left: 1.125rem;
+    }
+
+    /* List items */
     .widget-list-item,
     .widget-list-item-ordered {
-      margin: 0.125rem 0;
-      line-height: 1.5;
+      margin: 0.0625rem 0;
+      padding-left: 0.125rem;
+      line-height: 1.45;
+      display: list-item;
     }
     .widget-list-item > p,
     .widget-list-item-ordered > p {
       margin: 0;
+      display: inline;
+    }
+
+    /* Blockquotes */
+    .widget-blockquote {
+      margin: 0.5rem 0;
+      padding: 0.375rem 0.625rem;
+      border-left: 3px solid #3b82f6;
+      background-color: rgba(59, 130, 246, 0.05);
+      border-radius: 0 0.25rem 0.25rem 0;
+      font-style: italic;
+    }
+
+    /* Horizontal rule */
+    .widget-hr {
+      margin: 0.625rem 0;
+      border: 0;
+      border-top: 1px solid rgba(0, 0, 0, 0.12);
     }
 
     /* Message hover effects and copy button */
