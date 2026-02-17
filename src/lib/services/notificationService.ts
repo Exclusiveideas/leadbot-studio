@@ -303,6 +303,33 @@ class NotificationService {
   }
 
   /**
+   * Create conversation limit reached notification
+   */
+  async notifyConversationLimitReached(
+    userId: string,
+    chatbotId: string,
+    chatbotName: string,
+    currentCount: number,
+    limit: number,
+    metadata?: Prisma.InputJsonObject,
+  ): Promise<string | null> {
+    return this.createNotification({
+      userId,
+      type: "CONVERSATION_LIMIT_REACHED",
+      title: "Conversation Limit Reached",
+      message: `${chatbotName} has reached its monthly conversation limit (${currentCount}/${limit}). Visitors will see a temporary unavailability message. Upgrade your plan to increase the limit.`,
+      data: {
+        chatbotId,
+        chatbotName,
+        currentCount,
+        limit,
+        reachedAt: new Date().toISOString(),
+        ...metadata,
+      },
+    });
+  }
+
+  /**
    * Mark notification as read
    */
   async markAsRead(notificationId: string, userId: string): Promise<boolean> {

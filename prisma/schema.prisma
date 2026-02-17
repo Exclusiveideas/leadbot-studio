@@ -9,6 +9,12 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+enum PlanTier {
+  BASIC
+  PRO
+  AGENCY
+}
+
 // ─── Auth & Multi-tenancy ────────────────────────────────────────────────────
 
 model User {
@@ -60,7 +66,7 @@ model Organization {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  plan     String?
+  plan     PlanTier? @default(BASIC)
 
   chatbots Chatbot[]
   invites  OrganizationInvite[]
@@ -597,4 +603,5 @@ enum NotificationType {
   ORGANIZATION_INVITATION
   INVITATION_ACCEPTED
   INVITATION_DECLINED
+  CONVERSATION_LIMIT_REACHED
 }

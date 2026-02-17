@@ -18,6 +18,7 @@ import {
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import BookingConfigSection from "./BookingConfigSection";
 import TextConfigSection from "./TextConfigSection";
+import PlanGate from "@/components/shared/PlanGate";
 import type { BookingConfig } from "@/lib/validation/chatbot-booking";
 import type { TextConfig } from "@/lib/validation/chatbot-text";
 
@@ -922,17 +923,21 @@ export default function ChatbotForm({
             </p>
           </div>
 
-          <BookingConfigSection
-            config={bookingConfig}
-            onChange={setBookingConfig}
-            disabled={isSubmitting}
-          />
+          <PlanGate requiredFeature="booking_wizard">
+            <BookingConfigSection
+              config={bookingConfig}
+              onChange={setBookingConfig}
+              disabled={isSubmitting}
+            />
+          </PlanGate>
 
-          <TextConfigSection
-            config={textConfig}
-            onChange={setTextConfig}
-            disabled={isSubmitting}
-          />
+          <PlanGate requiredFeature="text_request">
+            <TextConfigSection
+              config={textConfig}
+              onChange={setTextConfig}
+              disabled={isSubmitting}
+            />
+          </PlanGate>
         </TabsContent>
 
         {/* Security Tab */}

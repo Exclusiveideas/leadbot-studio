@@ -38,6 +38,9 @@ export default async function PublicChatbotPage({
       textConfig: true,
       appearance: true,
       status: true,
+      organization: {
+        select: { plan: true },
+      },
     },
   });
 
@@ -69,6 +72,8 @@ export default async function PublicChatbotPage({
 
   const bookingConfig = chatbot.bookingConfig as BookingConfig | null;
   const textConfig = chatbot.textConfig as TextConfig | null;
+  const showBranding =
+    chatbot.organization?.plan === "BASIC" || !chatbot.organization?.plan;
 
   return (
     <html lang="en">
@@ -93,6 +98,7 @@ export default async function PublicChatbotPage({
             bookingConfig,
             textConfig,
             appearance,
+            showBranding,
           }}
           isEmbedded={false}
         />

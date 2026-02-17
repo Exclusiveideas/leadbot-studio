@@ -37,6 +37,11 @@ export default function ChatbotTabs({ chatbotId }: ChatbotTabsProps) {
       name: "Feedbacks",
       href: `/chatbots/${chatbotId}/feedbacks`,
     },
+    {
+      id: "analytics",
+      name: "Analytics",
+      href: `/chatbots/${chatbotId}/analytics`,
+    },
   ];
 
   const isActiveTab = (href: string) => {

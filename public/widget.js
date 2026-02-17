@@ -1853,6 +1853,13 @@
               </div>
             </div>
 
+            <!-- Branding -->
+            ${this.chatbot?.showBranding ? `
+            <div style="text-align: center; padding: 4px 12px; background: #f9fafb; border-bottom: 1px solid #f3f4f6;">
+              <a href="https://leadbotpartners.com" target="_blank" rel="noopener noreferrer" style="font-size: 10px; color: #9ca3af; text-decoration: none;">Powered by Leadbot Partners</a>
+            </div>
+            ` : ''}
+
             <!-- Profile Section -->
             <div style="display: flex; flex-direction: column; align-items: center; padding: 0 24px 24px;">
             <!-- Avatar -->

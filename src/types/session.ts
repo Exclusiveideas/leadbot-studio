@@ -11,11 +11,12 @@ export interface User {
   organization: {
     id: string;
     name: string;
-    subtitle?: string;
-    type?: string;
-    logoUrl?: string;
-    createdBy?: string;
+    subtitle?: string | null;
+    type?: string | null;
+    logoUrl?: string | null;
+    createdBy?: string | null;
     createdAt?: string;
+    plan?: "BASIC" | "PRO" | "AGENCY" | null;
   };
 }
 

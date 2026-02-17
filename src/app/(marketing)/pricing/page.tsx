@@ -33,7 +33,7 @@ const tiers = [
     features: [
       "3 chatbots",
       "Unlimited conversations",
-      "All knowledge types (incl. YouTube)",
+      "All knowledge types",
       "Booking wizard with categories",
       "Text request capture",
       "White-label (remove branding)",
@@ -55,8 +55,6 @@ const tiers = [
       "Unlimited everything",
       "White-label branding",
       "Team management & sub-accounts",
-      "API access",
-      "Custom integrations",
       "Dedicated account manager",
       "Priority support",
       "Custom onboarding",
@@ -95,7 +93,6 @@ const comparisonFeatures = [
     agency: "Unlimited",
   },
   { name: "Knowledge base", basic: true, pro: true, agency: true },
-  { name: "YouTube training", basic: false, pro: true, agency: true },
   { name: "Lead capture forms", basic: true, pro: true, agency: true },
   { name: "Conditional form logic", basic: false, pro: true, agency: true },
   { name: "Booking wizard", basic: false, pro: true, agency: true },
@@ -108,7 +105,6 @@ const comparisonFeatures = [
     agency: "Advanced",
   },
   { name: "Team management", basic: false, pro: false, agency: true },
-  { name: "API access", basic: false, pro: false, agency: true },
   { name: "Priority support", basic: false, pro: true, agency: true },
 ];
 

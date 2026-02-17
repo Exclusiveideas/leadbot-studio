@@ -9,6 +9,8 @@ import {
   rollbackThumbnail,
 } from "@/lib/services/chatbot/create-helpers";
 import { getSignedDownloadUrl } from "@/lib/storage/aws-server";
+import { checkChatbotLimit } from "@/lib/services/planService";
+import type { PlanTier } from "@/lib/constants/plans";
 
 /**
  * GET /api/chatbots
@@ -85,6 +87,25 @@ export const POST = withRLS(
           details: parseResult.details,
         },
         { status: 400 },
+      );
+    }
+
+    const plan = (session.user.organization.plan ?? "BASIC") as PlanTier;
+    const limitCheck = await checkChatbotLimit(
+      session.user.organization.id,
+      plan,
+    );
+
+    if (!limitCheck.allowed) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: `You've reached the maximum of ${limitCheck.limit} chatbot(s) on the ${plan} plan`,
+          current: limitCheck.current,
+          limit: limitCheck.limit,
+          upgrade: true,
+        },
+        { status: 403 },
       );
     }
 

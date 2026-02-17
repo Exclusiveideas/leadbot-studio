@@ -28,6 +28,7 @@ type ChatbotData = {
   suggestedQuestions?: string[];
   bookingConfig?: BookingConfig | null;
   textConfig?: TextConfig | null;
+  showBranding?: boolean;
   appearance?: {
     primaryColor?: string;
     accentColor?: string;
@@ -59,6 +60,7 @@ export default function PublicChatbotWidget({
   const accentColor = chatbot.appearance?.accentColor || "#3B82F6";
   const animationEnabled = chatbot.appearance?.animationEnabled ?? true;
   const animationCycles = chatbot.appearance?.animationCycles ?? 6;
+  const showBranding = chatbot.showBranding ?? true;
 
   // Refs for animation
   const actionBarRef = useRef<HTMLDivElement>(null);
@@ -242,7 +244,8 @@ export default function PublicChatbotWidget({
   // For embedded widget, render the full-screen version
   if (!isEmbedded) {
     return (
-      <div className="h-screen w-full bg-white">
+      <div className="h-screen w-full bg-white flex flex-col">
+        <div className="flex-1 min-h-0">
         {view === "home" && (
           <WidgetHome
             chatbotName={chatbot.name}
@@ -314,6 +317,8 @@ export default function PublicChatbotWidget({
             primaryColor={primaryColor}
           />
         )}
+        </div>
+        {showBranding && <BrandingFooter />}
       </div>
     );
   }
@@ -495,6 +500,8 @@ export default function PublicChatbotWidget({
               primaryColor={primaryColor}
             />
           )}
+
+          {showBranding && <BrandingFooter />}
         </div>
       )}
     </>
@@ -530,6 +537,21 @@ function BookingSuccessView({
       >
         Back to Home
       </button>
+    </div>
+  );
+}
+
+function BrandingFooter() {
+  return (
+    <div className="py-1.5 text-center border-t border-gray-100 shrink-0">
+      <a
+        href="https://leadbotpartners.com"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-[10px] text-gray-400 hover:text-gray-500 transition-colors"
+      >
+        Powered by Leadbot Partners
+      </a>
     </div>
   );
 }

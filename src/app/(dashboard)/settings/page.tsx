@@ -6,8 +6,15 @@ import SettingsProfileTabSkeleton from "@/components/settings/SettingsProfileTab
 import SettingsSecurityTabSkeleton from "@/components/settings/SettingsSecurityTabSkeleton";
 import TeamTab from "@/components/settings/TeamTab";
 import WorkspaceTab from "@/components/settings/WorkspaceTab";
-import { Building, Shield, User as UserIcon, Users } from "lucide-react";
-import { useRouter } from "next/navigation";
+import PlanGate from "@/components/shared/PlanGate";
+import {
+  Building,
+  CreditCard,
+  Shield,
+  User as UserIcon,
+  Users,
+} from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { useToast } from "@/components/ui/toast";
 import { PageTransition } from "@/components/dashboard/PageTransition";
@@ -16,17 +23,24 @@ import type { ServerSessionData as SessionData } from "@/types/session";
 const tabs = [
   { id: "profile", name: "Profile", icon: UserIcon },
   { id: "security", name: "Security", icon: Shield },
+  { id: "billing", name: "Billing", icon: CreditCard },
   { id: "team", name: "Team", icon: Users },
   { id: "workspace", name: "Workspace", icon: Building },
 ];
 
 function SettingsContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { addToast } = useToast();
   const [sessionData, setSessionData] = useState<SessionData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState("security");
+
+  const tabFromUrl = searchParams.get("tab");
+  const validTabs = tabs.map((t) => t.id);
+  const initialTab =
+    tabFromUrl && validTabs.includes(tabFromUrl) ? tabFromUrl : "security";
+  const [activeTab, setActiveTab] = useState(initialTab);
 
   useEffect(() => {
     fetchSession();
@@ -106,7 +120,9 @@ function SettingsContent() {
             <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-accent" />
             {activeTab === "profile" && <SettingsProfileTabSkeleton />}
             {activeTab === "security" && <SettingsSecurityTabSkeleton />}
-            {(activeTab === "team" || activeTab === "workspace") && (
+            {(activeTab === "billing" ||
+              activeTab === "team" ||
+              activeTab === "workspace") && (
               <div className="p-4 sm:p-6 space-y-4">
                 {[1, 2, 3].map((i) => (
                   <div
@@ -197,13 +213,165 @@ function SettingsContent() {
               </div>
             )}
 
-            {activeTab === "team" && <TeamTab user={user} />}
+            {activeTab === "team" && (
+              <PlanGate requiredFeature="team_management">
+                <TeamTab user={user} />
+              </PlanGate>
+            )}
+
+            {activeTab === "billing" && (
+              <BillingTab plan={user.organization?.plan} />
+            )}
 
             {activeTab === "workspace" && <WorkspaceTab user={user} />}
           </div>
         </div>
       </div>
     </PageTransition>
+  );
+}
+
+import { PLAN_CONFIG } from "@/lib/constants/plans";
+import type { PlanTier } from "@/lib/constants/plans";
+import { Check, ArrowRight } from "lucide-react";
+
+function BillingTab({ plan }: { plan?: "BASIC" | "PRO" | "AGENCY" | null }) {
+  const currentPlan = (plan ?? "BASIC") as PlanTier;
+  const config = PLAN_CONFIG[currentPlan];
+
+  const plans: { tier: PlanTier; price: string; description: string }[] = [
+    {
+      tier: "BASIC",
+      price: "$20",
+      description: "For solo practitioners getting started",
+    },
+    {
+      tier: "PRO",
+      price: "$50",
+      description: "For growing practices that need more power",
+    },
+    {
+      tier: "AGENCY",
+      price: "$150",
+      description: "For agencies managing multiple clients",
+    },
+  ];
+
+  return (
+    <div className="p-4 sm:p-6">
+      <h2 className="text-lg sm:text-xl font-semibold font-heading text-brand-primary mb-1">
+        Billing & Plan
+      </h2>
+      <p className="text-sm text-brand-muted mb-6">
+        Manage your subscription and billing details.
+      </p>
+
+      {/* Current Plan */}
+      <div className="bg-brand-surface rounded-xl p-5 mb-8 border border-brand-border">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-xs font-medium uppercase tracking-wider text-brand-muted">
+              Current Plan
+            </p>
+            <p className="text-2xl font-bold text-brand-primary mt-1">
+              {config.name}
+            </p>
+            <p className="text-sm text-brand-muted mt-0.5">
+              {config.maxChatbots} chatbot{config.maxChatbots > 1 ? "s" : ""}
+              {config.maxConversationsPerMonth
+                ? ` · ${config.maxConversationsPerMonth} conversations/mo`
+                : " · Unlimited conversations"}
+            </p>
+          </div>
+          <div className="text-right">
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gradient-accent text-brand-primary">
+              Active
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Plan Options */}
+      <h3 className="text-sm font-semibold text-brand-primary mb-4">
+        Available Plans
+      </h3>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {plans.map(({ tier, price, description }) => {
+          const isCurrent = tier === currentPlan;
+          const tierConfig = PLAN_CONFIG[tier];
+          return (
+            <div
+              key={tier}
+              className={`rounded-xl border p-5 transition-all ${
+                isCurrent
+                  ? "border-brand-blue/30 bg-brand-blue/5"
+                  : "border-brand-border bg-white hover:border-brand-blue/20"
+              }`}
+            >
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-xs font-semibold uppercase tracking-wider text-brand-muted">
+                  {PLAN_CONFIG[tier].name}
+                </p>
+                {isCurrent && (
+                  <span className="text-xs font-medium text-brand-blue">
+                    Current
+                  </span>
+                )}
+              </div>
+              <p className="text-2xl font-bold text-brand-primary">
+                {price}
+                <span className="text-sm font-normal text-brand-muted">
+                  /mo
+                </span>
+              </p>
+              <p className="text-xs text-brand-muted mt-1 mb-4">
+                {description}
+              </p>
+              <ul className="space-y-1.5 mb-5">
+                <li className="flex items-center gap-2 text-xs text-brand-muted">
+                  <Check className="h-3 w-3 text-brand-blue shrink-0" />
+                  {tierConfig.maxChatbots} chatbot
+                  {tierConfig.maxChatbots > 1 ? "s" : ""}
+                </li>
+                <li className="flex items-center gap-2 text-xs text-brand-muted">
+                  <Check className="h-3 w-3 text-brand-blue shrink-0" />
+                  {tierConfig.maxConversationsPerMonth
+                    ? `${tierConfig.maxConversationsPerMonth} conversations/mo`
+                    : "Unlimited conversations"}
+                </li>
+                <li className="flex items-center gap-2 text-xs text-brand-muted">
+                  <Check className="h-3 w-3 text-brand-blue shrink-0" />
+                  {tierConfig.features.size} features included
+                </li>
+              </ul>
+              {isCurrent ? (
+                <button
+                  disabled
+                  className="w-full py-2 rounded-lg text-xs font-medium border border-brand-border text-brand-muted cursor-default"
+                >
+                  Current Plan
+                </button>
+              ) : (
+                <button className="w-full py-2 rounded-lg text-xs font-semibold bg-gradient-accent text-brand-primary hover:brightness-105 transition-all flex items-center justify-center gap-1.5">
+                  Upgrade
+                  <ArrowRight className="h-3 w-3" />
+                </button>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      <p className="text-xs text-brand-muted mt-6 text-center">
+        Need help choosing a plan? Contact us at{" "}
+        <a
+          href="mailto:ed@seira.ai"
+          className="text-brand-blue hover:underline"
+        >
+          ed@seira.ai
+        </a>
+      </p>
+    </div>
   );
 }
 

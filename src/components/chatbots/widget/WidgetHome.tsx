@@ -46,6 +46,20 @@ export default function WidgetHome({
 
   return (
     <div className="flex flex-col h-full bg-white">
+      {/* Branding */}
+      {showBranding && (
+        <div className="shrink-0 py-1 px-3 bg-gray-50 border-b border-gray-100 flex justify-center">
+          <a
+            href="https://leadbotpartners.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[10px] text-gray-400 hover:text-gray-500 transition-colors"
+          >
+            Powered by Leadbot Partners
+          </a>
+        </div>
+      )}
+
       {/* Header */}
       <div
         className="p-4 text-white relative"
@@ -304,6 +318,7 @@ export default function WidgetHome({
           </p>
         </div>
       )}
+
     </div>
   );
 }

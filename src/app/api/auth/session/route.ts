@@ -63,6 +63,7 @@ export async function GET(request: NextRequest) {
               logoUrl: true,
               createdBy: true,
               createdAt: true,
+              plan: true,
             },
           },
         },

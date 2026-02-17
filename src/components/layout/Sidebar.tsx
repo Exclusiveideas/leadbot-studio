@@ -127,7 +127,7 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
         {/* Help & Sign Out */}
         <div className="border-t border-white/10 p-3 space-y-1">
           <Link
-            href="mailto:support@leadbotstudio.com"
+            href="mailto:ed@seira.ai"
             className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-white/60 transition-all duration-150 hover:bg-white/[0.06] hover:text-white"
           >
             <HelpCircle className="h-5 w-5" />

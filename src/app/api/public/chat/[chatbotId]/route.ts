@@ -10,7 +10,10 @@ import {
   recordMessages,
 } from "@/lib/services/publicChatAnalyticsService";
 import { checkPromptInjection } from "@/lib/services/security/promptInjectionDetector";
+import { checkConversationLimit } from "@/lib/services/planService";
+import { notifyConversationLimitReached } from "@/lib/services/conversationLimitNotificationService";
 import { getSignedDownloadUrl } from "@/lib/storage/aws-server";
+import type { PlanTier } from "@/lib/constants/plans";
 import type { BedrockContentBlock } from "@/types/bedrock";
 import { z } from "zod";
 
@@ -157,6 +160,9 @@ export async function GET(
         calendlyLink: true,
         bookingConfig: true,
         textConfig: true,
+        organization: {
+          select: { plan: true },
+        },
       },
     });
 
@@ -179,8 +185,9 @@ export async function GET(
       );
     }
 
-    // Return chatbot config without allowedDomains (internal field)
-    const { allowedDomains: _, ...chatbotData } = chatbot;
+    // Return chatbot config without internal fields
+    const { allowedDomains: _, organization, ...chatbotData } = chatbot;
+    const showBranding = organization?.plan === "BASIC" || !organization?.plan;
 
     return NextResponse.json(
       {
@@ -190,6 +197,7 @@ export async function GET(
           thumbnail: chatbot.thumbnail
             ? await getSignedDownloadUrl(chatbot.thumbnail)
             : null,
+          showBranding,
         },
       },
       { headers: buildCorsHeaders(origin) },
@@ -663,7 +671,13 @@ export async function POST(
       },
       select: {
         id: true,
+        name: true,
+        createdBy: true,
         allowedDomains: true,
+        organizationId: true,
+        organization: {
+          select: { id: true, plan: true },
+        },
       },
     });
 
@@ -684,6 +698,73 @@ export async function POST(
         { error: "Domain not allowed" },
         { status: 403, headers: buildCorsHeaders(origin) },
       );
+    }
+
+    // Check conversation limit for new sessions
+    if (isNewSession && chatbot.organization) {
+      const plan = (chatbot.organization.plan ?? "BASIC") as PlanTier;
+      const convLimit = await checkConversationLimit(
+        chatbot.organization.id,
+        plan,
+      );
+
+      if (!convLimit.allowed) {
+        // Notify chatbot owner (fire-and-forget)
+        notifyConversationLimitReached({
+          chatbot: {
+            id: chatbot.id,
+            name: chatbot.name,
+            createdBy: chatbot.createdBy,
+            organizationId: chatbot.organizationId,
+          },
+          currentCount: convLimit.current,
+          limit: convLimit.limit as number,
+        }).catch((err) =>
+          console.error(
+            "[PublicChat] Failed to send conversation limit notification:",
+            err,
+          ),
+        );
+
+        const limitMessage =
+          "We're currently experiencing high demand and are temporarily unavailable. Please check back soon!";
+        const encoder = new TextEncoder();
+        const limitStream = new ReadableStream({
+          start(controller) {
+            const startEvent: ChatStreamEvent = { type: "start", sessionId };
+            controller.enqueue(
+              encoder.encode(`data: ${JSON.stringify(startEvent)}\n\n`),
+            );
+            const contentEvent: ChatStreamEvent = {
+              type: "content",
+              content: limitMessage,
+            };
+            controller.enqueue(
+              encoder.encode(`data: ${JSON.stringify(contentEvent)}\n\n`),
+            );
+            const completeEvent: ChatStreamEvent = {
+              type: "complete",
+              content: limitMessage,
+              tokensUsed: 0,
+              processingTime: 0,
+              sessionId,
+            };
+            controller.enqueue(
+              encoder.encode(`data: ${JSON.stringify(completeEvent)}\n\n`),
+            );
+            controller.close();
+          },
+        });
+
+        return new Response(limitStream, {
+          headers: {
+            "Content-Type": "text/event-stream",
+            "Cache-Control": "no-cache, no-transform",
+            Connection: "keep-alive",
+            ...buildCorsHeaders(origin),
+          },
+        });
+      }
     }
 
     // Check for prompt injection attacks (first line of defense)

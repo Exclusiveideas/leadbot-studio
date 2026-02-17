@@ -59,6 +59,7 @@ export const getServerSession = cache(
                 logoUrl: true,
                 createdBy: true,
                 createdAt: true,
+                plan: true,
               },
             },
           },
@@ -115,7 +116,12 @@ export const getServerSession = cache(
           mfaVerified: session.mfaVerified || false,
           hasPassword: !!user.password,
           organizationRole: (user.organizationRole as "OWNER" | "MEMBER") || "MEMBER",
-          organization: user.organization || { id: "", name: "" },
+          organization: user.organization
+            ? {
+                ...user.organization,
+                createdAt: user.organization.createdAt?.toISOString(),
+              }
+            : { id: "", name: "" },
         },
         session: {
           id: session.sessionId || "",

@@ -1136,3 +1136,133 @@ export async function sendOrganizationInviteEmail(
     html,
   });
 }
+
+export async function sendConversationLimitEmail(
+  recipientEmail: string,
+  recipientName: string,
+  chatbotName: string,
+  chatbotId: string,
+  currentCount: number,
+  limit: number,
+) {
+  const billingUrl = `${process.env.NEXT_PUBLIC_APP_URL}/settings?tab=billing`;
+  const chatbotUrl = `${process.env.NEXT_PUBLIC_APP_URL}/chatbots/${chatbotId}`;
+
+  const html = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Conversation Limit Reached - ${APP_NAME}</title>
+      </head>
+      <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #E5E9E7;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color: #E5E9E7; padding: 40px 20px;">
+          <tr>
+            <td align="center">
+              <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width: 600px; background-color: #FFFFFF; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(7, 18, 5, 0.08);">
+
+                <!-- Header with gradient -->
+                <tr>
+                  <td style="background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); padding: 48px 40px; text-align: center;">
+                    <div style="background-color: rgba(255, 255, 255, 0.2); width: 72px; height: 72px; border-radius: 50%; margin: 0 auto 20px; text-align: center; line-height: 72px;">
+                      <span style="font-size: 36px; vertical-align: middle;">&#9888;&#65039;</span>
+                    </div>
+                    <h1 style="margin: 0; color: #FFFFFF; font-size: 28px; font-weight: 700; letter-spacing: -0.5px;">
+                      Conversation Limit Reached
+                    </h1>
+                    <p style="margin: 12px 0 0 0; color: #FFFFFF; font-size: 18px; font-weight: 400; opacity: 0.95;">
+                      ${chatbotName} can no longer serve new visitors
+                    </p>
+                  </td>
+                </tr>
+
+                <!-- Body content -->
+                <tr>
+                  <td style="padding: 48px 40px;">
+                    <p style="margin: 0 0 24px 0; color: #071205; font-size: 16px; line-height: 1.6;">
+                      Hi ${recipientName},
+                    </p>
+                    <p style="margin: 0 0 24px 0; color: #071205; font-size: 16px; line-height: 1.6;">
+                      Your chatbot <strong style="color: #D97706;">${chatbotName}</strong> has reached its monthly conversation limit of <strong>${limit}</strong> conversations (currently at ${currentCount}).
+                    </p>
+                    <p style="margin: 0 0 24px 0; color: #071205; font-size: 16px; line-height: 1.6;">
+                      New visitors will see a temporary unavailability message until the limit resets next month, or you upgrade your plan.
+                    </p>
+
+                    <!-- Limit details box -->
+                    <div style="background-color: #FFFBEB; border-left: 4px solid #F59E0B; padding: 20px; border-radius: 8px; margin-bottom: 32px;">
+                      <table style="width: 100%;">
+                        <tr>
+                          <td style="color: #708485; font-size: 14px; padding-bottom: 8px; width: 120px;">Chatbot:</td>
+                          <td style="color: #071205; font-size: 14px; padding-bottom: 8px; font-weight: 500;">${chatbotName}</td>
+                        </tr>
+                        <tr>
+                          <td style="color: #708485; font-size: 14px; padding-bottom: 8px;">Conversations:</td>
+                          <td style="color: #071205; font-size: 14px; padding-bottom: 8px; font-weight: 500;">${currentCount} / ${limit}</td>
+                        </tr>
+                        <tr>
+                          <td style="color: #708485; font-size: 14px;">Status:</td>
+                          <td style="color: #D97706; font-size: 14px; font-weight: 600;">Limit Reached</td>
+                        </tr>
+                      </table>
+                    </div>
+
+                    <!-- CTA Buttons -->
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td align="center" style="padding: 0 0 16px 0;">
+                          <a href="${billingUrl}"
+                             style="display: inline-block; background-color: #071205; color: #FFFFFF; padding: 16px 48px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px; box-shadow: 0 2px 8px rgba(7, 18, 5, 0.2);">
+                            Upgrade Plan
+                          </a>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td align="center" style="padding: 0 0 32px 0;">
+                          <a href="${chatbotUrl}"
+                             style="color: #708485; font-size: 14px; text-decoration: underline;">
+                            View Chatbot Dashboard
+                          </a>
+                        </td>
+                      </tr>
+                    </table>
+
+                    <!-- Alternative link -->
+                    <div style="padding: 24px; background-color: #F8F9FA; border-radius: 8px;">
+                      <p style="margin: 0 0 12px 0; color: #708485; font-size: 13px; text-align: center;">
+                        Button not working? Copy and paste this link:
+                      </p>
+                      <p style="margin: 0; color: #708485; font-size: 12px; word-break: break-all; text-align: center; font-family: monospace;">
+                        ${billingUrl}
+                      </p>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Footer -->
+                <tr>
+                  <td style="background-color: #E5E9E7; padding: 32px 40px; text-align: center;">
+                    <p style="margin: 0 0 8px 0; color: #071205; font-size: 18px; font-weight: 600;">
+                      ${APP_NAME}
+                    </p>
+                    <p style="margin: 0; color: #708485; font-size: 13px;">
+                      AI chatbots that convert visitors into leads
+                    </p>
+                  </td>
+                </tr>
+
+              </table>
+            </td>
+          </tr>
+        </table>
+      </body>
+    </html>
+  `;
+
+  return sendEmail({
+    to: recipientEmail,
+    subject: `Action required: ${chatbotName} has reached its conversation limit`,
+    html,
+  });
+}

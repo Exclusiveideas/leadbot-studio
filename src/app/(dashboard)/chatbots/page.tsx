@@ -9,6 +9,9 @@ import {
   CheckCircle,
   FileText,
   ChevronRight,
+  AlertTriangle,
+  ArrowRight,
+  X,
 } from "lucide-react";
 import {
   PageTransition,
@@ -16,6 +19,8 @@ import {
   StaggerItem,
 } from "@/components/dashboard/PageTransition";
 import EmptyState from "@/components/dashboard/EmptyState";
+import type { PlanTier } from "@/lib/constants/plans";
+import { getChatbotLimit, PLAN_CONFIG } from "@/lib/constants/plans";
 
 type ChatbotListItem = {
   id: string;
@@ -40,10 +45,29 @@ export default function ChatbotsPage() {
   const [chatbots, setChatbots] = useState<ChatbotListItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [plan, setPlan] = useState<PlanTier>("BASIC");
+  const [showLimitModal, setShowLimitModal] = useState(false);
 
   useEffect(() => {
     fetchChatbots();
+    fetch("/api/auth/session", { credentials: "include" })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data?.user?.organization?.plan) {
+          setPlan(data.user.organization.plan as PlanTier);
+        }
+      })
+      .catch(() => {});
   }, []);
+
+  const handleCreateClick = () => {
+    const limit = getChatbotLimit(plan);
+    if (chatbots.length >= limit) {
+      setShowLimitModal(true);
+    } else {
+      router.push("/chatbots/new");
+    }
+  };
 
   const fetchChatbots = async () => {
     try {
@@ -131,13 +155,13 @@ export default function ChatbotsPage() {
                 Create and manage AI chatbots for client intake
               </p>
             </div>
-            <Link
-              href="/chatbots/new"
+            <button
+              onClick={handleCreateClick}
               className="btn-primary inline-flex items-center px-4 py-2.5 rounded-lg text-sm font-medium shadow-sm self-start sm:self-auto"
             >
               <Plus className="h-5 w-5 mr-2" />
               Create Chatbot
-            </Link>
+            </button>
           </div>
 
           {/* Empty state */}
@@ -147,13 +171,13 @@ export default function ChatbotsPage() {
               title="No chatbots"
               description="Get started by creating your first chatbot."
               action={
-                <Link
-                  href="/chatbots/new"
+                <button
+                  onClick={handleCreateClick}
                   className="btn-primary inline-flex items-center px-4 py-2.5 rounded-lg text-sm font-medium shadow-sm"
                 >
                   <Plus className="h-5 w-5 mr-2" />
                   Create Chatbot
-                </Link>
+                </button>
               }
             />
           ) : (
@@ -213,6 +237,54 @@ export default function ChatbotsPage() {
           )}
         </div>
       </div>
+
+      {/* Chatbot Limit Modal */}
+      {showLimitModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            onClick={() => setShowLimitModal(false)}
+          />
+          <div className="relative bg-white rounded-2xl border border-brand-border shadow-2xl max-w-md w-full mx-4 p-8 text-center">
+            <button
+              onClick={() => setShowLimitModal(false)}
+              className="absolute top-4 right-4 p-1.5 rounded-lg hover:bg-brand-surface transition-colors"
+            >
+              <X className="h-4 w-4 text-brand-muted" />
+            </button>
+
+            <div className="h-14 w-14 rounded-xl bg-amber-50 flex items-center justify-center mx-auto mb-5">
+              <AlertTriangle className="h-7 w-7 text-amber-500" />
+            </div>
+
+            <h3 className="text-xl font-bold text-brand-primary mb-2">
+              Chatbot Limit Reached
+            </h3>
+            <p className="text-sm text-brand-muted leading-relaxed mb-6">
+              Your {PLAN_CONFIG[plan].name} plan allows up to{" "}
+              {getChatbotLimit(plan)} chatbot
+              {getChatbotLimit(plan) > 1 ? "s" : ""}. Upgrade your plan to
+              create more chatbots.
+            </p>
+
+            <div className="flex flex-col gap-3">
+              <Link
+                href="/settings?tab=billing"
+                className="bg-gradient-accent inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold text-brand-primary shadow-md hover:shadow-lg transition-all hover:brightness-105"
+              >
+                Upgrade Plan
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+              <button
+                onClick={() => setShowLimitModal(false)}
+                className="text-sm font-medium text-brand-muted hover:text-brand-primary transition-colors"
+              >
+                Maybe Later
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </PageTransition>
   );
 }

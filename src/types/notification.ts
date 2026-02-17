@@ -35,7 +35,8 @@ export type NotificationType =
   | "SYSTEM_ALERT"
   | "LEAD_CAPTURED"
   | "BOOKING_CREATED"
-  | "TEXT_REQUEST_CREATED";
+  | "TEXT_REQUEST_CREATED"
+  | "CONVERSATION_LIMIT_REACHED";
 
 /**
  * Toast-only notification types (not persisted to database)
@@ -127,6 +128,13 @@ export type NotificationData = {
     chatbotName: string;
     messagePreview: string;
     createdAt: string;
+  };
+  CONVERSATION_LIMIT_REACHED: {
+    chatbotId: string;
+    chatbotName: string;
+    currentCount: number;
+    limit: number;
+    reachedAt: string;
   };
 };
 
