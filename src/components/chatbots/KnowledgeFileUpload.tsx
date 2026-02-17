@@ -16,6 +16,7 @@ import {
 import {
   getPresignedUploadUrl,
   uploadToS3,
+  confirmUpload,
 } from "@/lib/upload/knowledgeUploadHelpers";
 import { toast } from "sonner";
 import { useChatbotKnowledge } from "@/hooks/useChatbotKnowledge";
@@ -66,10 +67,12 @@ async function processSingleFileUpload(
       throw new Error(uploadResult.error || "S3 upload failed");
     }
 
-    setProgress(fileIndex, 100);
+    setProgress(fileIndex, 90);
 
-    // Lambda will automatically process the file via S3 event trigger
-    // No confirmation needed - S3 event → SQS → Lambda handles everything
+    // Step 3: Confirm upload to trigger document processing Lambda
+    await confirmUpload(chatbotId, knowledgeSource.id, upload.s3Key);
+
+    setProgress(fileIndex, 100);
 
     return {
       success: true,

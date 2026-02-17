@@ -100,3 +100,27 @@ export async function getPresignedUploadUrl(
 
   return await response.json();
 }
+
+/**
+ * Confirm upload to trigger document processing Lambda
+ */
+export async function confirmUpload(
+  chatbotId: string,
+  knowledgeId: string,
+  s3Key: string,
+): Promise<void> {
+  const response = await fetch(
+    `/api/chatbots/${chatbotId}/knowledge/confirm-upload`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ knowledgeId, s3Key }),
+    },
+  );
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || "Failed to confirm upload");
+  }
+}

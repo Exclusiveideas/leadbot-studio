@@ -72,7 +72,7 @@ export const POST = withRLS(
           title: videoTitle,
           content: validation.normalizedUrl!,
           youtubeVideoId: validation.videoId,
-          vectorNamespace: `chatbot-${chatbotId}`,
+          vectorNamespace: chatbotId,
           status: "PENDING",
           stage: "QUEUED",
           progress: 0,

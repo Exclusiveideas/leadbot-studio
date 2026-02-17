@@ -1,55 +1,5 @@
-import type { ChatbotKnowledge } from "@prisma/client";
 import type { NicheType, TonePreset } from "@/lib/constants/niches";
 import { getNicheTemplate } from "@/lib/constants/niches";
-
-/**
- * Simple keyword-based RAG for chatbot knowledge base.
- * Searches knowledge base items for relevant content based on keyword matching.
- */
-export function findRelevantKnowledge(
-  message: string,
-  knowledgeBase: ChatbotKnowledge[],
-  maxResults: number = 3,
-): ChatbotKnowledge[] {
-  const messageLower = message.toLowerCase();
-
-  return knowledgeBase
-    .filter((kb) => {
-      const contentLower = kb.content.toLowerCase();
-      const titleLower = kb.title.toLowerCase();
-      const keywords = messageLower.split(" ").filter((w) => w.length > 3);
-      return keywords.some(
-        (keyword) =>
-          contentLower.includes(keyword) || titleLower.includes(keyword),
-      );
-    })
-    .slice(0, maxResults);
-}
-
-/**
- * Format knowledge base items into a text string for system prompt injection.
- */
-export function formatKnowledgeForPrompt(
-  knowledgeItems: ChatbotKnowledge[],
-): string {
-  return knowledgeItems
-    .map((kb) => `${kb.title}:\n${kb.content}`)
-    .join("\n\n");
-}
-
-/**
- * Build system prompt with knowledge base context appended.
- */
-export function buildSystemPromptWithKnowledge(
-  basePrompt: string,
-  knowledgeItems: ChatbotKnowledge[],
-): string {
-  if (knowledgeItems.length === 0) {
-    return basePrompt;
-  }
-  const formattedKnowledge = formatKnowledgeForPrompt(knowledgeItems);
-  return `${basePrompt}\n\nKnowledge Base:\n${formattedKnowledge}`;
-}
 
 // ─── Tone descriptions ───────────────────────────────────────────────────────
 
@@ -111,8 +61,7 @@ export function buildLeadGenerationSystemPrompt(
     template.qualificationQuestions.forEach((q) => {
       prompt += `- ${q.question}\n`;
     });
-    prompt +=
-      "\nThese are OPTIONAL. Getting name and email is the priority.\n";
+    prompt += "\nThese are OPTIONAL. Getting name and email is the priority.\n";
   }
 
   // Append boundaries

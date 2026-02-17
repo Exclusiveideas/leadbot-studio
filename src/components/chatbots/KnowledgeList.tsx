@@ -6,6 +6,7 @@ import {
   AlertCircle,
   CheckCircle2,
   Loader2,
+  RotateCcw,
 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -33,6 +34,7 @@ interface KnowledgeItem {
 interface KnowledgeListProps {
   knowledge: KnowledgeItem[];
   onDelete?: (id: string) => void;
+  onRetry?: (id: string) => void;
 }
 
 // Stage display mapping
@@ -85,8 +87,10 @@ function getTypeColor(type: string): string {
 export default function KnowledgeList({
   knowledge,
   onDelete,
+  onRetry,
 }: KnowledgeListProps) {
   const [deletingIds, setDeletingIds] = useState<Set<string>>(new Set());
+  const [retryingIds, setRetryingIds] = useState<Set<string>>(new Set());
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [knowledgeToDelete, setKnowledgeToDelete] =
     useState<KnowledgeItem | null>(null);
@@ -128,6 +132,29 @@ export default function KnowledgeList({
   const handleDeleteCancel = () => {
     setDeleteDialogOpen(false);
     setKnowledgeToDelete(null);
+  };
+
+  const handleRetry = async (id: string) => {
+    if (!onRetry) return;
+
+    setRetryingIds((prev) => new Set(prev).add(id));
+    try {
+      await onRetry(id);
+      toast.success("Retry Initiated", {
+        description: "Processing will restart shortly",
+      });
+    } catch (error) {
+      console.error("Error retrying knowledge:", error);
+      toast.error("Retry Failed", {
+        description: "Failed to retry processing",
+      });
+    } finally {
+      setRetryingIds((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(id);
+        return newSet;
+      });
+    }
   };
 
   if (knowledge.length === 0) {
@@ -235,10 +262,24 @@ export default function KnowledgeList({
                     {hasError && item.processingError && (
                       <div className="mt-2 flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-md">
                         <AlertCircle className="h-4 w-4 text-red-600 flex-shrink-0 mt-0.5" />
-                        <div className="text-xs text-red-800">
+                        <div className="flex-1 text-xs text-red-800">
                           <p className="font-medium mb-1">Processing Failed</p>
                           <p>{item.processingError}</p>
                         </div>
+                        {onRetry && (
+                          <button
+                            onClick={() => handleRetry(item.id)}
+                            disabled={retryingIds.has(item.id)}
+                            className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-red-700 bg-white border border-red-300 rounded-md hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
+                          >
+                            {retryingIds.has(item.id) ? (
+                              <Loader2 className="h-3 w-3 animate-spin" />
+                            ) : (
+                              <RotateCcw className="h-3 w-3" />
+                            )}
+                            Retry
+                          </button>
+                        )}
                       </div>
                     )}
 

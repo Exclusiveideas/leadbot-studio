@@ -1,0 +1,26 @@
+{
+  "name": "lbs-youtube-processor",
+  "version": "1.0.0",
+  "description": "Lambda function to process YouTube video transcripts for LeadBotStudio knowledge base",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "npm run clean && tsc && npm run install-prod && npm run zip",
+    "install-prod": "cd dist && cp ../package.json . && npm install --omit=dev --legacy-peer-deps",
+    "zip": "cd dist && zip -r ../youtube-processor.zip . -x '*.git*' -x '*.DS_Store' -x 'node_modules/.package-lock.json' -x 'package-lock.json'",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist *.zip",
+    "deploy": "npm run build && aws lambda update-function-code --function-name lbs-youtube-processor --zip-file fileb://youtube-processor.zip",
+    "create": "npm run build && aws lambda create-function --function-name lbs-youtube-processor --runtime nodejs22.x --role $LAMBDA_ROLE_ARN --handler index.handler --zip-file fileb://youtube-processor.zip --timeout 900 --memory-size 1024"
+  },
+  "dependencies": {
+    "@aws-sdk/client-lambda": "^3.478.0",
+    "@danielxceron/youtube-transcript": "^1.2.1",
+    "@supabase/supabase-js": "^2.38.0",
+    "axios": "^1.13.1"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.130",
+    "@types/node": "^20.10.0",
+    "typescript": "^5.3.3"
+  }
+}

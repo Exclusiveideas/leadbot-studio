@@ -49,7 +49,7 @@ export const POST = withRLS(
           type: validation.sourceType!,
           title: fileName,
           content: "", // Empty until processed
-          vectorNamespace: `chatbot-${chatbotId}`,
+          vectorNamespace: chatbotId,
           status: "PENDING",
           stage: "QUEUED",
           progress: 0,

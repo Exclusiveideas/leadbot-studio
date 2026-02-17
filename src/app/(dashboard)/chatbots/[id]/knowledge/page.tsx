@@ -236,6 +236,34 @@ export default function KnowledgeBasePage() {
     }
   };
 
+  const handleRetry = async (id: string) => {
+    try {
+      const response = await fetch(
+        `/api/chatbots/${chatbotId}/knowledge/${id}`,
+        {
+          method: "POST",
+          credentials: "include",
+        },
+      );
+
+      const result = await response.json();
+      if (!response.ok || !result.success) {
+        throw new Error(result.error || "Failed to retry");
+      }
+
+      setKnowledge((prev) =>
+        prev.map((item) =>
+          item.id === id
+            ? { ...item, status: "QUEUED", stage: "QUEUED", progress: 0 }
+            : item,
+        ),
+      );
+    } catch (err) {
+      console.error("Retry error:", err);
+      throw err;
+    }
+  };
+
   const handleDelete = async (id: string) => {
     try {
       const response = await fetch(
@@ -520,7 +548,11 @@ export default function KnowledgeBasePage() {
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-blue mx-auto"></div>
         </div>
       ) : (
-        <KnowledgeList knowledge={knowledge} onDelete={handleDelete} />
+        <KnowledgeList
+          knowledge={knowledge}
+          onDelete={handleDelete}
+          onRetry={handleRetry}
+        />
       )}
     </div>
   );
