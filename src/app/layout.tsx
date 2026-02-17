@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
+import { Toaster } from "sonner";
 import { ToastProvider } from "@/components/ui/toast";
 import "./globals.css";
 
@@ -30,7 +31,10 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className={`${inter.variable} ${plusJakarta.variable} antialiased`}>
-        <ToastProvider>{children}</ToastProvider>
+        <ToastProvider>
+          {children}
+          <Toaster position="bottom-right" richColors />
+        </ToastProvider>
       </body>
     </html>
   );

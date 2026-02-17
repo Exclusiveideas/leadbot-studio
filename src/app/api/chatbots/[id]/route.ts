@@ -12,6 +12,7 @@ import {
   uploadThumbnailToS3,
   rollbackThumbnail,
 } from "@/lib/services/chatbot/update-helpers";
+import { getSignedDownloadUrl } from "@/lib/storage/aws-server";
 
 /**
  * GET /api/chatbots/[id]
@@ -39,7 +40,12 @@ export const GET = withRLS(
 
     return NextResponse.json({
       success: true,
-      data: chatbot,
+      data: {
+        ...chatbot,
+        thumbnail: chatbot.thumbnail
+          ? await getSignedDownloadUrl(chatbot.thumbnail)
+          : null,
+      },
     });
   },
   {
@@ -133,7 +139,12 @@ export const PATCH = withRLS(
 
     return NextResponse.json({
       success: true,
-      data: chatbot,
+      data: {
+        ...chatbot,
+        thumbnail: chatbot.thumbnail
+          ? await getSignedDownloadUrl(chatbot.thumbnail)
+          : null,
+      },
     });
   },
   {

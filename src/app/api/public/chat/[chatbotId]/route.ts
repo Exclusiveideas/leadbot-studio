@@ -10,6 +10,7 @@ import {
   recordMessages,
 } from "@/lib/services/publicChatAnalyticsService";
 import { checkPromptInjection } from "@/lib/services/security/promptInjectionDetector";
+import { getSignedDownloadUrl } from "@/lib/storage/aws-server";
 import type { BedrockContentBlock } from "@/types/bedrock";
 import { z } from "zod";
 
@@ -184,7 +185,12 @@ export async function GET(
     return NextResponse.json(
       {
         success: true,
-        data: chatbotData,
+        data: {
+          ...chatbotData,
+          thumbnail: chatbot.thumbnail
+            ? await getSignedDownloadUrl(chatbot.thumbnail)
+            : null,
+        },
       },
       { headers: buildCorsHeaders(origin) },
     );

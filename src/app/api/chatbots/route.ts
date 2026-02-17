@@ -8,6 +8,7 @@ import {
   uploadThumbnailToS3,
   rollbackThumbnail,
 } from "@/lib/services/chatbot/create-helpers";
+import { getSignedDownloadUrl } from "@/lib/storage/aws-server";
 
 /**
  * GET /api/chatbots
@@ -49,7 +50,14 @@ export const GET = withRLS(
     return NextResponse.json({
       success: true,
       data: {
-        chatbots: result.chatbots,
+        chatbots: await Promise.all(
+          result.chatbots.map(async (chatbot) => ({
+            ...chatbot,
+            thumbnail: chatbot.thumbnail
+              ? await getSignedDownloadUrl(chatbot.thumbnail)
+              : null,
+          })),
+        ),
         total: result.total,
       },
     });
@@ -111,7 +119,12 @@ export const POST = withRLS(
 
       return NextResponse.json({
         success: true,
-        data: chatbot,
+        data: {
+          ...chatbot,
+          thumbnail: chatbot.thumbnail
+            ? await getSignedDownloadUrl(chatbot.thumbnail)
+            : null,
+        },
       });
     } catch (error) {
       // Rollback: Delete S3 file if chatbot creation fails

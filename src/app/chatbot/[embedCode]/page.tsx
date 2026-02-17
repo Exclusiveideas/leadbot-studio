@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { PublicChatbotWidget } from "@/components/chatbots/widget";
 import { DraftChatbotNotice } from "@/components/chatbots/DraftChatbotNotice";
+import { getSignedDownloadUrl } from "@/lib/storage/aws-server";
 import type { BookingConfig } from "@/lib/validation/chatbot-booking";
 import type { TextConfig } from "@/lib/validation/chatbot-text";
 
@@ -81,7 +82,9 @@ export default async function PublicChatbotPage({
           chatbot={{
             id: chatbot.id,
             name: chatbot.name,
-            thumbnail: chatbot.thumbnail,
+            thumbnail: chatbot.thumbnail
+              ? await getSignedDownloadUrl(chatbot.thumbnail)
+              : null,
             welcomeMessage: chatbot.welcomeMessage,
             chatGreeting: chatbot.chatGreeting,
             suggestedQuestions: chatbot.suggestedQuestions as
