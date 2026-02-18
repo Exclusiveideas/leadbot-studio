@@ -15,6 +15,16 @@ enum PlanTier {
   AGENCY
 }
 
+enum SubscriptionStatus {
+  ACTIVE
+  TRIALING
+  PAST_DUE
+  CANCELED
+  INCOMPLETE
+  INCOMPLETE_EXPIRED
+  UNPAID
+}
+
 // ─── Auth & Multi-tenancy ────────────────────────────────────────────────────
 
 model User {
@@ -67,6 +77,12 @@ model Organization {
   updatedAt  DateTime @updatedAt
 
   plan     PlanTier? @default(BASIC)
+
+  stripeCustomerId     String?             @unique
+  stripeSubscriptionId String?             @unique
+  subscriptionStatus   SubscriptionStatus?
+  cancelAtPeriodEnd    Boolean             @default(false)
+  trialEndsAt          DateTime?
 
   chatbots Chatbot[]
   invites  OrganizationInvite[]

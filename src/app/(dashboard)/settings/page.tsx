@@ -232,30 +232,129 @@ function SettingsContent() {
 }
 
 import { PLAN_CONFIG } from "@/lib/constants/plans";
-import type { PlanTier } from "@/lib/constants/plans";
-import { Check, ArrowRight } from "lucide-react";
+import type { PlanTier, BillingInterval } from "@/lib/constants/plans";
+import { Check, ArrowRight, Loader2 } from "lucide-react";
+
+type SubscriptionData = {
+  plan: PlanTier;
+  status: string | null;
+  cancelAtPeriodEnd: boolean;
+  trialEndsAt: string | null;
+  isTrialing: boolean;
+};
+
+const PLAN_DESCRIPTIONS: Record<PlanTier, string> = {
+  BASIC: "For solo practitioners getting started",
+  PRO: "For growing practices that need more power",
+  AGENCY: "For agencies managing multiple clients",
+};
 
 function BillingTab({ plan }: { plan?: "BASIC" | "PRO" | "AGENCY" | null }) {
   const currentPlan = (plan ?? "BASIC") as PlanTier;
   const config = PLAN_CONFIG[currentPlan];
+  const [isLoading, setIsLoading] = useState(false);
+  const [subscription, setSubscription] = useState<SubscriptionData | null>(
+    null,
+  );
+  const [billingInterval, setBillingInterval] =
+    useState<BillingInterval>("monthly");
+  const { addToast } = useToast();
+  const searchParams = useSearchParams();
 
-  const plans: { tier: PlanTier; price: string; description: string }[] = [
-    {
-      tier: "BASIC",
-      price: "$20",
-      description: "For solo practitioners getting started",
-    },
-    {
-      tier: "PRO",
-      price: "$50",
-      description: "For growing practices that need more power",
-    },
-    {
-      tier: "AGENCY",
-      price: "$150",
-      description: "For agencies managing multiple clients",
-    },
-  ];
+  useEffect(() => {
+    const checkout = searchParams.get("checkout");
+    if (checkout === "success") {
+      addToast("Subscription activated!", "success");
+    } else if (checkout === "canceled") {
+      addToast("Checkout was canceled.", "info");
+    }
+  }, [searchParams, addToast]);
+
+  useEffect(() => {
+    async function fetchSubscription() {
+      try {
+        const response = await fetch("/api/billing/subscription", {
+          credentials: "include",
+        });
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success) {
+            setSubscription(data.data);
+          }
+        }
+      } catch {
+        // Silently fail — subscription info is supplementary
+      }
+    }
+    fetchSubscription();
+  }, []);
+
+  const handleUpgrade = async (targetPlan: PlanTier) => {
+    if (targetPlan === "BASIC") return;
+
+    setIsLoading(true);
+    try {
+      const response = await fetch("/api/billing/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          plan: targetPlan,
+          interval: billingInterval,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        window.location.href = data.data.url;
+      } else {
+        addToast(data.error || "Failed to start checkout", "error");
+      }
+    } catch {
+      addToast("Failed to start checkout", "error");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleManageSubscription = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch("/api/billing/portal", {
+        method: "POST",
+        credentials: "include",
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        window.location.href = data.data.url;
+      } else {
+        addToast(data.error || "Failed to open billing portal", "error");
+      }
+    } catch {
+      addToast("Failed to open billing portal", "error");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const statusLabel = subscription?.isTrialing
+    ? "Trial"
+    : subscription?.cancelAtPeriodEnd
+      ? "Canceling"
+      : subscription?.status === "PAST_DUE"
+        ? "Past Due"
+        : "Active";
+
+  const statusColor = subscription?.isTrialing
+    ? "bg-blue-100 text-blue-800"
+    : subscription?.cancelAtPeriodEnd
+      ? "bg-orange-100 text-orange-800"
+      : subscription?.status === "PAST_DUE"
+        ? "bg-red-100 text-red-800"
+        : "bg-gradient-accent text-brand-primary";
 
   return (
     <div className="p-4 sm:p-6">
@@ -282,23 +381,74 @@ function BillingTab({ plan }: { plan?: "BASIC" | "PRO" | "AGENCY" | null }) {
                 ? ` · ${config.maxConversationsPerMonth} conversations/mo`
                 : " · Unlimited conversations"}
             </p>
+            {subscription?.isTrialing && subscription.trialEndsAt && (
+              <p className="text-xs text-blue-600 mt-2 font-medium">
+                Trial ends{" "}
+                {new Date(subscription.trialEndsAt).toLocaleDateString()}
+              </p>
+            )}
+            {subscription?.cancelAtPeriodEnd && (
+              <p className="text-xs text-orange-600 mt-2 font-medium">
+                Subscription will cancel at end of billing period
+              </p>
+            )}
           </div>
-          <div className="text-right">
-            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gradient-accent text-brand-primary">
-              Active
+          <div className="flex flex-col items-end gap-2">
+            <span
+              className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${statusColor}`}
+            >
+              {statusLabel}
             </span>
+            {currentPlan !== "BASIC" && (
+              <button
+                onClick={handleManageSubscription}
+                disabled={isLoading}
+                className="px-4 py-2 text-xs font-medium text-brand-primary bg-white border border-brand-border rounded-lg hover:bg-brand-surface transition-colors disabled:opacity-50"
+              >
+                {isLoading ? "Loading..." : "Manage Subscription"}
+              </button>
+            )}
           </div>
         </div>
       </div>
 
+      {/* Billing Interval Toggle */}
+      <div className="flex items-center justify-center gap-1 mb-6 bg-brand-surface rounded-lg p-1 w-fit mx-auto">
+        <button
+          onClick={() => setBillingInterval("monthly")}
+          className={`px-4 py-2 text-xs font-medium rounded-md transition-colors ${
+            billingInterval === "monthly"
+              ? "bg-white text-brand-primary shadow-sm"
+              : "text-brand-muted hover:text-brand-primary"
+          }`}
+        >
+          Monthly
+        </button>
+        <button
+          onClick={() => setBillingInterval("annual")}
+          className={`px-4 py-2 text-xs font-medium rounded-md transition-colors flex items-center gap-1.5 ${
+            billingInterval === "annual"
+              ? "bg-white text-brand-primary shadow-sm"
+              : "text-brand-muted hover:text-brand-primary"
+          }`}
+        >
+          Annual
+          <span className="text-[10px] font-semibold bg-green-100 text-green-700 px-1.5 py-0.5 rounded">
+            Save 17%
+          </span>
+        </button>
+      </div>
+
       {/* Plan Options */}
-      <h3 className="text-sm font-semibold text-brand-primary mb-4">
-        Available Plans
-      </h3>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {plans.map(({ tier, price, description }) => {
+        {(["BASIC", "PRO", "AGENCY"] as PlanTier[]).map((tier) => {
           const isCurrent = tier === currentPlan;
           const tierConfig = PLAN_CONFIG[tier];
+          const price =
+            billingInterval === "monthly"
+              ? tierConfig.pricing.monthly
+              : Math.round(tierConfig.pricing.annual / 12);
+
           return (
             <div
               key={tier}
@@ -310,7 +460,7 @@ function BillingTab({ plan }: { plan?: "BASIC" | "PRO" | "AGENCY" | null }) {
             >
               <div className="flex items-center justify-between mb-3">
                 <p className="text-xs font-semibold uppercase tracking-wider text-brand-muted">
-                  {PLAN_CONFIG[tier].name}
+                  {tierConfig.name}
                 </p>
                 {isCurrent && (
                   <span className="text-xs font-medium text-brand-blue">
@@ -319,13 +469,20 @@ function BillingTab({ plan }: { plan?: "BASIC" | "PRO" | "AGENCY" | null }) {
                 )}
               </div>
               <p className="text-2xl font-bold text-brand-primary">
-                {price}
-                <span className="text-sm font-normal text-brand-muted">
-                  /mo
-                </span>
+                {price === 0 ? "Free" : `$${price}`}
+                {price > 0 && (
+                  <span className="text-sm font-normal text-brand-muted">
+                    /mo
+                  </span>
+                )}
               </p>
+              {billingInterval === "annual" && tier !== "BASIC" && (
+                <p className="text-[10px] text-green-600 mt-0.5">
+                  ${tierConfig.pricing.annual}/yr (2 months free)
+                </p>
+              )}
               <p className="text-xs text-brand-muted mt-1 mb-4">
-                {description}
+                {PLAN_DESCRIPTIONS[tier]}
               </p>
               <ul className="space-y-1.5 mb-5">
                 <li className="flex items-center gap-2 text-xs text-brand-muted">
@@ -351,10 +508,27 @@ function BillingTab({ plan }: { plan?: "BASIC" | "PRO" | "AGENCY" | null }) {
                 >
                   Current Plan
                 </button>
+              ) : tier === "BASIC" ? (
+                <button
+                  disabled
+                  className="w-full py-2 rounded-lg text-xs font-medium border border-brand-border text-brand-muted cursor-default"
+                >
+                  Free Plan
+                </button>
               ) : (
-                <button className="w-full py-2 rounded-lg text-xs font-semibold bg-gradient-accent text-brand-primary hover:brightness-105 transition-all flex items-center justify-center gap-1.5">
-                  Upgrade
-                  <ArrowRight className="h-3 w-3" />
+                <button
+                  onClick={() => handleUpgrade(tier)}
+                  disabled={isLoading}
+                  className="w-full py-2 rounded-lg text-xs font-semibold bg-gradient-accent text-brand-primary hover:brightness-105 transition-all flex items-center justify-center gap-1.5 disabled:opacity-50"
+                >
+                  {isLoading ? (
+                    <Loader2 className="h-3 w-3 animate-spin" />
+                  ) : (
+                    <>
+                      Upgrade
+                      <ArrowRight className="h-3 w-3" />
+                    </>
+                  )}
                 </button>
               )}
             </div>
@@ -363,7 +537,7 @@ function BillingTab({ plan }: { plan?: "BASIC" | "PRO" | "AGENCY" | null }) {
       </div>
 
       <p className="text-xs text-brand-muted mt-6 text-center">
-        Need help choosing a plan? Contact us at{" "}
+        All paid plans include a 7-day free trial. Need help?{" "}
         <a
           href="mailto:ed@seira.ai"
           className="text-brand-blue hover:underline"

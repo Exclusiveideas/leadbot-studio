@@ -1,5 +1,7 @@
 export type PlanTier = "BASIC" | "PRO" | "AGENCY";
 
+export type BillingInterval = "monthly" | "annual";
+
 export type Feature =
   | "knowledge_base"
   | "lead_forms"
@@ -17,11 +19,19 @@ export type Feature =
   | "dedicated_account_manager"
   | "custom_onboarding";
 
+type PlanPricing = {
+  monthly: number;
+  annual: number;
+  stripePriceMonthly: string | null;
+  stripePriceAnnual: string | null;
+};
+
 type PlanConfig = {
   name: string;
   maxChatbots: number;
   maxConversationsPerMonth: number | null;
   features: ReadonlySet<Feature>;
+  pricing: PlanPricing;
 };
 
 const BASIC_FEATURES: ReadonlySet<Feature> = new Set([
@@ -56,18 +66,36 @@ export const PLAN_CONFIG: Record<PlanTier, PlanConfig> = {
     maxChatbots: 1,
     maxConversationsPerMonth: 500,
     features: BASIC_FEATURES,
+    pricing: {
+      monthly: 0,
+      annual: 0,
+      stripePriceMonthly: null,
+      stripePriceAnnual: null,
+    },
   },
   PRO: {
     name: "Pro",
     maxChatbots: 3,
     maxConversationsPerMonth: null,
     features: PRO_FEATURES,
+    pricing: {
+      monthly: 50,
+      annual: 500,
+      stripePriceMonthly: process.env.STRIPE_PRICE_PRO_MONTHLY ?? null,
+      stripePriceAnnual: process.env.STRIPE_PRICE_PRO_ANNUAL ?? null,
+    },
   },
   AGENCY: {
     name: "Agency",
     maxChatbots: 10,
     maxConversationsPerMonth: null,
     features: AGENCY_FEATURES,
+    pricing: {
+      monthly: 150,
+      annual: 1500,
+      stripePriceMonthly: process.env.STRIPE_PRICE_AGENCY_MONTHLY ?? null,
+      stripePriceAnnual: process.env.STRIPE_PRICE_AGENCY_ANNUAL ?? null,
+    },
   },
 };
 
@@ -81,4 +109,26 @@ export function getChatbotLimit(plan: PlanTier): number {
 
 export function getConversationLimit(plan: PlanTier): number | null {
   return PLAN_CONFIG[plan].maxConversationsPerMonth;
+}
+
+export function getStripePriceId(
+  plan: PlanTier,
+  interval: BillingInterval,
+): string | null {
+  const { pricing } = PLAN_CONFIG[plan];
+  return interval === "monthly"
+    ? pricing.stripePriceMonthly
+    : pricing.stripePriceAnnual;
+}
+
+export function getPlanFromStripePriceId(priceId: string): PlanTier | null {
+  for (const [tier, config] of Object.entries(PLAN_CONFIG)) {
+    if (
+      config.pricing.stripePriceMonthly === priceId ||
+      config.pricing.stripePriceAnnual === priceId
+    ) {
+      return tier as PlanTier;
+    }
+  }
+  return null;
 }

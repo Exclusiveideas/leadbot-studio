@@ -17,6 +17,9 @@ export interface User {
     createdBy?: string | null;
     createdAt?: string;
     plan?: "BASIC" | "PRO" | "AGENCY" | null;
+    subscriptionStatus?: string | null;
+    cancelAtPeriodEnd?: boolean;
+    trialEndsAt?: string | null;
   };
 }
 

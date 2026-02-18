@@ -1,0 +1,13 @@
+import Stripe from "stripe";
+
+if (!process.env.STRIPE_SECRET_KEY) {
+  throw new Error("STRIPE_SECRET_KEY environment variable is not set");
+}
+
+export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+  typescript: true,
+  appInfo: {
+    name: "Leadbot Partners",
+    version: "1.0.0",
+  },
+});
