@@ -10,7 +10,7 @@ import {
 import type { PlanTier, Feature } from "./plans";
 
 describe("PLAN_CONFIG", () => {
-  const tiers: PlanTier[] = ["BASIC", "PRO", "AGENCY"];
+  const tiers: PlanTier[] = ["FREE", "BASIC", "PRO", "AGENCY"];
 
   test("all tiers have valid configs with required fields", () => {
     for (const tier of tiers) {
@@ -25,18 +25,25 @@ describe("PLAN_CONFIG", () => {
   });
 
   test("chatbot limits increase with tier", () => {
+    expect(PLAN_CONFIG.FREE.maxChatbots).toBe(1);
     expect(PLAN_CONFIG.BASIC.maxChatbots).toBe(1);
     expect(PLAN_CONFIG.PRO.maxChatbots).toBe(3);
     expect(PLAN_CONFIG.AGENCY.maxChatbots).toBe(10);
   });
 
-  test("only BASIC has conversation limit", () => {
+  test("only FREE and BASIC have conversation limits", () => {
+    expect(PLAN_CONFIG.FREE.maxConversationsPerMonth).toBe(500);
     expect(PLAN_CONFIG.BASIC.maxConversationsPerMonth).toBe(500);
     expect(PLAN_CONFIG.PRO.maxConversationsPerMonth).toBeNull();
     expect(PLAN_CONFIG.AGENCY.maxConversationsPerMonth).toBeNull();
   });
 
   test("higher tiers are supersets of lower tiers", () => {
+    for (const feature of PLAN_CONFIG.FREE.features) {
+      expect(PLAN_CONFIG.BASIC.features.has(feature)).toBe(true);
+      expect(PLAN_CONFIG.PRO.features.has(feature)).toBe(true);
+      expect(PLAN_CONFIG.AGENCY.features.has(feature)).toBe(true);
+    }
     for (const feature of PLAN_CONFIG.BASIC.features) {
       expect(PLAN_CONFIG.PRO.features.has(feature)).toBe(true);
       expect(PLAN_CONFIG.AGENCY.features.has(feature)).toBe(true);
@@ -46,16 +53,21 @@ describe("PLAN_CONFIG", () => {
     }
   });
 
-  test("BASIC plan is free, paid plans have positive prices", () => {
-    expect(PLAN_CONFIG.BASIC.pricing.monthly).toBe(0);
-    expect(PLAN_CONFIG.BASIC.pricing.annual).toBe(0);
+  test("FREE plan is free, paid plans have positive prices", () => {
+    expect(PLAN_CONFIG.FREE.pricing.monthly).toBe(0);
+    expect(PLAN_CONFIG.FREE.pricing.annual).toBe(0);
+    expect(PLAN_CONFIG.BASIC.pricing.monthly).toBe(20);
+    expect(PLAN_CONFIG.BASIC.pricing.annual).toBe(200);
     expect(PLAN_CONFIG.PRO.pricing.monthly).toBe(50);
     expect(PLAN_CONFIG.PRO.pricing.annual).toBe(500);
     expect(PLAN_CONFIG.AGENCY.pricing.monthly).toBe(150);
     expect(PLAN_CONFIG.AGENCY.pricing.annual).toBe(1500);
   });
 
-  test("annual pricing gives 2 months free", () => {
+  test("annual pricing gives 2 months free for all paid plans", () => {
+    expect(PLAN_CONFIG.BASIC.pricing.annual).toBe(
+      PLAN_CONFIG.BASIC.pricing.monthly * 10,
+    );
     expect(PLAN_CONFIG.PRO.pricing.annual).toBe(
       PLAN_CONFIG.PRO.pricing.monthly * 10,
     );
@@ -64,16 +76,22 @@ describe("PLAN_CONFIG", () => {
     );
   });
 
-  test("BASIC has no Stripe price IDs", () => {
-    expect(PLAN_CONFIG.BASIC.pricing.stripePriceMonthly).toBeNull();
-    expect(PLAN_CONFIG.BASIC.pricing.stripePriceAnnual).toBeNull();
+  test("FREE has no Stripe price IDs", () => {
+    expect(PLAN_CONFIG.FREE.pricing.stripePriceMonthly).toBeNull();
+    expect(PLAN_CONFIG.FREE.pricing.stripePriceAnnual).toBeNull();
   });
 });
 
 describe("hasFeature", () => {
-  test("BASIC has knowledge_base and lead_forms", () => {
+  test("FREE has knowledge_base but not publish_chatbot", () => {
+    expect(hasFeature("FREE", "knowledge_base")).toBe(true);
+    expect(hasFeature("FREE", "lead_forms")).toBe(true);
+    expect(hasFeature("FREE", "publish_chatbot")).toBe(false);
+  });
+
+  test("BASIC has publish_chatbot", () => {
+    expect(hasFeature("BASIC", "publish_chatbot")).toBe(true);
     expect(hasFeature("BASIC", "knowledge_base")).toBe(true);
-    expect(hasFeature("BASIC", "lead_forms")).toBe(true);
   });
 
   test("BASIC does not have pro features", () => {
@@ -92,6 +110,7 @@ describe("hasFeature", () => {
 
   test("PRO has all basic + pro features", () => {
     expect(hasFeature("PRO", "knowledge_base")).toBe(true);
+    expect(hasFeature("PRO", "publish_chatbot")).toBe(true);
     expect(hasFeature("PRO", "booking_wizard")).toBe(true);
     expect(hasFeature("PRO", "white_label")).toBe(true);
   });
@@ -107,6 +126,7 @@ describe("hasFeature", () => {
 
 describe("getChatbotLimit", () => {
   test("returns correct limits per plan", () => {
+    expect(getChatbotLimit("FREE")).toBe(1);
     expect(getChatbotLimit("BASIC")).toBe(1);
     expect(getChatbotLimit("PRO")).toBe(3);
     expect(getChatbotLimit("AGENCY")).toBe(10);
@@ -114,7 +134,8 @@ describe("getChatbotLimit", () => {
 });
 
 describe("getConversationLimit", () => {
-  test("returns 500 for BASIC", () => {
+  test("returns 500 for FREE and BASIC", () => {
+    expect(getConversationLimit("FREE")).toBe(500);
     expect(getConversationLimit("BASIC")).toBe(500);
   });
 
@@ -125,16 +146,21 @@ describe("getConversationLimit", () => {
 });
 
 describe("getStripePriceId", () => {
-  test("returns null for BASIC plan regardless of interval", () => {
-    expect(getStripePriceId("BASIC", "monthly")).toBeNull();
-    expect(getStripePriceId("BASIC", "annual")).toBeNull();
+  test("returns null for FREE plan regardless of interval", () => {
+    expect(getStripePriceId("FREE", "monthly")).toBeNull();
+    expect(getStripePriceId("FREE", "annual")).toBeNull();
   });
 
-  test("returns price ID from config for paid plans", () => {
-    const proMonthly = getStripePriceId("PRO", "monthly");
-    const proAnnual = getStripePriceId("PRO", "annual");
-    expect(proMonthly).toBe(PLAN_CONFIG.PRO.pricing.stripePriceMonthly);
-    expect(proAnnual).toBe(PLAN_CONFIG.PRO.pricing.stripePriceAnnual);
+  test("returns price ID from config for all paid plans", () => {
+    const paidTiers = ["BASIC", "PRO", "AGENCY"] as const;
+    for (const tier of paidTiers) {
+      expect(getStripePriceId(tier, "monthly")).toBe(
+        PLAN_CONFIG[tier].pricing.stripePriceMonthly,
+      );
+      expect(getStripePriceId(tier, "annual")).toBe(
+        PLAN_CONFIG[tier].pricing.stripePriceAnnual,
+      );
+    }
   });
 });
 

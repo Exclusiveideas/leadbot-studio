@@ -4,7 +4,7 @@ import { withRLS } from "@/lib/middleware/rls-wrapper";
 import { createCheckoutSession } from "@/lib/services/stripeService";
 
 const checkoutSchema = z.object({
-  plan: z.enum(["PRO", "AGENCY"]),
+  plan: z.enum(["BASIC", "PRO", "AGENCY"]),
   interval: z.enum(["monthly", "annual"]),
 });
 

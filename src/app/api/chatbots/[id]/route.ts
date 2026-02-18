@@ -122,8 +122,18 @@ export const PATCH = withRLS(
       }
     }
 
-    // Set publishedAt timestamp if status is changing to PUBLISHED
+    // Enforce plan gate: FREE plan cannot publish chatbots
     if (data.status === "PUBLISHED" && existingChatbot.status !== "PUBLISHED") {
+      const orgPlan = session.user.organization.plan ?? "FREE";
+      if (orgPlan === "FREE") {
+        return NextResponse.json(
+          {
+            success: false,
+            error: "Upgrade to a paid plan to publish chatbots",
+          },
+          { status: 403 },
+        );
+      }
       data.publishedAt = new Date();
     }
 
@@ -182,7 +192,10 @@ export const DELETE = withRLS(
     // Only owners can delete chatbots
     if (session.user.organizationRole !== "OWNER") {
       return NextResponse.json(
-        { success: false, error: "Only organization owners can delete chatbots" },
+        {
+          success: false,
+          error: "Only organization owners can delete chatbots",
+        },
         { status: 403 },
       );
     }

@@ -71,7 +71,8 @@ export default function DemoPage() {
             custom={0.1}
           >
             <h1 className="text-[clamp(2rem,4vw+0.5rem,3.5rem)] font-extrabold leading-[1.1] tracking-[-0.03em] text-brand-primary">
-              See Leadbot Partners <span className="text-gradient">in action</span>
+              See Leadbot Partners{" "}
+              <span className="text-gradient">in action</span>
             </h1>
           </motion.div>
           <motion.div
@@ -252,7 +253,7 @@ export default function DemoPage() {
               Build your own in 5 minutes
             </h2>
             <p className="mt-4 text-base leading-[1.7] text-white/50">
-              Free 14-day trial. No credit card required.
+              Free 7-day trial. No credit card required.
             </p>
             <Link
               href="/signup"

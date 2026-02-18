@@ -16,7 +16,7 @@ export interface User {
     logoUrl?: string | null;
     createdBy?: string | null;
     createdAt?: string;
-    plan?: "BASIC" | "PRO" | "AGENCY" | null;
+    plan?: "FREE" | "BASIC" | "PRO" | "AGENCY" | null;
     subscriptionStatus?: string | null;
     cancelAtPeriodEnd?: boolean;
     trialEndsAt?: string | null;

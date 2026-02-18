@@ -1,4 +1,6 @@
-export type PlanTier = "BASIC" | "PRO" | "AGENCY";
+export type PlanTier = "FREE" | "BASIC" | "PRO" | "AGENCY";
+
+export type PaidPlanTier = Exclude<PlanTier, "FREE">;
 
 export type BillingInterval = "monthly" | "annual";
 
@@ -8,6 +10,7 @@ export type Feature =
   | "email_notifications"
   | "calendly"
   | "basic_analytics"
+  | "publish_chatbot"
   | "booking_wizard"
   | "text_request"
   | "white_label"
@@ -34,12 +37,17 @@ type PlanConfig = {
   pricing: PlanPricing;
 };
 
-const BASIC_FEATURES: ReadonlySet<Feature> = new Set([
+const FREE_FEATURES: ReadonlySet<Feature> = new Set([
   "knowledge_base",
   "lead_forms",
   "email_notifications",
   "calendly",
   "basic_analytics",
+]);
+
+const BASIC_FEATURES: ReadonlySet<Feature> = new Set([
+  ...FREE_FEATURES,
+  "publish_chatbot",
 ]);
 
 const PRO_FEATURES: ReadonlySet<Feature> = new Set([
@@ -61,16 +69,28 @@ const AGENCY_FEATURES: ReadonlySet<Feature> = new Set([
 ]);
 
 export const PLAN_CONFIG: Record<PlanTier, PlanConfig> = {
+  FREE: {
+    name: "Free",
+    maxChatbots: 1,
+    maxConversationsPerMonth: 500,
+    features: FREE_FEATURES,
+    pricing: {
+      monthly: 0,
+      annual: 0,
+      stripePriceMonthly: null,
+      stripePriceAnnual: null,
+    },
+  },
   BASIC: {
     name: "Basic",
     maxChatbots: 1,
     maxConversationsPerMonth: 500,
     features: BASIC_FEATURES,
     pricing: {
-      monthly: 0,
-      annual: 0,
-      stripePriceMonthly: null,
-      stripePriceAnnual: null,
+      monthly: 20,
+      annual: 200,
+      stripePriceMonthly: process.env.STRIPE_PRICE_BASIC_MONTHLY ?? null,
+      stripePriceAnnual: process.env.STRIPE_PRICE_BASIC_ANNUAL ?? null,
     },
   },
   PRO: {

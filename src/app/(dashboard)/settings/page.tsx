@@ -232,7 +232,11 @@ function SettingsContent() {
 }
 
 import { PLAN_CONFIG } from "@/lib/constants/plans";
-import type { PlanTier, BillingInterval } from "@/lib/constants/plans";
+import type {
+  PlanTier,
+  PaidPlanTier,
+  BillingInterval,
+} from "@/lib/constants/plans";
 import { Check, ArrowRight, Loader2 } from "lucide-react";
 
 type SubscriptionData = {
@@ -243,14 +247,18 @@ type SubscriptionData = {
   isTrialing: boolean;
 };
 
-const PLAN_DESCRIPTIONS: Record<PlanTier, string> = {
+const PLAN_DESCRIPTIONS: Record<PaidPlanTier, string> = {
   BASIC: "For solo practitioners getting started",
   PRO: "For growing practices that need more power",
   AGENCY: "For agencies managing multiple clients",
 };
 
-function BillingTab({ plan }: { plan?: "BASIC" | "PRO" | "AGENCY" | null }) {
-  const currentPlan = (plan ?? "BASIC") as PlanTier;
+function BillingTab({
+  plan,
+}: {
+  plan?: "FREE" | "BASIC" | "PRO" | "AGENCY" | null;
+}) {
+  const currentPlan = (plan ?? "FREE") as PlanTier;
   const config = PLAN_CONFIG[currentPlan];
   const [isLoading, setIsLoading] = useState(false);
   const [subscription, setSubscription] = useState<SubscriptionData | null>(
@@ -289,9 +297,7 @@ function BillingTab({ plan }: { plan?: "BASIC" | "PRO" | "AGENCY" | null }) {
     fetchSubscription();
   }, []);
 
-  const handleUpgrade = async (targetPlan: PlanTier) => {
-    if (targetPlan === "BASIC") return;
-
+  const handleUpgrade = async (targetPlan: PaidPlanTier) => {
     setIsLoading(true);
     try {
       const response = await fetch("/api/billing/checkout", {
@@ -399,7 +405,7 @@ function BillingTab({ plan }: { plan?: "BASIC" | "PRO" | "AGENCY" | null }) {
             >
               {statusLabel}
             </span>
-            {currentPlan !== "BASIC" && (
+            {currentPlan !== "FREE" && (
               <button
                 onClick={handleManageSubscription}
                 disabled={isLoading}
@@ -441,7 +447,7 @@ function BillingTab({ plan }: { plan?: "BASIC" | "PRO" | "AGENCY" | null }) {
 
       {/* Plan Options */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {(["BASIC", "PRO", "AGENCY"] as PlanTier[]).map((tier) => {
+        {(["BASIC", "PRO", "AGENCY"] as PaidPlanTier[]).map((tier) => {
           const isCurrent = tier === currentPlan;
           const tierConfig = PLAN_CONFIG[tier];
           const price =
@@ -476,7 +482,7 @@ function BillingTab({ plan }: { plan?: "BASIC" | "PRO" | "AGENCY" | null }) {
                   </span>
                 )}
               </p>
-              {billingInterval === "annual" && tier !== "BASIC" && (
+              {billingInterval === "annual" && (
                 <p className="text-[10px] text-green-600 mt-0.5">
                   ${tierConfig.pricing.annual}/yr (2 months free)
                 </p>
@@ -507,13 +513,6 @@ function BillingTab({ plan }: { plan?: "BASIC" | "PRO" | "AGENCY" | null }) {
                   className="w-full py-2 rounded-lg text-xs font-medium border border-brand-border text-brand-muted cursor-default"
                 >
                   Current Plan
-                </button>
-              ) : tier === "BASIC" ? (
-                <button
-                  disabled
-                  className="w-full py-2 rounded-lg text-xs font-medium border border-brand-border text-brand-muted cursor-default"
-                >
-                  Free Plan
                 </button>
               ) : (
                 <button

@@ -1,16 +1,24 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { Check, ArrowRight, Minus } from "lucide-react";
 import {
   ScrollReveal,
   StaggerReveal,
 } from "@/components/marketing/gsap-animations";
+import { PLAN_CONFIG } from "@/lib/constants/plans";
+import type { PaidPlanTier, BillingInterval } from "@/lib/constants/plans";
 
-const tiers = [
+const PAID_TIERS: {
+  tier: PaidPlanTier;
+  description: string;
+  features: string[];
+  cta: string;
+  featured: boolean;
+}[] = [
   {
-    name: "Basic",
-    price: "$20",
+    tier: "BASIC",
     description: "For solo practitioners getting started with AI lead capture",
     features: [
       "1 chatbot",
@@ -23,12 +31,10 @@ const tiers = [
       "7 embed platforms supported",
     ],
     cta: "Get Started",
-    href: "/signup",
     featured: false,
   },
   {
-    name: "Pro",
-    price: "$50",
+    tier: "PRO",
     description: "For growing practices that need more power and customization",
     features: [
       "3 chatbots",
@@ -43,12 +49,10 @@ const tiers = [
       "Priority email support",
     ],
     cta: "Get Started",
-    href: "/signup",
     featured: true,
   },
   {
-    name: "Agency",
-    price: "$150",
+    tier: "AGENCY",
     description: "For agencies managing chatbots for multiple clients",
     features: [
       "10 chatbots",
@@ -59,8 +63,7 @@ const tiers = [
       "Priority support",
       "Custom onboarding",
     ],
-    cta: "Contact Sales",
-    href: "/signup",
+    cta: "Get Started",
     featured: false,
   },
 ];
@@ -68,7 +71,7 @@ const tiers = [
 const faqs = [
   {
     q: "How does the free trial work?",
-    a: "Start with our Basic plan free for 14 days. No credit card required. Set up your chatbot, see the leads come in, then decide.",
+    a: "All paid plans include a 7-day free trial. Set up your chatbot, see the leads come in, then decide.",
   },
   {
     q: "Can I switch plans later?",
@@ -109,6 +112,9 @@ const comparisonFeatures = [
 ];
 
 export default function PricingPage() {
+  const [billingInterval, setBillingInterval] =
+    useState<BillingInterval>("monthly");
+
   return (
     <>
       {/* Hero */}
@@ -132,73 +138,113 @@ export default function PricingPage() {
 
       {/* Pricing Cards */}
       <section className="px-6 pb-20 lg:px-8">
+        {/* Billing Interval Toggle */}
+        <div className="mx-auto mb-10 flex w-fit items-center gap-1 rounded-lg bg-brand-surface p-1">
+          <button
+            onClick={() => setBillingInterval("monthly")}
+            className={`rounded-md px-5 py-2 text-sm font-medium transition-colors ${
+              billingInterval === "monthly"
+                ? "bg-white text-brand-primary shadow-sm"
+                : "text-brand-muted hover:text-brand-primary"
+            }`}
+          >
+            Monthly
+          </button>
+          <button
+            onClick={() => setBillingInterval("annual")}
+            className={`flex items-center gap-2 rounded-md px-5 py-2 text-sm font-medium transition-colors ${
+              billingInterval === "annual"
+                ? "bg-white text-brand-primary shadow-sm"
+                : "text-brand-muted hover:text-brand-primary"
+            }`}
+          >
+            Annual
+            <span className="rounded bg-green-100 px-1.5 py-0.5 text-[10px] font-semibold text-green-700">
+              Save 17%
+            </span>
+          </button>
+        </div>
+
         <StaggerReveal
           className="mx-auto grid max-w-5xl gap-5 sm:gap-6 md:grid-cols-3"
           childSelector=".stagger-item"
         >
-          {tiers.map((tier) => (
-            <div
-              key={tier.name}
-              className={`stagger-item flex flex-col rounded-2xl p-7 sm:p-8 ${
-                tier.featured
-                  ? "border-gradient relative elevation-3"
-                  : "elevation-1 border border-brand-border bg-white"
-              }`}
-            >
-              {tier.featured && (
-                <div className="bg-gradient-accent absolute -top-3 left-1/2 -translate-x-1/2 rounded-full px-4 py-1 text-[10px] font-semibold text-brand-primary sm:text-xs">
-                  Most Popular
-                </div>
-              )}
+          {PAID_TIERS.map(({ tier, description, features, cta, featured }) => {
+            const config = PLAN_CONFIG[tier];
+            const price =
+              billingInterval === "monthly"
+                ? config.pricing.monthly
+                : Math.round(config.pricing.annual / 12);
 
-              <div>
-                <p
-                  className={`text-xs font-semibold uppercase tracking-[0.1em] ${
-                    tier.featured ? "text-brand-accent-to" : "text-brand-light"
-                  }`}
-                >
-                  {tier.name}
-                </p>
-                <div className="mt-3">
-                  <span className="text-4xl font-extrabold tracking-tight text-brand-primary sm:text-5xl">
-                    {tier.price}
-                  </span>
-                  <span className="text-sm text-brand-muted">/month</span>
-                </div>
-                <p className="mt-2 text-sm leading-relaxed text-brand-muted">
-                  {tier.description}
-                </p>
-              </div>
-
-              <ul className="mt-7 flex-1 space-y-2.5">
-                {tier.features.map((feature) => (
-                  <li
-                    key={feature}
-                    className="flex items-start gap-2.5 text-sm text-brand-muted"
-                  >
-                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand-accent-to" />
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-
-              <Link
-                href={tier.href}
-                className={`mt-8 block rounded-xl py-3 text-center text-sm font-semibold transition-all ${
-                  tier.featured
-                    ? "bg-gradient-accent text-brand-primary hover:brightness-105"
-                    : "border border-brand-border text-brand-primary hover:bg-brand-surface"
+            return (
+              <div
+                key={tier}
+                className={`stagger-item flex flex-col rounded-2xl p-7 sm:p-8 ${
+                  featured
+                    ? "border-gradient relative elevation-3"
+                    : "elevation-1 border border-brand-border bg-white"
                 }`}
               >
-                {tier.cta}
-              </Link>
-            </div>
-          ))}
+                {featured && (
+                  <div className="bg-gradient-accent absolute -top-3 left-1/2 -translate-x-1/2 rounded-full px-4 py-1 text-[10px] font-semibold text-brand-primary sm:text-xs">
+                    Most Popular
+                  </div>
+                )}
+
+                <div>
+                  <p
+                    className={`text-xs font-semibold uppercase tracking-[0.1em] ${
+                      featured ? "text-brand-accent-to" : "text-brand-light"
+                    }`}
+                  >
+                    {config.name}
+                  </p>
+                  <div className="mt-3">
+                    <span className="text-4xl font-extrabold tracking-tight text-brand-primary sm:text-5xl">
+                      ${price}
+                    </span>
+                    <span className="text-sm text-brand-muted">/month</span>
+                  </div>
+                  {billingInterval === "annual" && (
+                    <p className="mt-1 text-xs text-green-600">
+                      ${config.pricing.annual}/yr (2 months free)
+                    </p>
+                  )}
+                  <p className="mt-2 text-sm leading-relaxed text-brand-muted">
+                    {description}
+                  </p>
+                </div>
+
+                <ul className="mt-7 flex-1 space-y-2.5">
+                  {features.map((feature) => (
+                    <li
+                      key={feature}
+                      className="flex items-start gap-2.5 text-sm text-brand-muted"
+                    >
+                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand-accent-to" />
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+
+                <Link
+                  href="/signup"
+                  className={`mt-8 block rounded-xl py-3 text-center text-sm font-semibold transition-all ${
+                    featured
+                      ? "bg-gradient-accent text-brand-primary hover:brightness-105"
+                      : "border border-brand-border text-brand-primary hover:bg-brand-surface"
+                  }`}
+                >
+                  {cta}
+                </Link>
+              </div>
+            );
+          })}
         </StaggerReveal>
 
         <ScrollReveal direction="up" delay={0.2}>
           <p className="mt-8 text-center text-sm text-brand-light">
-            All plans include a 14-day free trial. No credit card required.
+            All plans include a 7-day free trial. No credit card required.
           </p>
         </ScrollReveal>
       </section>
@@ -314,7 +360,7 @@ export default function PricingPage() {
               Ready to start capturing leads?
             </h2>
             <p className="mt-4 text-base leading-[1.7] text-white/50">
-              14-day free trial. No credit card required.
+              7-day free trial. No credit card required.
             </p>
             <Link
               href="/signup"

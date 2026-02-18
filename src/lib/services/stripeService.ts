@@ -30,8 +30,8 @@ export async function createCheckoutSession(
     customerEmail,
   } = params;
 
-  if (plan === "BASIC") {
-    return { success: false, error: "BASIC plan does not require payment" };
+  if (plan === "FREE") {
+    return { success: false, error: "FREE plan does not require payment" };
   }
 
   const { PLAN_CONFIG } = await import("@/lib/constants/plans");
@@ -212,13 +212,36 @@ export async function handleSubscriptionDeleted(
   await prisma.organization.update({
     where: { id: org.id },
     data: {
-      plan: "BASIC",
+      plan: "FREE",
       subscriptionStatus: "CANCELED",
       stripeSubscriptionId: null,
       cancelAtPeriodEnd: false,
       trialEndsAt: null,
     },
   });
+
+  const unpublished = await prisma.chatbot.updateMany({
+    where: { organizationId: org.id, status: "PUBLISHED" },
+    data: { status: "DRAFT", publishedAt: null },
+  });
+
+  if (unpublished.count > 0) {
+    const { notificationService } =
+      await import("@/lib/services/notificationService");
+    const users = await prisma.user.findMany({
+      where: { organizationId: org.id },
+      select: { id: true },
+    });
+
+    for (const user of users) {
+      await notificationService.createNotification({
+        userId: user.id,
+        type: "SUBSCRIPTION_EXPIRED",
+        title: "Subscription expired",
+        message: `Your subscription has expired and ${unpublished.count} chatbot${unpublished.count > 1 ? "s have" : " has"} been unpublished. Upgrade to a paid plan to republish.`,
+      });
+    }
+  }
 }
 
 function determinePlanFromSubscription(

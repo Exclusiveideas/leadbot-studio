@@ -36,7 +36,8 @@ export type NotificationType =
   | "LEAD_CAPTURED"
   | "BOOKING_CREATED"
   | "TEXT_REQUEST_CREATED"
-  | "CONVERSATION_LIMIT_REACHED";
+  | "CONVERSATION_LIMIT_REACHED"
+  | "SUBSCRIPTION_EXPIRED";
 
 /**
  * Toast-only notification types (not persisted to database)
@@ -135,6 +136,10 @@ export type NotificationData = {
     currentCount: number;
     limit: number;
     reachedAt: string;
+  };
+  SUBSCRIPTION_EXPIRED: {
+    unpublishedCount: number;
+    expiredAt: string;
   };
 };
 

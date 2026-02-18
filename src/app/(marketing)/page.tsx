@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import {
   Scale,
@@ -32,6 +33,8 @@ import {
   AnimatedCounter,
   TextReveal,
 } from "@/components/marketing/gsap-animations";
+import { PLAN_CONFIG } from "@/lib/constants/plans";
+import type { BillingInterval } from "@/lib/constants/plans";
 
 const heroFade = {
   hidden: { opacity: 0, y: 20 },
@@ -77,6 +80,22 @@ const industries = [
 ];
 
 export default function HomePage() {
+  const [billingInterval, setBillingInterval] =
+    useState<BillingInterval>("monthly");
+
+  const basicPrice =
+    billingInterval === "monthly"
+      ? PLAN_CONFIG.BASIC.pricing.monthly
+      : Math.round(PLAN_CONFIG.BASIC.pricing.annual / 12);
+  const proPrice =
+    billingInterval === "monthly"
+      ? PLAN_CONFIG.PRO.pricing.monthly
+      : Math.round(PLAN_CONFIG.PRO.pricing.annual / 12);
+  const agencyPrice =
+    billingInterval === "monthly"
+      ? PLAN_CONFIG.AGENCY.pricing.monthly
+      : Math.round(PLAN_CONFIG.AGENCY.pricing.annual / 12);
+
   return (
     <>
       {/* ─── HERO ─── */}
@@ -702,6 +721,33 @@ export default function HomePage() {
             </div>
           </ScrollReveal>
 
+          {/* Billing Interval Toggle */}
+          <div className="mx-auto mb-10 flex w-fit items-center gap-1 rounded-lg bg-brand-surface p-1">
+            <button
+              onClick={() => setBillingInterval("monthly")}
+              className={`rounded-md px-5 py-2 text-sm font-medium transition-colors ${
+                billingInterval === "monthly"
+                  ? "bg-white text-brand-primary shadow-sm"
+                  : "text-brand-muted hover:text-brand-primary"
+              }`}
+            >
+              Monthly
+            </button>
+            <button
+              onClick={() => setBillingInterval("annual")}
+              className={`flex items-center gap-2 rounded-md px-5 py-2 text-sm font-medium transition-colors ${
+                billingInterval === "annual"
+                  ? "bg-white text-brand-primary shadow-sm"
+                  : "text-brand-muted hover:text-brand-primary"
+              }`}
+            >
+              Annual
+              <span className="rounded bg-green-100 px-1.5 py-0.5 text-[10px] font-semibold text-green-700">
+                Save 17%
+              </span>
+            </button>
+          </div>
+
           <StaggerReveal
             className="mx-auto flex max-w-4xl flex-col gap-5 sm:gap-6 lg:flex-row lg:items-start"
             childSelector=".stagger-item"
@@ -713,10 +759,15 @@ export default function HomePage() {
               </p>
               <div className="mt-3">
                 <span className="text-3xl font-extrabold tracking-tight text-brand-primary">
-                  $20
+                  ${basicPrice}
                 </span>
                 <span className="text-sm text-brand-muted">/mo</span>
               </div>
+              {billingInterval === "annual" && (
+                <p className="mt-1 text-[10px] text-green-600">
+                  ${PLAN_CONFIG.BASIC.pricing.annual}/yr (2 months free)
+                </p>
+              )}
               <p className="mt-2 text-xs text-brand-muted">
                 Solo practitioners
               </p>
@@ -750,10 +801,15 @@ export default function HomePage() {
               </p>
               <div className="mt-3">
                 <span className="text-3xl font-extrabold tracking-tight text-brand-primary sm:text-4xl">
-                  $50
+                  ${proPrice}
                 </span>
                 <span className="text-sm text-brand-muted">/mo</span>
               </div>
+              {billingInterval === "annual" && (
+                <p className="mt-1 text-xs text-green-600">
+                  ${PLAN_CONFIG.PRO.pricing.annual}/yr (2 months free)
+                </p>
+              )}
               <p className="mt-2 text-xs text-brand-muted">Growing practices</p>
               <ul className="mt-5 flex-1 space-y-2.5 text-sm text-brand-muted">
                 {[
@@ -786,7 +842,7 @@ export default function HomePage() {
                 </p>
                 <div className="mt-2">
                   <span className="text-2xl font-extrabold text-brand-primary">
-                    $20
+                    ${basicPrice}
                   </span>
                   <span className="text-xs text-brand-muted">/mo</span>
                 </div>
@@ -813,7 +869,7 @@ export default function HomePage() {
                 </p>
                 <div className="mt-2">
                   <span className="text-2xl font-extrabold text-brand-primary">
-                    $150
+                    ${agencyPrice}
                   </span>
                   <span className="text-xs text-brand-muted">/mo</span>
                 </div>
@@ -843,10 +899,15 @@ export default function HomePage() {
               </p>
               <div className="mt-3">
                 <span className="text-3xl font-extrabold tracking-tight text-brand-primary">
-                  $150
+                  ${agencyPrice}
                 </span>
                 <span className="text-sm text-brand-muted">/mo</span>
               </div>
+              {billingInterval === "annual" && (
+                <p className="mt-1 text-[10px] text-green-600">
+                  ${PLAN_CONFIG.AGENCY.pricing.annual}/yr (2 months free)
+                </p>
+              )}
               <p className="mt-2 text-xs text-brand-muted">Agencies & teams</p>
               <ul className="mt-5 flex-1 space-y-2 text-xs text-brand-muted">
                 {[
@@ -871,7 +932,7 @@ export default function HomePage() {
 
           <ScrollReveal direction="up" delay={0.2}>
             <p className="mt-8 text-center text-sm text-brand-light sm:mt-10">
-              All plans include a 14-day free trial. No credit card required.{" "}
+              All plans include a 7-day free trial. No credit card required.{" "}
               <Link
                 href="/pricing"
                 className="font-medium text-brand-accent-to underline underline-offset-2 transition-colors hover:text-brand-accent-from"
@@ -1065,7 +1126,7 @@ export default function HomePage() {
           </ScrollReveal>
           <ScrollReveal direction="up" delay={0.3}>
             <p className="mt-6 text-xs text-brand-light">
-              Free 14-day trial. No credit card required.
+              Free 7-day trial. No credit card required.
             </p>
           </ScrollReveal>
         </div>
