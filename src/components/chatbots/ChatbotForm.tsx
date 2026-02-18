@@ -6,7 +6,14 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
-import { Loader2, Upload, AlertCircle, ImageIcon } from "lucide-react";
+import {
+  Loader2,
+  Upload,
+  AlertCircle,
+  ImageIcon,
+  ArrowRight,
+} from "lucide-react";
+import Link from "next/link";
 import {
   CHATBOT_FORM_VALIDATION,
   CHATBOT_FILE_UPLOAD,
@@ -18,7 +25,8 @@ import {
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import BookingConfigSection from "./BookingConfigSection";
 import TextConfigSection from "./TextConfigSection";
-import PlanGate from "@/components/shared/PlanGate";
+import PlanGate, { useOrganizationPlan } from "@/components/shared/PlanGate";
+import { hasFeature } from "@/lib/constants/plans";
 import type { BookingConfig } from "@/lib/validation/chatbot-booking";
 import type { TextConfig } from "@/lib/validation/chatbot-text";
 
@@ -111,6 +119,8 @@ export default function ChatbotForm({
   const [chatbotStatus, setChatbotStatus] = useState<"DRAFT" | "PUBLISHED">(
     initialData?.status || "DRAFT",
   );
+  const plan = useOrganizationPlan();
+  const canPublish = hasFeature(plan, "publish_chatbot");
 
   const [chatGreeting, setChatGreeting] = useState(
     (initialData as any)?.chatGreeting ||
@@ -546,13 +556,15 @@ export default function ChatbotForm({
                     Draft (Not visible to public)
                   </span>
                 </label>
-                <label className="flex items-center gap-2 cursor-pointer">
+                <label
+                  className={`flex items-center gap-2 ${canPublish ? "cursor-pointer" : "cursor-not-allowed opacity-50"}`}
+                >
                   <input
                     type="radio"
                     name="status"
                     checked={chatbotStatus === "PUBLISHED"}
                     onChange={() => setChatbotStatus("PUBLISHED")}
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || !canPublish}
                     className="w-4 h-4 text-brand-blue focus:ring-brand-blue"
                   />
                   <span className="text-sm text-brand-secondary">
@@ -560,6 +572,21 @@ export default function ChatbotForm({
                   </span>
                 </label>
               </div>
+              {!canPublish && (
+                <div className="mt-3 flex items-center gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3">
+                  <AlertCircle className="h-4 w-4 shrink-0 text-amber-600" />
+                  <p className="text-sm text-amber-800">
+                    Upgrade to a paid plan to publish your chatbot.
+                  </p>
+                  <Link
+                    href="/settings?tab=billing"
+                    className="ml-auto inline-flex shrink-0 items-center gap-1 rounded-lg bg-gradient-accent px-3 py-1.5 text-xs font-semibold text-brand-primary shadow-sm hover:brightness-105 transition-all"
+                  >
+                    Upgrade
+                    <ArrowRight className="h-3 w-3" />
+                  </Link>
+                </div>
+              )}
             </div>
           )}
         </TabsContent>

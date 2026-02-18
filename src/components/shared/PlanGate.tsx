@@ -12,7 +12,7 @@ type PlanGateProps = {
   children: ReactNode;
 };
 
-function useOrganizationPlan(): PlanTier {
+export function useOrganizationPlan(): PlanTier {
   const [plan, setPlan] = useState<PlanTier>("BASIC");
 
   useEffect(() => {
