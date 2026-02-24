@@ -217,6 +217,8 @@ model Chatbot {
   feedbacks      ChatbotFeedback[]
   bookings       ChatbotBooking[]
   textRequests   ChatbotTextRequest[]
+  voiceConfig    VoiceConfig?
+  voiceCalls     VoiceCall[]
 
   @@index([organizationId])
   @@index([createdBy])
@@ -585,6 +587,7 @@ enum ChatbotStatus {
 enum LeadSource {
   LEAD_FORM
   BOOKING_FALLBACK
+  VOICE_CALL
 }
 
 enum BookingStatus {
@@ -622,4 +625,120 @@ enum NotificationType {
   INVITATION_DECLINED
   CONVERSATION_LIMIT_REACHED
   SUBSCRIPTION_EXPIRED
+  VOICE_CALL_COMPLETED
+  VOICE_LEAD_CAPTURED
+  VOICE_MINUTES_WARNING
+  VOICE_MINUTES_EXCEEDED
+  VOICEMAIL_RECEIVED
+}
+
+enum VoiceCallStatus {
+  RINGING
+  IN_PROGRESS
+  COMPLETED
+  FAILED
+  NO_ANSWER
+  BUSY
+  CANCELED
+  VOICEMAIL
+}
+
+enum VoiceCallDirection {
+  INBOUND
+  OUTBOUND
+}
+
+// ─── Voice AI Receptionist ──────────────────────────────────────────────────
+
+model VoiceConfig {
+  id        String @id @default(cuid())
+  chatbotId String @unique
+
+  enabled           Boolean @default(false)
+  twilioPhoneNumber String?
+  twilioPhoneSid    String?
+  voiceId           String  @default("rachel")
+  voiceName         String  @default("Rachel")
+  greetingMessage   String  @default("Hello! Thank you for calling. How can I help you today?") @db.Text
+  voiceMailMessage  String? @db.Text
+
+  maxCallDurationSeconds Int @default(600)
+  silenceTimeoutSeconds  Int @default(10)
+  language               String @default("en")
+
+  businessHours Json?
+
+  transferEnabled     Boolean @default(false)
+  transferPhoneNumber String?
+  recordingEnabled    Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  chatbot Chatbot @relation(fields: [chatbotId], references: [id], onDelete: Cascade)
+
+  @@index([chatbotId])
+  @@index([twilioPhoneNumber])
+  @@map("voice_configs")
+}
+
+model VoiceCall {
+  id             String @id @default(cuid())
+  chatbotId      String
+  organizationId String
+
+  twilioCallSid    String             @unique
+  twilioAccountSid String?
+  direction        VoiceCallDirection @default(INBOUND)
+  status           VoiceCallStatus    @default(RINGING)
+
+  callerNumber  String?
+  calledNumber  String?
+  callerCity    String?
+  callerState   String?
+  callerCountry String?
+
+  startedAt       DateTime  @default(now())
+  answeredAt      DateTime?
+  endedAt         DateTime?
+  durationSeconds Int?
+
+  transcript   Json?
+  summary      String? @db.Text
+  costCents    Int?
+  recordingUrl String?
+
+  leadCaptured Boolean @default(false)
+  leadId       String?
+
+  transferredTo String?
+  transferredAt DateTime?
+
+  chatbot Chatbot @relation(fields: [chatbotId], references: [id], onDelete: Cascade)
+
+  @@index([chatbotId])
+  @@index([organizationId])
+  @@index([twilioCallSid])
+  @@index([startedAt])
+  @@index([status])
+  @@index([organizationId, startedAt])
+  @@map("voice_calls")
+}
+
+model VoiceUsage {
+  id             String   @id @default(cuid())
+  organizationId String
+  month          DateTime @db.Date
+
+  totalCallCount Int @default(0)
+  totalMinutes   Int @default(0)
+  totalCostCents Int @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([organizationId, month])
+  @@index([organizationId])
+  @@index([month])
+  @@map("voice_usage")
 }

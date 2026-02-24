@@ -11,6 +11,10 @@ import {
   Minus,
   Lock,
   ArrowRight,
+  PhoneCall,
+  Phone,
+  Voicemail,
+  Clock,
 } from "lucide-react";
 import {
   AreaChart,
@@ -46,6 +50,31 @@ type AnalyticsResponse = {
   data: {
     summary: AnalyticsSummary;
     daily: DailyData[];
+    days: number;
+  };
+};
+
+type VoiceAnalyticsSummary = {
+  totalCalls: number;
+  completedCalls: number;
+  voicemailCalls: number;
+  avgDurationSeconds: number;
+  leadCaptureRate: number;
+  completedRate: number;
+  transferRate: number;
+};
+
+type VoiceDailyData = {
+  date: string;
+  calls: number;
+};
+
+type VoiceAnalyticsResponse = {
+  success: boolean;
+  data: {
+    summary: VoiceAnalyticsSummary;
+    daily: VoiceDailyData[];
+    topLocations: { location: string; count: number }[];
     days: number;
   };
 };
@@ -122,6 +151,14 @@ export default function AnalyticsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [plan, setPlan] = useState<string>("BASIC");
+  const [voiceUsage, setVoiceUsage] = useState<{
+    used: number;
+    limit: number;
+    callCount: number;
+  } | null>(null);
+  const [voiceAnalytics, setVoiceAnalytics] = useState<
+    VoiceAnalyticsResponse["data"] | null
+  >(null);
 
   useEffect(() => {
     fetch("/api/auth/session", { credentials: "include" })
@@ -132,20 +169,39 @@ export default function AnalyticsPage() {
         }
       })
       .catch(() => {});
-  }, []);
+
+    fetch(`/api/chatbots/${chatbotId}/voice/usage`, { credentials: "include" })
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.success) setVoiceUsage(d.data);
+      })
+      .catch(() => {});
+  }, [chatbotId]);
 
   const fetchAnalytics = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
-      const res = await fetch(
-        `/api/chatbots/${chatbotId}/analytics?days=${days}`,
-        { credentials: "include" },
-      );
+      const [res, voiceRes] = await Promise.all([
+        fetch(`/api/chatbots/${chatbotId}/analytics?days=${days}`, {
+          credentials: "include",
+        }),
+        fetch(`/api/chatbots/${chatbotId}/voice/analytics?days=${days}`, {
+          credentials: "include",
+        }),
+      ]);
+
       if (!res.ok) throw new Error("Failed to fetch analytics");
       const result: AnalyticsResponse = await res.json();
       if (result.success) {
         setData(result.data);
+      }
+
+      if (voiceRes.ok) {
+        const voiceResult: VoiceAnalyticsResponse = await voiceRes.json();
+        if (voiceResult.success) {
+          setVoiceAnalytics(voiceResult.data);
+        }
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load analytics");
@@ -261,6 +317,166 @@ export default function AnalyticsPage() {
           </div>
         ))}
       </div>
+
+      {/* Voice Stats */}
+      {voiceUsage && voiceUsage.limit > 0 && (
+        <div className="bg-white rounded-xl border border-brand-border p-5 elevation-1">
+          <div className="flex items-center gap-2 mb-4">
+            <PhoneCall className="h-4 w-4 text-brand-muted" />
+            <h3 className="text-sm font-semibold text-brand-primary">
+              Voice Receptionist
+            </h3>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+            <div>
+              <p className="text-xs text-brand-muted mb-1">Calls This Month</p>
+              <p className="text-2xl font-bold tracking-tight text-brand-primary">
+                {voiceUsage.callCount}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs text-brand-muted mb-1">Minutes Used</p>
+              <div className="flex items-baseline gap-2">
+                <p className="text-2xl font-bold tracking-tight text-brand-primary">
+                  {Math.round(voiceUsage.used)}
+                </p>
+                <span className="text-sm text-brand-muted">
+                  / {voiceUsage.limit} min
+                </span>
+              </div>
+              <div className="mt-2 h-1.5 bg-brand-surface rounded-full overflow-hidden">
+                <div
+                  className={`h-full rounded-full transition-all ${
+                    voiceUsage.used / voiceUsage.limit >= 1
+                      ? "bg-red-500"
+                      : voiceUsage.used / voiceUsage.limit >= 0.8
+                        ? "bg-amber-500"
+                        : "bg-gradient-to-r from-[#ffd78c] to-[#ffab7a]"
+                  }`}
+                  style={{
+                    width: `${Math.min((voiceUsage.used / voiceUsage.limit) * 100, 100)}%`,
+                  }}
+                />
+              </div>
+            </div>
+            <div>
+              <p className="text-xs text-brand-muted mb-1">Avg Duration</p>
+              <div className="flex items-center gap-1.5">
+                <Clock className="h-4 w-4 text-brand-muted" />
+                <p className="text-2xl font-bold tracking-tight text-brand-primary">
+                  {voiceUsage.callCount > 0
+                    ? `${Math.round(voiceUsage.used / voiceUsage.callCount)}m`
+                    : "—"}
+                </p>
+              </div>
+            </div>
+            {voiceAnalytics && (
+              <>
+                <div>
+                  <p className="text-xs text-brand-muted mb-1">
+                    Completed Rate
+                  </p>
+                  <div className="flex items-center gap-1.5">
+                    <Phone className="h-4 w-4 text-brand-muted" />
+                    <p className="text-2xl font-bold tracking-tight text-brand-primary">
+                      {voiceAnalytics.summary.completedRate}%
+                    </p>
+                  </div>
+                </div>
+                <div>
+                  <p className="text-xs text-brand-muted mb-1">
+                    Lead Capture Rate
+                  </p>
+                  <div className="flex items-center gap-1.5">
+                    <UserPlus className="h-4 w-4 text-brand-muted" />
+                    <p className="text-2xl font-bold tracking-tight text-brand-primary">
+                      {voiceAnalytics.summary.leadCaptureRate}%
+                    </p>
+                  </div>
+                </div>
+                <div>
+                  <p className="text-xs text-brand-muted mb-1">Voicemails</p>
+                  <div className="flex items-center gap-1.5">
+                    <Voicemail className="h-4 w-4 text-brand-muted" />
+                    <p className="text-2xl font-bold tracking-tight text-brand-primary">
+                      {voiceAnalytics.summary.voicemailCalls}
+                    </p>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* Voice Call Volume Chart (PRO/AGENCY only) */}
+          {voiceAnalytics &&
+            hasAdvancedAnalytics &&
+            voiceAnalytics.daily.length > 0 && (
+              <div className="mt-6">
+                <h4 className="text-xs font-semibold text-brand-muted mb-3">
+                  Daily Call Volume
+                </h4>
+                <div className="h-[200px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart
+                      data={voiceAnalytics.daily.map((d) => ({
+                        ...d,
+                        label: formatChartDate(d.date),
+                      }))}
+                    >
+                      <defs>
+                        <linearGradient
+                          id="colorVoiceCalls"
+                          x1="0"
+                          y1="0"
+                          x2="0"
+                          y2="1"
+                        >
+                          <stop
+                            offset="5%"
+                            stopColor="#6366f1"
+                            stopOpacity={0.15}
+                          />
+                          <stop
+                            offset="95%"
+                            stopColor="#6366f1"
+                            stopOpacity={0}
+                          />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid
+                        strokeDasharray="3 3"
+                        stroke="#e2e8f0"
+                        vertical={false}
+                      />
+                      <XAxis
+                        dataKey="label"
+                        tick={{ fontSize: 11, fill: "#94a3b8" }}
+                        axisLine={false}
+                        tickLine={false}
+                        interval="preserveStartEnd"
+                      />
+                      <YAxis
+                        tick={{ fontSize: 11, fill: "#94a3b8" }}
+                        axisLine={false}
+                        tickLine={false}
+                        width={35}
+                        allowDecimals={false}
+                      />
+                      <Tooltip content={<ChartTooltip />} />
+                      <Area
+                        type="monotone"
+                        dataKey="calls"
+                        stroke="#6366f1"
+                        strokeWidth={2}
+                        fill="url(#colorVoiceCalls)"
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            )}
+        </div>
+      )}
 
       {/* Charts Section */}
       <div className="relative">

@@ -20,6 +20,7 @@ export type Feature =
   | "team_management"
   | "priority_support"
   | "dedicated_account_manager"
+  | "voice_receptionist"
   | "custom_onboarding";
 
 type PlanPricing = {
@@ -48,6 +49,7 @@ const FREE_FEATURES: ReadonlySet<Feature> = new Set([
 const BASIC_FEATURES: ReadonlySet<Feature> = new Set([
   ...FREE_FEATURES,
   "publish_chatbot",
+  "voice_receptionist",
 ]);
 
 const PRO_FEATURES: ReadonlySet<Feature> = new Set([

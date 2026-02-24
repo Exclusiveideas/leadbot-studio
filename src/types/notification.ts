@@ -37,7 +37,12 @@ export type NotificationType =
   | "BOOKING_CREATED"
   | "TEXT_REQUEST_CREATED"
   | "CONVERSATION_LIMIT_REACHED"
-  | "SUBSCRIPTION_EXPIRED";
+  | "SUBSCRIPTION_EXPIRED"
+  | "VOICE_CALL_COMPLETED"
+  | "VOICE_LEAD_CAPTURED"
+  | "VOICE_MINUTES_WARNING"
+  | "VOICE_MINUTES_EXCEEDED"
+  | "VOICEMAIL_RECEIVED";
 
 /**
  * Toast-only notification types (not persisted to database)
@@ -140,6 +145,46 @@ export type NotificationData = {
   SUBSCRIPTION_EXPIRED: {
     unpublishedCount: number;
     expiredAt: string;
+  };
+  VOICE_CALL_COMPLETED: {
+    callId: string;
+    chatbotId: string;
+    chatbotName: string;
+    callerNumber: string;
+    durationSeconds: number;
+    leadCaptured: boolean;
+    completedAt: string;
+  };
+  VOICE_LEAD_CAPTURED: {
+    callId: string;
+    leadId: string;
+    chatbotId: string;
+    chatbotName: string;
+    callerNumber: string;
+    capturedAt: string;
+  };
+  VOICE_MINUTES_WARNING: {
+    chatbotId: string;
+    chatbotName: string;
+    usedMinutes: number;
+    limitMinutes: number;
+    percentUsed: number;
+    warnedAt: string;
+  };
+  VOICE_MINUTES_EXCEEDED: {
+    chatbotId: string;
+    chatbotName: string;
+    usedMinutes: number;
+    limitMinutes: number;
+    exceededAt: string;
+  };
+  VOICEMAIL_RECEIVED: {
+    callId: string;
+    chatbotId: string;
+    chatbotName: string;
+    callerNumber: string;
+    recordingUrl: string;
+    receivedAt: string;
   };
 };
 

@@ -38,6 +38,11 @@ export default function ChatbotTabs({ chatbotId }: ChatbotTabsProps) {
       href: `/chatbots/${chatbotId}/feedbacks`,
     },
     {
+      id: "voice",
+      name: "Voice",
+      href: `/chatbots/${chatbotId}/voice`,
+    },
+    {
       id: "analytics",
       name: "Analytics",
       href: `/chatbots/${chatbotId}/analytics`,

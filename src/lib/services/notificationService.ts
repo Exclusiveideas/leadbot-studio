@@ -330,6 +330,91 @@ class NotificationService {
   }
 
   /**
+   * Create voice minutes warning notification (80% threshold)
+   */
+  async notifyVoiceMinutesWarning(
+    userId: string,
+    chatbotId: string,
+    chatbotName: string,
+    usedMinutes: number,
+    limitMinutes: number,
+    metadata?: Prisma.InputJsonObject,
+  ): Promise<string | null> {
+    const percentUsed = Math.round((usedMinutes / limitMinutes) * 100);
+    return this.createNotification({
+      userId,
+      type: "VOICE_MINUTES_WARNING",
+      title: "Voice Minutes Running Low",
+      message: `${chatbotName} has used ${percentUsed}% of voice minutes (${usedMinutes}/${limitMinutes} min). Upgrade your plan to avoid service interruption.`,
+      data: {
+        chatbotId,
+        chatbotName,
+        usedMinutes,
+        limitMinutes,
+        percentUsed,
+        warnedAt: new Date().toISOString(),
+        ...metadata,
+      },
+    });
+  }
+
+  /**
+   * Create voice minutes exceeded notification (100% threshold)
+   */
+  async notifyVoiceMinutesExceeded(
+    userId: string,
+    chatbotId: string,
+    chatbotName: string,
+    usedMinutes: number,
+    limitMinutes: number,
+    metadata?: Prisma.InputJsonObject,
+  ): Promise<string | null> {
+    return this.createNotification({
+      userId,
+      type: "VOICE_MINUTES_EXCEEDED",
+      title: "Voice Minutes Exceeded",
+      message: `${chatbotName} has exceeded its voice minute limit (${usedMinutes}/${limitMinutes} min). New calls will be rejected until next month. Upgrade your plan for more minutes.`,
+      data: {
+        chatbotId,
+        chatbotName,
+        usedMinutes,
+        limitMinutes,
+        exceededAt: new Date().toISOString(),
+        ...metadata,
+      },
+    });
+  }
+
+  /**
+   * Create voicemail received notification
+   */
+  async notifyVoicemailReceived(
+    userId: string,
+    callId: string,
+    chatbotId: string,
+    chatbotName: string,
+    callerNumber: string,
+    recordingUrl: string,
+    metadata?: Prisma.InputJsonObject,
+  ): Promise<string | null> {
+    return this.createNotification({
+      userId,
+      type: "VOICEMAIL_RECEIVED",
+      title: "New Voicemail",
+      message: `New voicemail from ${callerNumber || "unknown caller"} on ${chatbotName}`,
+      data: {
+        callId,
+        chatbotId,
+        chatbotName,
+        callerNumber: callerNumber || "",
+        recordingUrl,
+        receivedAt: new Date().toISOString(),
+        ...metadata,
+      },
+    });
+  }
+
+  /**
    * Mark notification as read
    */
   async markAsRead(notificationId: string, userId: string): Promise<boolean> {
