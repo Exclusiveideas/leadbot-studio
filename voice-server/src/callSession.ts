@@ -8,6 +8,8 @@ import { createSentenceSplitter } from "./sentenceSplitter.js";
 import { checkVoicePromptInjection } from "./promptGuard.js";
 import { buildVoiceSystemPrompt } from "./voicePromptBuilder.js";
 import type { VoicePromptParams } from "./voicePromptBuilder.js";
+import { detectTone, getToneInstruction } from "./toneDetector.js";
+import type { createSpeculativeEngine } from "./speculativeResponse.js";
 
 export type CallSessionConfig = {
   callSid: string;
@@ -29,6 +31,8 @@ export type CallSessionDeps = {
   llmProvider: VoiceLLMProvider;
   ragProvider?: RAGProvider;
   fillerAudios?: string[];
+  acknowledgmentAudios?: string[];
+  speculativeEngine?: ReturnType<typeof createSpeculativeEngine>;
 };
 
 export type CallTranscriptEntry = {
@@ -83,14 +87,54 @@ const VOICE_TOOLS = [
   },
 ];
 
+const BACKCHANNEL_WORDS = new Set([
+  "uh-huh",
+  "mm-hmm",
+  "yeah",
+  "yep",
+  "okay",
+  "ok",
+  "right",
+  "sure",
+  "got it",
+  "mhm",
+  "ah",
+]);
+
+export function isBackchannel(text: string): boolean {
+  const normalized = text
+    .trim()
+    .toLowerCase()
+    .replace(/[.!?,]+$/, "");
+  return BACKCHANNEL_WORDS.has(normalized);
+}
+
+const COMPLEXITY_KEYWORDS =
+  /\b(how|why|explain|describe|what happens|difference|compare)\b/i;
+
+export function estimateFillerDelay(utterance: string): number {
+  const wordCount = utterance.trim().split(/\s+/).length;
+
+  if (wordCount >= 11 || COMPLEXITY_KEYWORDS.test(utterance)) return 200;
+  if (wordCount >= 5) return 300;
+  return 400;
+}
+
 export function createCallSession(
   twilioWs: WebSocket,
   config: CallSessionConfig,
   deps: CallSessionDeps,
   events: CallSessionEvents,
 ) {
-  const { sttProvider, ttsProvider, llmProvider, ragProvider, fillerAudios } =
-    deps;
+  const {
+    sttProvider,
+    ttsProvider,
+    llmProvider,
+    ragProvider,
+    fillerAudios,
+    acknowledgmentAudios,
+    speculativeEngine,
+  } = deps;
   const messages: VoiceLLMMessage[] = [];
   const transcript: CallTranscriptEntry[] = [];
 
@@ -103,6 +147,9 @@ export function createCallSession(
   let isDestroyed = false;
   let marksSent = 0;
   let marksReceived = 0;
+  let pendingInterrupt = false;
+  let interruptDebounce: ReturnType<typeof setTimeout> | null = null;
+  let ttsPaused = false;
   const startedAt = Date.now();
 
   function sendTwilioMedia(audioPayload: string): void {
@@ -227,6 +274,16 @@ export function createCallSession(
       }
     }
 
+    // Play instant acknowledgment
+    if (acknowledgmentAudios && acknowledgmentAudios.length > 0) {
+      const ack =
+        acknowledgmentAudios[
+          Math.floor(Math.random() * acknowledgmentAudios.length)
+        ];
+      sendTwilioMedia(ack);
+      sendTwilioMark("ack_end");
+    }
+
     // Set up filler timer
     let fillerTimer: ReturnType<typeof setTimeout> | null = null;
     let firstChunkReceived = false;
@@ -239,7 +296,42 @@ export function createCallSession(
           sendTwilioMedia(filler);
           sendTwilioMark("filler_end");
         }
-      }, 500);
+      }, estimateFillerDelay(text));
+    }
+
+    // Detect caller tone and append instruction if not neutral
+    const tone = detectTone(text);
+    const toneInstruction = getToneInstruction(tone);
+    if (toneInstruction) {
+      effectiveSystemPrompt += `\n\nCALLER TONE: ${toneInstruction}`;
+    }
+
+    // Check for speculative match before starting LLM call
+    if (speculativeEngine) {
+      const speculativeResult = speculativeEngine.getResult(text);
+      if (speculativeResult) {
+        if (fillerTimer) clearTimeout(fillerTimer);
+        isAssistantSpeaking = true;
+
+        const specSplitter = createSentenceSplitter(async (sentence) => {
+          if (isDestroyed) return;
+          await speakText(sentence);
+        });
+        for (const char of speculativeResult) {
+          specSplitter.push(char);
+        }
+        specSplitter.flush();
+
+        transcript.push({
+          role: "assistant",
+          content: speculativeResult,
+          timestamp: Date.now(),
+        });
+        messages.push({ role: "assistant", content: speculativeResult });
+        isAssistantSpeaking = false;
+        return;
+      }
+      speculativeEngine.cancelAll();
     }
 
     currentLLMAbort = new AbortController();
@@ -338,6 +430,15 @@ export function createCallSession(
 
     // Wire STT events
     sttProvider.onTranscript((event) => {
+      // Feed interim transcripts to speculative engine
+      if (
+        !event.isFinal &&
+        speculativeEngine &&
+        event.text.trim().split(/\s+/).length >= 3
+      ) {
+        speculativeEngine.speculate(event.text, config.systemPrompt, messages);
+      }
+
       if (event.isFinal) {
         utteranceBuffer += (utteranceBuffer ? " " : "") + event.text;
       }
@@ -345,14 +446,41 @@ export function createCallSession(
       if (event.speechFinal && utteranceBuffer.trim().length > 0) {
         const utterance = utteranceBuffer.trim();
         utteranceBuffer = "";
+
+        // If pending interrupt and this is a backchannel, resume TTS
+        if (pendingInterrupt && isBackchannel(utterance)) {
+          pendingInterrupt = false;
+          ttsPaused = false;
+          if (interruptDebounce) {
+            clearTimeout(interruptDebounce);
+            interruptDebounce = null;
+          }
+          return;
+        }
+
         handleUserUtterance(utterance);
       }
     });
 
     sttProvider.onSpeechStarted(() => {
-      if (isAssistantSpeaking) {
-        cancelCurrentResponse();
+      if (!isAssistantSpeaking) {
+        resetSilenceTimer();
+        return;
       }
+
+      // Assistant is speaking — debounce interrupt to allow backchannels
+      pendingInterrupt = true;
+      ttsPaused = true;
+
+      if (interruptDebounce) clearTimeout(interruptDebounce);
+      interruptDebounce = setTimeout(() => {
+        if (pendingInterrupt && !isDestroyed) {
+          cancelCurrentResponse();
+          pendingInterrupt = false;
+          ttsPaused = false;
+        }
+      }, 300);
+
       resetSilenceTimer();
     });
 

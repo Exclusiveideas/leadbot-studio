@@ -57,6 +57,15 @@ describe("buildVoiceSystemPrompt", () => {
     expect(result).not.toContain("KNOWLEDGE BASE:");
   });
 
+  test("includes warmth and naturalness rules", () => {
+    const result = buildVoiceSystemPrompt(baseParams);
+    expect(result).toContain("Match the caller's energy level");
+    expect(result).toContain("caller's name naturally");
+    expect(result).toContain("smooth transitions");
+    expect(result).toContain("Avoid starting every response the same way");
+    expect(result).toContain("honest and warm when unsure");
+  });
+
   test("knowledge base appears between voice rules and persona", () => {
     const result = buildVoiceSystemPrompt({
       ...baseParams,

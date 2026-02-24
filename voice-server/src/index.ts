@@ -8,7 +8,11 @@ import { createElevenLabsTTS } from "./providers/elevenlabs-tts.js";
 import { createBedrockLLM } from "./providers/bedrock-llm.js";
 import { createRAGProvider } from "./providers/rag.js";
 import { buildVoiceSystemPrompt } from "./voicePromptBuilder.js";
-import { preSynthesizeFillers } from "./fillerAudio.js";
+import {
+  preSynthesizeFillers,
+  preSynthesizeAcknowledgments,
+} from "./fillerAudio.js";
+import { createSpeculativeEngine } from "./speculativeResponse.js";
 import { PrismaClient } from "@prisma/client";
 import Twilio from "twilio";
 
@@ -148,16 +152,17 @@ wss.on("connection", async (ws: WebSocket, req) => {
 
             const sttProvider = createDeepgramSTT(DEEPGRAM_API_KEY);
 
-            // Pre-synthesize filler audio for this voice
+            // Pre-synthesize filler and acknowledgment audio for this voice
             let fillerAudios: string[] = [];
+            let acknowledgmentAudios: string[] = [];
             try {
-              fillerAudios = await preSynthesizeFillers(
-                ttsProvider,
-                voiceConfig.voiceId,
-              );
+              [fillerAudios, acknowledgmentAudios] = await Promise.all([
+                preSynthesizeFillers(ttsProvider, voiceConfig.voiceId),
+                preSynthesizeAcknowledgments(ttsProvider, voiceConfig.voiceId),
+              ]);
             } catch (err) {
               console.warn(
-                "[VoiceServer] Failed to pre-synthesize fillers:",
+                "[VoiceServer] Failed to pre-synthesize audio:",
                 err,
               );
             }
@@ -183,6 +188,8 @@ wss.on("connection", async (ws: WebSocket, req) => {
                 llmProvider,
                 ragProvider,
                 fillerAudios,
+                acknowledgmentAudios,
+                speculativeEngine: createSpeculativeEngine(llmProvider),
               },
               {
                 onCallEnd: async (transcript, durationSeconds) => {
@@ -304,7 +311,7 @@ wss.on("connection", async (ws: WebSocket, req) => {
                 where: { twilioCallSid: callSid },
                 data: { answeredAt: new Date() },
               })
-              .catch((err) => {
+              .catch((err: unknown) => {
                 console.error("[VoiceServer] Failed to set answeredAt:", err);
               });
 

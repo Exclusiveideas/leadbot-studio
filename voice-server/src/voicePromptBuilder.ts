@@ -24,7 +24,12 @@ VOICE RULES:
 - If you can't answer a question, use the transfer_call tool to connect them with a human.
 - To capture a lead, use the capture_lead tool when the caller shares their contact info or interest.
 - Use brief acknowledgments naturally: "Sure thing", "Absolutely", "Of course".
-- Never mention being an AI unless directly asked.`;
+- Never mention being an AI unless directly asked.
+- Match the caller's energy level — upbeat with upbeat callers, calm with calm callers.
+- Use the caller's name naturally after they share it, but don't overuse it.
+- Use smooth transitions between topics instead of abrupt shifts.
+- Avoid starting every response the same way — vary your openings.
+- Be honest and warm when unsure: "I'm not 100% sure, but let me find out for you."`;
 
   const parts = [voiceRules];
 
@@ -39,8 +44,7 @@ ${ragContext}`);
     parts.push(systemPrompt);
   } else {
     if (persona) parts.push(`PERSONA:\n${persona}`);
-    if (customInstructions)
-      parts.push(`INSTRUCTIONS:\n${customInstructions}`);
+    if (customInstructions) parts.push(`INSTRUCTIONS:\n${customInstructions}`);
   }
 
   return parts.join("\n\n");
